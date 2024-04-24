@@ -1,0 +1,4 @@
+name: multipleHardcoreLives
+version: '0.1'
+main: org.mhl.multiplehardcorelives.MultipleHardcoreLives
+api-version: '1.20'
