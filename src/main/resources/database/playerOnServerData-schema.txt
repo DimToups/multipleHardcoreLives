@@ -1,0 +1,8 @@
+CREATE TABLE IF NOT EXISTS playerOnServerData (
+	lives INTEGER NOT NULL,
+	player TEXT NOT NULL,
+	server TEXT NOT NULL,
+	CONSTRAINT pk_PlayerLivesOnServer PRIMARY KEY(player,server),
+	CONSTRAINT fk_PlayerOnServerData_Player FOREIGN KEY(player) REFERENCES player(UUID) ON DELETE CASCADE,
+	CONSTRAINT fk_PlayerOnServerData_Server FOREIGN KEY(server) REFERENCES server(address) ON DELETE CASCADE
+);

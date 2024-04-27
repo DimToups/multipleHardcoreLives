@@ -1,4 +1,21 @@
 name: multipleHardcoreLives
 version: '0.1'
+author: Dim_Toups
 main: org.mhl.multiplehardcorelives.MultipleHardcoreLives
 api-version: '1.20'
+
+permissions:
+  startSession:
+    default: true
+  endSession:
+    default: true
+
+commands:
+  startSession:
+    description: Start the session of the game
+    usage: /startSession
+    permission: admin.manage.playerpermission
+  endSession:
+    description: End the session of the game
+    usage: /endSession
+    permission: admin.manage.playerpermission
