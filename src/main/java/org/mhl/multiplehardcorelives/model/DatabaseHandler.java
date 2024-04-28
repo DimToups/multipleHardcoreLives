@@ -10,6 +10,7 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.sql.*;
+import java.util.UUID;
 import java.util.logging.Level;
 
 public class DatabaseHandler {
@@ -172,5 +173,22 @@ public class DatabaseHandler {
 
         closeConnection();
         return new Player(player.getUniqueId(), player.getName(), nbLives);
+    }
+
+    @Nullable
+    public Player findPlayer(String name) {
+        Player player = null;
+
+        //
+        openConnection();
+        try{
+            Statement st = connection.createStatement();
+            ResultSet rs = st.executeQuery("SELECT * FROM playerOnServerData WHERE player IN(SELECT UUID FROM player WHERE name =\""+ name + "\");");
+            player = new Player(UUID.fromString(rs.getString("player")), name, rs.getInt("lives"));
+        } catch (Exception e){
+            Bukkit.getLogger().log(Level.WARNING, "Could not find the player " + name + " in the database");
+        }
+
+        return player;
     }
 }

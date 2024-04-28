@@ -54,6 +54,10 @@ public class MhlController {
         if(!server.getPlayers().contains(newPlayer))
             server.addPlayer(newPlayer);
     }
+    public void addPlayer(Player newPlayer) {
+        if(!server.getPlayers().contains(newPlayer))
+            server.addPlayer(newPlayer);
+    }
     public void setNbLivesOfPlayer(Player player, int lives){
         player.setNbLives(lives);
         Bukkit.getLogger().log(Level.INFO, "Player \"" + player.getName() + "\" has now " + lives + " lives");
@@ -126,5 +130,18 @@ public class MhlController {
             }
         }
         return targetedPlayer;
+    }
+
+    @Nullable
+    public Player findPlayerInDatabase(String name) {
+        return databaseHandler.findPlayer(name);
+    }
+
+    @Nullable
+    public Player findPlayer(Player targetedPlayer) {
+        for(Player player : server.getPlayers())
+            if(player.getUuid() == targetedPlayer.getUuid())
+                return player;
+        return null;
     }
 }
