@@ -42,7 +42,7 @@ public class MhlController {
     public void endSession(){
         if(sessionManager.isSessionActive()) {
             this.sessionManager.endSession();
-            this.databaseHandler.writeChanges(this.server);
+            this.writeChanges();
         }
         else
             Bukkit.getLogger().warning("Session has already stopped");
@@ -105,5 +105,9 @@ public class MhlController {
             return;
         }
         this.server.setDefaultNbLives(defaultNbLives);
+    }
+
+    public void writeChanges() {
+        this.databaseHandler.writeChanges(this.server);
     }
 }

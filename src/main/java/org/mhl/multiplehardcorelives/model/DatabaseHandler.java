@@ -131,6 +131,13 @@ public class DatabaseHandler {
         //
         int defaultNbLives;
         try {
+            Statement st = connection.createStatement();
+            ResultSet rs1 = st.executeQuery("SELECT COUNT(address) FROM server WHERE address=\"" + serverAddress + "\"");
+            if(rs1.getInt("COUNT(address)") == 0){
+                this.closeConnection();
+                return new Server(serverAddress);
+            }
+
             PreparedStatement ps = connection.prepareStatement("SELECT defaultNbLives FROM server WHERE address=\"" + serverAddress + "\"");
             ResultSet rs = ps.executeQuery();
             defaultNbLives = rs.getInt("defaultNbLives");

@@ -2,16 +2,14 @@ package org.mhl.multiplehardcorelives.model.commands;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.mhl.multiplehardcorelives.controller.MhlController;
 
 import java.util.logging.Level;
 
-public class CommandSetDefaultNumberOfLives implements CommandExecutor {
-    private final MhlController controller;
+public class CommandSetDefaultNumberOfLives extends MhlCommand {
     public CommandSetDefaultNumberOfLives(MhlController controller){
-        this.controller = controller;
+        super(controller);
     }
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {

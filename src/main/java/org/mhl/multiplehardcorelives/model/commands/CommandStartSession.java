@@ -2,16 +2,14 @@ package org.mhl.multiplehardcorelives.model.commands;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.mhl.multiplehardcorelives.controller.MhlController;
 
 import java.util.logging.Level;
 
-public class CommandStartSession implements CommandExecutor {
-    private final MhlController controller;
+public class CommandStartSession extends MhlCommand {
     public CommandStartSession(MhlController controller){
-        this.controller = controller;
+        super(controller);
     }
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {

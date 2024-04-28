@@ -7,14 +7,14 @@ import org.mhl.multiplehardcorelives.controller.MhlController;
 
 import java.util.logging.Level;
 
-public class CommandEndSession extends MhlCommand {
-    public CommandEndSession(MhlController controller){
+public class CommandWriteChanges extends MhlCommand {
+    public CommandWriteChanges(MhlController controller){
         super(controller);
     }
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
-        Bukkit.getLogger().log(Level.INFO ,"Session end command has been detected. Sending request to end the session.");
-        this.controller.endSession();
+        Bukkit.getLogger().log(Level.INFO ,"Write changes command has been detected. Sending request to write changes in the database.");
+        this.controller.writeChanges();
 
         return true;
     }

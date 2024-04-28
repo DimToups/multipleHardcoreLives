@@ -23,3 +23,7 @@ commands:
     description: Set the default number of lives on the server for every player.
     usage: /setDefaultNumberOfLives numberOfLives
     permission: admin.manage.playerpermission
+  writeChanges:
+      description: Writes changes in the database
+      usage: /writeChanges
+      permission: admin.manage.playerpermission
