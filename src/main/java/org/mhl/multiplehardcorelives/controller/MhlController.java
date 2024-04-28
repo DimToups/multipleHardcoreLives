@@ -35,8 +35,11 @@ public class MhlController {
 
         this.sessionManager = new SessionManager(this);
     }
-    public void reset(){
-
+    public void resetServer(){
+        Bukkit.getLogger().log(Level.WARNING, "Resetting the server's data.");
+        if(this.sessionManager.isSessionActive())
+            this.sessionManager.endSession();
+        this.setDefaultNumberOfLives(5);
     }
     public void startSession(){
         sessionManager.startSession();
@@ -102,24 +105,21 @@ public class MhlController {
     public Plugin getPlugin(){
         return this.plugin;
     }
-
     public void serverClosing() {
         Bukkit.getLogger().log(Level.INFO, "Closing the server...");
         this.endSession();
     }
-
     public void setDefaultNumberOfLives(int defaultNbLives) {
         if(sessionManager.isSessionActive()){
             Bukkit.getLogger().log(Level.WARNING, "Cannot change the default number of lives of the server, the session is still running.");
             return;
         }
+        this.databaseHandler.setNumberOfLivesToEveryPlayer(defaultNbLives);
         this.server.setDefaultNbLives(defaultNbLives);
     }
-
     public void writeChanges() {
         this.databaseHandler.writeChanges(this.server);
     }
-
     @Nullable
     public Player findPlayer(String name) {
         Player targetedPlayer = null;
@@ -131,12 +131,10 @@ public class MhlController {
         }
         return targetedPlayer;
     }
-
     @Nullable
     public Player findPlayerInDatabase(String name) {
         return databaseHandler.findPlayer(name);
     }
-
     @Nullable
     public Player findPlayer(Player targetedPlayer) {
         for(Player player : server.getPlayers())

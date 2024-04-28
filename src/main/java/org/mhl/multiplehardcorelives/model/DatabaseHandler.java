@@ -10,6 +10,8 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
 
@@ -190,5 +192,43 @@ public class DatabaseHandler {
         }
 
         return player;
+    }
+
+    public void setNumberOfLivesToPlayer(Player player, int number) {
+
+    }
+
+    public void setNumberOfLivesToEveryPlayer(int defaultNbLives) {
+        Bukkit.getLogger().log(Level.INFO, "Started the setting the number of lives of every player");
+        this.openConnection();
+        List<Player> players = new ArrayList<>();
+        try {
+            Bukkit.getLogger().log(Level.INFO, "Loading every player");
+            Statement st = connection.createStatement();
+            ResultSet rs = st.executeQuery("SELECT ps.player, p.name FROM playerOnServerData ps JOIN player p ON p.UUID = ps.player WHERE server=\"" + Bukkit.getServer().getName() + "\";");
+
+            //
+            while(rs.next())
+                players.add(new Player(UUID.fromString(rs.getString("player")), rs.getString("name"), defaultNbLives));
+        } catch (SQLException e) {
+            Bukkit.getLogger().log(Level.SEVERE, "Could not load every players\n" + e);
+            Bukkit.getLogger().log(Level.SEVERE, "Stopping the setting of the number of lives of every player");
+            return;
+        }
+
+        try {
+            Bukkit.getLogger().log(Level.INFO, "Setting the number of lives of every player");
+            Statement st = connection.createStatement();
+            for(Player player : players) {
+                st.execute("UPDATE playerOnServerData SET lives=" + defaultNbLives + " WHERE player=\"" + player.getUuid() + "\" AND server=\"" + Bukkit.getServer().getName() + "\";");
+                Bukkit.getLogger().log(Level.INFO, "Player \"" + player.getName() + "\" has now " + defaultNbLives + " lives");
+            }
+        } catch (Exception e){
+            Bukkit.getLogger().log(Level.SEVERE, "Could not write changes in the database\n" + e);
+            Bukkit.getLogger().log(Level.SEVERE, "Stopping the setting of the number of lives of every player");
+            return;
+        }
+        Bukkit.getLogger().log(Level.INFO, "Every player has now " + defaultNbLives + " lives");
+        closeConnection();
     }
 }
