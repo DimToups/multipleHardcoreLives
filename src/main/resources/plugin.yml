@@ -19,3 +19,7 @@ commands:
     description: End the session of the game
     usage: /endSession
     permission: admin.manage.playerpermission
+  setDefaultNumberOfLives:
+    description: Set the default number of lives on the server for every player.
+    usage: /setDefaultNumberOfLives numberOfLives
+    permission: admin.manage.playerpermission

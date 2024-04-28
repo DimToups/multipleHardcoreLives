@@ -28,6 +28,11 @@ public class Server {
         return defaultNbLives;
     }
 
+    public void setDefaultNbLives(int defaultNbLives) {
+        Bukkit.getLogger().log(Level.INFO, "Setting the default number of lives to " + defaultNbLives);
+        this.defaultNbLives = defaultNbLives;
+    }
+
     public void addPlayer(Player newPlayer) {
         players.add(newPlayer);
         Bukkit.getLogger().log(Level.INFO, "Added the player with the UUID " + newPlayer.getUuid() + " to the controller's server instance");

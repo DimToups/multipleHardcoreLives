@@ -3,6 +3,7 @@ package org.mhl.multiplehardcorelives;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.mhl.multiplehardcorelives.controller.MhlController;
 import org.mhl.multiplehardcorelives.model.commands.CommandEndSession;
+import org.mhl.multiplehardcorelives.model.commands.CommandSetDefaultNumberOfLives;
 import org.mhl.multiplehardcorelives.model.commands.CommandStartSession;
 
 public final class MultipleHardcoreLives extends JavaPlugin {
@@ -16,6 +17,7 @@ public final class MultipleHardcoreLives extends JavaPlugin {
         //
         this.getCommand("startSession").setExecutor(new CommandStartSession(controller));
         this.getCommand("endSession").setExecutor(new CommandEndSession(controller));
+        this.getCommand("setDefaultNumberOfLives").setExecutor(new CommandSetDefaultNumberOfLives(controller));
     }
 
     @Override

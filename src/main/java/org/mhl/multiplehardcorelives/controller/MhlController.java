@@ -87,7 +87,6 @@ public class MhlController {
         if(deadPlayer.getLives() <= 0)
             definitiveKill(deadPlayer);
     }
-
     private void definitiveKill(Player player){
 
     }
@@ -98,5 +97,13 @@ public class MhlController {
     public void serverClosing() {
         Bukkit.getLogger().log(Level.INFO, "Closing the server...");
         this.endSession();
+    }
+
+    public void setDefaultNumberOfLives(int defaultNbLives) {
+        if(sessionManager.isSessionActive()){
+            Bukkit.getLogger().log(Level.WARNING, "Cannot change the default number of lives of the server, the session is still running.");
+            return;
+        }
+        this.server.setDefaultNbLives(defaultNbLives);
     }
 }
