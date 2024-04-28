@@ -24,6 +24,10 @@ commands:
     usage: /setDefaultNumberOfLives numberOfLives
     permission: admin.manage.playerpermission
   writeChanges:
-      description: Writes changes in the database
-      usage: /writeChanges
-      permission: admin.manage.playerpermission
+    description: Writes changes in the database
+    usage: /writeChanges
+    permission: admin.manage.playerpermission
+  setNumberOfLivesToPlayer:
+    description: Set the number of lives to a player
+    usage: /setNumberOfLivesToPlayer player numberOfLives
+    permission: admin.manage.playerpermission

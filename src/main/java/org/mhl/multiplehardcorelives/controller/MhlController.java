@@ -8,6 +8,8 @@ import org.mhl.multiplehardcorelives.model.gameLogic.Player;
 import org.mhl.multiplehardcorelives.model.gameLogic.Server;
 import org.mhl.multiplehardcorelives.model.gameLogic.SessionManager;
 
+import javax.annotation.Nullable;
+import java.util.Objects;
 import java.util.logging.Level;
 
 public class MhlController {
@@ -52,8 +54,11 @@ public class MhlController {
         if(!server.getPlayers().contains(newPlayer))
             server.addPlayer(newPlayer);
     }
-    public void setNbLivesOfPlayer(int lives){
-
+    public void setNbLivesOfPlayer(Player player, int lives){
+        player.setNbLives(lives);
+        Bukkit.getLogger().log(Level.INFO, "Player \"" + player.getName() + "\" has now " + lives + " lives");
+        if(lives > server.getDefaultNbLives())
+            Bukkit.getLogger().log(Level.WARNING, "Player \"" + player.getName() + "\" has more lives than the default number of " + server.getDefaultNbLives());
     }
     public void decrementLivesOfPlayer(org.bukkit.entity.Player player){
         //
@@ -109,5 +114,17 @@ public class MhlController {
 
     public void writeChanges() {
         this.databaseHandler.writeChanges(this.server);
+    }
+
+    @Nullable
+    public Player findPlayer(String name) {
+        Player targetedPlayer = null;
+        for(Player player : server.getPlayers()){
+            if(Objects.equals(player.getName(), name)) {
+                targetedPlayer = player;
+                break;
+            }
+        }
+        return targetedPlayer;
     }
 }
