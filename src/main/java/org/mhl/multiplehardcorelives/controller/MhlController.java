@@ -1,6 +1,7 @@
 package org.mhl.multiplehardcorelives.controller;
 
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.plugin.Plugin;
 import org.mhl.multiplehardcorelives.MultipleHardcoreLives;
 import org.mhl.multiplehardcorelives.model.*;
@@ -97,10 +98,12 @@ public class MhlController {
 
         //
         if(deadPlayer.getLives() <= 0)
-            definitiveKill(deadPlayer);
+            definitiveKill(deadPlayer, player);
     }
-    private void definitiveKill(Player player){
-
+    private void definitiveKill(Player player, org.bukkit.entity.Player player1){
+        player1.setGameMode(GameMode.SPECTATOR);
+        player1.sendTitle("You are out of lives !", "", 0, 70, 40);
+        Bukkit.getLogger().log(Level.INFO, player.getName() + " has definitively died");
     }
     public Plugin getPlugin(){
         return this.plugin;

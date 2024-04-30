@@ -6,7 +6,6 @@ import org.mhl.multiplehardcorelives.model.commands.*;
 
 public final class MultipleHardcoreLives extends JavaPlugin {
     private MhlController controller;
-
     @Override
     public void onEnable() {
         //
