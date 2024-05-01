@@ -8,6 +8,9 @@ import org.mhl.multiplehardcorelives.model.gameLogic.Player;
 
 import java.util.logging.Level;
 
+/**
+ * A command class having the logic of the command setNumberOfLivesToPlayer.
+ */
 public class CommandSetNumberOfLivesToPlayer extends MhlCommand {
     /**
      * Initialise a CommandSetNumberOfLivesToPlayer by using the plugin's controller.

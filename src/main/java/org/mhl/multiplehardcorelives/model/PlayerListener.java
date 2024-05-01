@@ -9,6 +9,9 @@ import org.mhl.multiplehardcorelives.controller.MhlController;
 
 import java.util.logging.Level;
 
+/**
+ * Listens to every useful event related to player and sends it to its controller.
+ */
 public class PlayerListener implements Listener {
     /**
      * The plugin's controller. It will handle events that this class receives.

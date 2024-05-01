@@ -4,6 +4,9 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.mhl.multiplehardcorelives.controller.MhlController;
 
+/**
+ * A command class having the logic of the command resetServer.
+ */
 public class CommandResetServer extends MhlCommand {
     /**
      * Initialise a CommandResetServer by using the plugin's controller.

@@ -13,6 +13,9 @@ import javax.annotation.Nullable;
 import java.util.Objects;
 import java.util.logging.Level;
 
+/**
+ * The plugin's controller. It handles almost every aspect of the plugin's life.
+ */
 public class MhlController {
     /**
      * The MultipleHardcoreLives current running plugin instance.

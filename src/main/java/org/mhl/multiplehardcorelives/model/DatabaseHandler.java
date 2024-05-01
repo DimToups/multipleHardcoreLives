@@ -15,6 +15,9 @@ import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
 
+/**
+ * A class that interacts with the plugin's database. It tries to handle every aspect of the database.
+ */
 public class DatabaseHandler {
     /**
      * The url of the database.

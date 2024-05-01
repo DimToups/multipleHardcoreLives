@@ -6,6 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
+/**
+ * A model that stores data about the server and its players.
+ */
 public class Server {
     /**
      * The server's address.

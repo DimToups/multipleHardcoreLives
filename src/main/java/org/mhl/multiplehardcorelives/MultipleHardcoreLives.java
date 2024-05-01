@@ -4,6 +4,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.mhl.multiplehardcorelives.controller.MhlController;
 import org.mhl.multiplehardcorelives.model.commands.*;
 
+/**
+ * The main class of the plugin.
+ */
 public final class MultipleHardcoreLives extends JavaPlugin {
     /**
      * The plugin's controller. It will manage almost every aspect of the plugin once it's initialised.

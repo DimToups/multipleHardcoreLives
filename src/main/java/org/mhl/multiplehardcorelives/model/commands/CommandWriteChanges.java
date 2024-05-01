@@ -7,6 +7,9 @@ import org.mhl.multiplehardcorelives.controller.MhlController;
 
 import java.util.logging.Level;
 
+/**
+ * A command class having the logic of the command writeChanges.
+ */
 public class CommandWriteChanges extends MhlCommand {
     /**
      * Initialise a CommandWriteChanges by using the plugin's controller.

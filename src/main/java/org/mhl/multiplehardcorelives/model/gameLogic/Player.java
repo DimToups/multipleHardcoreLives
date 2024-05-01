@@ -2,6 +2,9 @@ package org.mhl.multiplehardcorelives.model.gameLogic;
 
 import java.util.UUID;
 
+/**
+ * A model storing the data of a player for the server it's currently in.
+ */
 public class Player {
     /**
      * The player's UUID from its minecraft account.

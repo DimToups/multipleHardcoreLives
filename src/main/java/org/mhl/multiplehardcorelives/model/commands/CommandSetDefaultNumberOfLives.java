@@ -7,6 +7,9 @@ import org.mhl.multiplehardcorelives.controller.MhlController;
 
 import java.util.logging.Level;
 
+/**
+ * A command class having the logic of the command setDefaultNumberOfLives.
+ */
 public class CommandSetDefaultNumberOfLives extends MhlCommand {
     /**
      * Initialise a CommandSetDefaultNumberOfLives by using the plugin's controller.

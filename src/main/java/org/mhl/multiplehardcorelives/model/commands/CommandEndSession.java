@@ -7,6 +7,9 @@ import org.mhl.multiplehardcorelives.controller.MhlController;
 
 import java.util.logging.Level;
 
+/**
+ * A command class having the logic of the command endSession.
+ */
 public class CommandEndSession extends MhlCommand {
     /**
      * Initialise a CommandEndSession by using the plugin's controller.

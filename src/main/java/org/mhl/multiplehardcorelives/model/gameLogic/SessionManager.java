@@ -7,6 +7,9 @@ import org.mhl.multiplehardcorelives.model.PlayerListener;
 
 import java.util.logging.Level;
 
+/**
+ * A class that contains the logic of the plugin for its sessions.
+ */
 public class SessionManager {
 
     /**

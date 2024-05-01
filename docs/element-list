@@ -1,0 +1,5 @@
+org.mhl.multiplehardcorelives
+org.mhl.multiplehardcorelives.controller
+org.mhl.multiplehardcorelives.model
+org.mhl.multiplehardcorelives.model.commands
+org.mhl.multiplehardcorelives.model.gameLogic
