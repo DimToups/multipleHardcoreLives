@@ -16,19 +16,38 @@ import java.util.UUID;
 import java.util.logging.Level;
 
 public class DatabaseHandler {
+    /**
+     * The url of the database.
+     */
     private final String url;
-    private static Connection connection = null;
+    /**
+     * The Connection's instance to the database
+     */
+    private Connection connection = null;
+    /**
+     * The plugin's controller.
+     */
     private final MhlController controller;
+
+    /**
+     * Initialises the DatabaseHandler. It sets the path to the database by using the absolute path of the plugin, and defines the controller of the class.
+     * @param controller The controller of the class.
+     * @param absolutePath The absolute path to the plugin.
+     */
     public DatabaseHandler(MhlController controller, String absolutePath){
         this.controller = controller;
         url = "jdbc:sqlite:" + absolutePath + ".db";
     }
+
+    /**
+     * Opens the connection to the database using the Connection's instance of the class.
+     */
     private void openConnection(){
         Bukkit.getLogger().log(Level.INFO, "Trying to connect to the database");
 
         //
         if(connection != null) {
-            Bukkit.getLogger().log(Level.INFO, "Database was already opened. Soft-closing of the database before trying to connect to the database.");
+            Bukkit.getLogger().log(Level.INFO, "Database was already opened. Closing of the database before trying to connect to the database.");
             this.closeConnection();
         }
 
@@ -38,6 +57,10 @@ public class DatabaseHandler {
             Bukkit.getLogger().log(Level.SEVERE, "Failed to connect to database\n" + e);
         }
     }
+
+    /**
+     * Closes the connection to the database using the Connection's instance of the class.
+     */
     private void closeConnection() {
         try {
             connection.close();
@@ -45,6 +68,11 @@ public class DatabaseHandler {
             Bukkit.getLogger().warning("Couldn't close the connection\n" + e);
         }
     }
+
+    /**
+     * Writes every change from the server into the database.
+     * @param currentServer The running server used by the controller.
+     */
     public void writeChanges(Server currentServer){
         Bukkit.getLogger().log(Level.INFO, "Writing changes in the database...");
         try{
@@ -62,6 +90,10 @@ public class DatabaseHandler {
             Bukkit.getLogger().log(Level.SEVERE, "Failed to write changes in the database\n" + e);
         }
     }
+
+    /**
+     * Creates the used database using its initialised String url instance.
+     */
     public void createDatabase(){
         //
         Bukkit.getLogger().log(Level.INFO, "Creating the database...");
@@ -125,6 +157,12 @@ public class DatabaseHandler {
             Bukkit.getLogger().log(Level.SEVERE, "Failed to create the database\n" + e);
         }
     }
+
+    /**
+     * Finds the wanted server in the database and converts it into a new Server instance.
+     * @param serverAddress The address of the server
+     * @return A new Server instance corresponding to its address.
+     */
     @Nullable
     public Server findServer(String serverAddress){
         Bukkit.getLogger().log(Level.INFO, "Trying to find the server " + serverAddress + " in the database");
@@ -153,6 +191,11 @@ public class DatabaseHandler {
         return new Server(serverAddress, defaultNbLives);
     }
 
+    /**
+     * Finds the wanted player in the database and converts it into a new Player instance.
+     * @param player The targeted Bukkit player class.
+     * @return A new Player instance corresponding to the Bukkit player class.
+     */
     @Nullable
     public Player findPlayer(org.bukkit.entity.Player player) {
         this.openConnection();
@@ -177,6 +220,11 @@ public class DatabaseHandler {
         return new Player(player.getUniqueId(), player.getName(), nbLives);
     }
 
+    /**
+     * Finds the wanted player in the database and converts it into a new Player instance.
+     * @param name The player's name.
+     * @return A new Player instance corresponding to the player's name.
+     */
     @Nullable
     public Player findPlayer(String name) {
         Player player = null;
@@ -194,11 +242,20 @@ public class DatabaseHandler {
         return player;
     }
 
+    /**
+     * Sets the number of lives of a player from a server into the database.
+     * @param player The targeted player.
+     * @param number The wanted number of lives.
+     */
     public void setNumberOfLivesToPlayer(Player player, int number) {
 
     }
 
-    public void setNumberOfLivesToEveryPlayer(int defaultNbLives) {
+    /**
+     * Sets the number of lives to every player from a server into the database
+     * @param nbLives The wanted number of lives.
+     */
+    public void setNumberOfLivesToEveryPlayer(int nbLives) {
         Bukkit.getLogger().log(Level.INFO, "Started the setting the number of lives of every player");
         this.openConnection();
         List<Player> players = new ArrayList<>();
@@ -209,7 +266,7 @@ public class DatabaseHandler {
 
             //
             while(rs.next())
-                players.add(new Player(UUID.fromString(rs.getString("player")), rs.getString("name"), defaultNbLives));
+                players.add(new Player(UUID.fromString(rs.getString("player")), rs.getString("name"), nbLives));
         } catch (SQLException e) {
             Bukkit.getLogger().log(Level.SEVERE, "Could not load every players\n" + e);
             Bukkit.getLogger().log(Level.SEVERE, "Stopping the setting of the number of lives of every player");
@@ -220,15 +277,15 @@ public class DatabaseHandler {
             Bukkit.getLogger().log(Level.INFO, "Setting the number of lives of every player");
             Statement st = connection.createStatement();
             for(Player player : players) {
-                st.execute("UPDATE playerOnServerData SET lives=" + defaultNbLives + " WHERE player=\"" + player.getUuid() + "\" AND server=\"" + Bukkit.getServer().getName() + "\";");
-                Bukkit.getLogger().log(Level.INFO, "Player \"" + player.getName() + "\" has now " + defaultNbLives + " lives");
+                st.execute("UPDATE playerOnServerData SET lives=" + nbLives + " WHERE player=\"" + player.getUuid() + "\" AND server=\"" + Bukkit.getServer().getName() + "\";");
+                Bukkit.getLogger().log(Level.INFO, "Player \"" + player.getName() + "\" has now " + nbLives + " lives");
             }
         } catch (Exception e){
             Bukkit.getLogger().log(Level.SEVERE, "Could not write changes in the database\n" + e);
             Bukkit.getLogger().log(Level.SEVERE, "Stopping the setting of the number of lives of every player");
             return;
         }
-        Bukkit.getLogger().log(Level.INFO, "Every player has now " + defaultNbLives + " lives");
+        Bukkit.getLogger().log(Level.INFO, "Every player has now " + nbLives + " lives");
         closeConnection();
     }
 }

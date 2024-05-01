@@ -8,9 +8,22 @@ import org.mhl.multiplehardcorelives.controller.MhlController;
 import java.util.logging.Level;
 
 public class CommandSetDefaultNumberOfLives extends MhlCommand {
+    /**
+     * Initialise a CommandSetDefaultNumberOfLives by using the plugin's controller.
+     * @param controller The plugin's controller
+     */
     public CommandSetDefaultNumberOfLives(MhlController controller){
         super(controller);
     }
+
+    /**
+     * Detects the command setDefaultNumberOfLives and asks the controller to handle it.
+     * @param commandSender Source of the command
+     * @param command       Command which was executed
+     * @param s             Alias of the command which was used
+     * @param strings       Passed command arguments
+     * @return              True if a valid command, otherwise false
+     */
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
         Bukkit.getLogger().log(Level.INFO ,"Default number of lives setter command has been detected");

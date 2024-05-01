@@ -14,10 +14,30 @@ import java.util.Objects;
 import java.util.logging.Level;
 
 public class MhlController {
+    /**
+     * The MultipleHardcoreLives current running plugin instance.
+     */
     private final MultipleHardcoreLives plugin;
+
+    /**
+     * The current running server model.
+     */
     private final Server server;
+
+    /**
+     * The plugin's session manager. It will handle events from its session.
+     */
     private final SessionManager sessionManager;
+
+    /**
+     * A model made to interact with the plugin's database.
+     */
     private final DatabaseHandler databaseHandler;
+
+    /**
+     * Creates a MhlController that will initialise its databaseHandler, server, and sessionManager.
+     * @param plugin The MultipleHardcoreLives current running plugin instance.
+     */
     public MhlController(MultipleHardcoreLives plugin){
         Bukkit.getLogger().log(Level.INFO, "Initialisation of the plugin...");
         //
@@ -36,15 +56,27 @@ public class MhlController {
 
         this.sessionManager = new SessionManager(this);
     }
+
+    /**
+     * Resets the server by ending the session if its running, and by setting the default number of lives back to 5.
+     */
     public void resetServer(){
         Bukkit.getLogger().log(Level.WARNING, "Resetting the server's data.");
         if(this.sessionManager.isSessionActive())
             this.sessionManager.endSession();
         this.setDefaultNumberOfLives(5);
     }
+
+    /**
+     * Starts the session by telling it to the sessionManager.
+     */
     public void startSession(){
         sessionManager.startSession();
     }
+
+    /**
+     * Ends the session by telling it to the sessionManager and by asking to write changes into the database.
+     */
     public void endSession(){
         if(sessionManager.isSessionActive()) {
             this.sessionManager.endSession();
@@ -53,22 +85,43 @@ public class MhlController {
         else
             Bukkit.getLogger().warning("Session has already stopped");
     }
+
+    /**
+     * Adds a new player into the server by searching the Bukkit Player instance into the database and by sending the new player to the server if it does not contain it already.
+     * @param player The Bukkit Player instance to add into the server.
+     */
     public void addPlayer(org.bukkit.entity.Player player){
         Player newPlayer =  databaseHandler.findPlayer(player);
         if(!server.getPlayers().contains(newPlayer))
             server.addPlayer(newPlayer);
     }
+
+    /**
+     * Adds a new player into the server by sending the new player to the server if it does not contain it already.
+     * @param newPlayer The new player instance to add into the server.
+     */
     public void addPlayer(Player newPlayer) {
         if(!server.getPlayers().contains(newPlayer))
             server.addPlayer(newPlayer);
     }
+
+    /**
+     * Sets a number of lives to a specified player.
+     * @param player The targeted player.
+     * @param lives  The wanted number of lives.
+     */
     public void setNbLivesOfPlayer(Player player, int lives){
         player.setNbLives(lives);
         Bukkit.getLogger().log(Level.INFO, "Player \"" + player.getName() + "\" has now " + lives + " lives");
         if(lives > server.getDefaultNbLives())
             Bukkit.getLogger().log(Level.WARNING, "Player \"" + player.getName() + "\" has more lives than the default number of " + server.getDefaultNbLives());
     }
-    public void decrementLivesOfPlayer(org.bukkit.entity.Player player){
+
+    /**
+     * Reduces the number of lives by one to a specified player.
+     * @param bukkitPlayer The Bukkit Player instance which lost a life.
+     */
+    public void decrementLivesOfPlayer(org.bukkit.entity.Player bukkitPlayer){
         //
         if(!this.sessionManager.isSessionActive()){
             Bukkit.getLogger().warning("Tried to decrement number of lives of a player while the session has not started yet");
@@ -78,7 +131,7 @@ public class MhlController {
         //
         Player deadPlayer = null;
         for(Player serverPlayer : server.getPlayers()){
-            if(serverPlayer.getUuid() == player.getUniqueId()) {
+            if(serverPlayer.getUuid() == bukkitPlayer.getUniqueId()) {
                 deadPlayer = serverPlayer;
                 break;
             }
@@ -86,7 +139,7 @@ public class MhlController {
 
         //
         if(deadPlayer == null){
-            Bukkit.getLogger().warning("Player with the UUID " + player.getUniqueId() + " is not in the MhlController's Server instance");
+            Bukkit.getLogger().warning("Player with the UUID " + bukkitPlayer.getUniqueId() + " is not in the MhlController's Server instance");
             return;
         }
 
@@ -98,20 +151,40 @@ public class MhlController {
 
         //
         if(deadPlayer.getLives() <= 0)
-            definitiveKill(deadPlayer, player);
+            definitiveKill(deadPlayer, bukkitPlayer);
     }
-    private void definitiveKill(Player player, org.bukkit.entity.Player player1){
-        player1.setGameMode(GameMode.SPECTATOR);
-        player1.sendTitle("You are out of lives !", "", 0, 70, 40);
+
+    /**
+     * Kills permanently a player by setting its game mode to spectator
+     * @param player       The dead player.
+     * @param bukkitPlayer The dead Bukkit player.
+     */
+    private void definitiveKill(Player player, org.bukkit.entity.Player bukkitPlayer){
+        bukkitPlayer.setGameMode(GameMode.SPECTATOR);
+        bukkitPlayer.sendTitle("You are out of lives !", "", 0, 70, 40);
         Bukkit.getLogger().log(Level.INFO, player.getName() + " has definitively died");
     }
+
+    /**
+     * Sends the plugin.
+     * @return The plugin.
+     */
     public Plugin getPlugin(){
         return this.plugin;
     }
+
+    /**
+     * Closes the server by ending the current session.
+     */
     public void serverClosing() {
         Bukkit.getLogger().log(Level.INFO, "Closing the server...");
         this.endSession();
     }
+
+    /**
+     * Sets the default number of lives to every player who has ever joined the server only if the session is not running.
+     * @param defaultNbLives The wanted default number of lives.
+     */
     public void setDefaultNumberOfLives(int defaultNbLives) {
         if(sessionManager.isSessionActive()){
             Bukkit.getLogger().log(Level.WARNING, "Cannot change the default number of lives of the server, the session is still running.");
@@ -120,29 +193,34 @@ public class MhlController {
         this.databaseHandler.setNumberOfLivesToEveryPlayer(defaultNbLives);
         this.server.setDefaultNbLives(defaultNbLives);
     }
+
+    /**
+     * Write every change into the database by asking the databaseHandler to do it.
+     */
     public void writeChanges() {
         this.databaseHandler.writeChanges(this.server);
     }
+
+    /**
+     * Finds a player by searching it with its name.
+     * @param name The player's name.
+     * @return     The corresponding player.
+     */
     @Nullable
     public Player findPlayer(String name) {
-        Player targetedPlayer = null;
-        for(Player player : server.getPlayers()){
-            if(Objects.equals(player.getName(), name)) {
-                targetedPlayer = player;
-                break;
-            }
-        }
-        return targetedPlayer;
+        for(Player player : server.getPlayers())
+            if(Objects.equals(player.getName(), name))
+                return player;
+        return null;
     }
+
+    /**
+     * Finds a player by asking the databaseHandler to search it with the player's name.
+     * @param name The player's name.
+     * @return     The wanted player.
+     */
     @Nullable
     public Player findPlayerInDatabase(String name) {
         return databaseHandler.findPlayer(name);
-    }
-    @Nullable
-    public Player findPlayer(Player targetedPlayer) {
-        for(Player player : server.getPlayers())
-            if(player.getUuid() == targetedPlayer.getUuid())
-                return player;
-        return null;
     }
 }
