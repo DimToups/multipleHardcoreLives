@@ -2,6 +2,7 @@ package org.mhl.multiplehardcorelives.controller;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
 import org.mhl.multiplehardcorelives.MultipleHardcoreLives;
 import org.mhl.multiplehardcorelives.model.*;
@@ -214,7 +215,7 @@ public class MhlController {
         for(Player player : server.getPlayers())
             if(Objects.equals(player.getName(), name))
                 return player;
-        return null;
+        return findPlayerInDatabase(name);
     }
 
     /**
@@ -225,5 +226,16 @@ public class MhlController {
     @Nullable
     public Player findPlayerInDatabase(String name) {
         return databaseHandler.findPlayer(name);
+    }
+
+    public void displayPlayerInformations(CommandSender commandSender, String playerName) {
+        Player player = findPlayer(playerName);
+
+        if(player == null){
+            commandSender.sendMessage("Player \"" + playerName + "\" has not been found.");
+            return;
+        }
+
+        commandSender.sendMessage("Player \"" + playerName + "\" has " + player.getLives() + " lives.");
     }
 }

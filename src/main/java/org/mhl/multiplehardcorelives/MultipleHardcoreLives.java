@@ -36,6 +36,7 @@ public final class MultipleHardcoreLives extends JavaPlugin {
         this.getCommand("writeChanges").setExecutor(new CommandWriteChanges(controller));
         this.getCommand("setNumberOfLivesToPlayer").setExecutor(new CommandSetNumberOfLivesToPlayer(controller));
         this.getCommand("resetServer").setExecutor(new CommandResetServer(controller));
+        this.getCommand("playerInformations").setExecutor(new CommandPlayerInformations(controller));
     }
 
     /**

@@ -35,3 +35,7 @@ commands:
     description: Reset the data of the server. It sets the default number of lives and sets the number of lives of every player who has already connected onto the server back to 5
     usage: /resetServer
     permission: admin.manage.playerpermission
+  playerInformations:
+    description: Displays information on the specified player.
+    usage: /playerInformations player
+    permission: admin.manage.playerpermission
