@@ -11,7 +11,9 @@ import org.mhl.multiplehardcorelives.model.gameLogic.Server;
 import org.mhl.multiplehardcorelives.model.gameLogic.SessionManager;
 
 import javax.annotation.Nullable;
+import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.logging.Level;
 
 /**
@@ -133,13 +135,7 @@ public class MhlController {
         }
 
         //
-        Player deadPlayer = null;
-        for(Player serverPlayer : server.getPlayers()){
-            if(serverPlayer.getUuid() == bukkitPlayer.getUniqueId()) {
-                deadPlayer = serverPlayer;
-                break;
-            }
-        }
+        Player deadPlayer = findPlayer(bukkitPlayer.getUniqueId());
 
         //
         if(deadPlayer == null){
@@ -151,11 +147,16 @@ public class MhlController {
         deadPlayer.setNbLives(deadPlayer.getLives() - 1);
 
         //
-
-
-        //
         if(deadPlayer.getLives() <= 0)
             definitiveKill(deadPlayer, bukkitPlayer);
+    }
+
+    @Nullable
+    private Player findPlayer(UUID uniqueId) {
+        for(Player p : server.getPlayers())
+            if(p.getUuid() == uniqueId)
+                return p;
+        return null;
     }
 
     /**
@@ -237,5 +238,22 @@ public class MhlController {
         }
 
         commandSender.sendMessage("Player \"" + playerName + "\" has " + player.getLives() + " lives.");
+    }
+
+    public void displayPlayerList(CommandSender commandSender) {
+        List<Player> loadedPlayers, unloadedPlayers;
+        loadedPlayers = server.getPlayers();
+        unloadedPlayers = databaseHandler.getPlayers();
+
+        for(Player player : loadedPlayers)
+            unloadedPlayers.removeIf(dbPlayer -> dbPlayer.getUuid() == player.getUuid());
+
+        StringBuilder message = new StringBuilder("Every player of the server: ");
+        for(Player player : loadedPlayers)
+            message.append("\n\t" + player.getName() + ": " + player.getLives() + " lives (loaded)");
+        for(Player player : unloadedPlayers)
+            message.append("\n\t" + player.getName() + ": " + player.getLives() + " lives (unloaded)");
+
+        commandSender.sendMessage(message.toString());
     }
 }

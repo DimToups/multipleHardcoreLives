@@ -39,3 +39,7 @@ commands:
     description: Displays information on the specified player.
     usage: /playerInformations player
     permission: admin.manage.playerpermission
+  playerList:
+    description: Lists every player the server has
+    usage: /playerList
+    permission: admin.manage.playerpermission

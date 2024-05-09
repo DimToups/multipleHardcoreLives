@@ -291,4 +291,20 @@ public class DatabaseHandler {
         Bukkit.getLogger().log(Level.INFO, "Every player has now " + nbLives + " lives");
         closeConnection();
     }
+
+    public List<Player> getPlayers() {
+        List<Player> players = new ArrayList<>();
+
+        try{
+            openConnection();
+            Statement st = connection.createStatement();
+            ResultSet rs = st.executeQuery("SELECT p.UUID, p.name, ps.lives FROM player p JOIN playerOnServerData ps ON ps.player = p.UUID WHERE ps.server=\"" + Bukkit.getServer().getName() + "\";");
+            while (rs.next())
+                players.add(new Player(UUID.fromString(rs.getString("UUID")), rs.getString("name"), rs.getInt("lives")));
+        } catch (Exception e){
+            Bukkit.getLogger().log(Level.WARNING, "Couldn't find every player in the database.\n" + e);
+        }
+
+        return players;
+    }
 }
