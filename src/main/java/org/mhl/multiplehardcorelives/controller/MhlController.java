@@ -98,6 +98,10 @@ public class MhlController {
      */
     public void playerJoin(org.bukkit.entity.Player player){
         Player newPlayer = databaseHandler.findPlayer(player.getName());
+        if(newPlayer == null){
+            Bukkit.getLogger().log(Level.INFO, "The player " + player.getName() + " has may not connected yet on the server. Instantiating a new Player...");
+            newPlayer = new Player(player.getUniqueId(), player.getName(), this.server.getDefaultNbLives());
+        }
         addPlayer(newPlayer);
         newPlayer.setToOnline();
         Bukkit.getLogger().log(Level.INFO, "Player " + player.getName() + " is now registered as online.");
