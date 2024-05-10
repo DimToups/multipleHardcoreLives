@@ -18,6 +18,10 @@ public class Player {
      * The player's number of lives
      */
     private int lives;
+    /**
+     * Indicates the state of the player on the server
+     */
+    private boolean isOnline = false;
 
     /**
      * Initialises a new Player by defining its UUID, name and its number of lives.
@@ -61,5 +65,19 @@ public class Player {
      */
     public void setNbLives(int lives) {
         this.lives = lives;
+    }
+
+    /**
+     * Sets the player to online
+     */
+    public void setToOnline() {
+        this.isOnline = true;
+    }
+
+    /**
+     * Sets the player to online
+     */
+    public void setToOffline() {
+        this.isOnline = false;
     }
 }

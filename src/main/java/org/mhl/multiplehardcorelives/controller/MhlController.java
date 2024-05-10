@@ -93,6 +93,16 @@ public class MhlController {
     }
 
     /**
+     * Handle the event of a player joining the server. it will find the player in the database then it will add it to this Server instance.
+     * @param player The player who has joined the server.
+     */
+    public void playerJoin(org.bukkit.entity.Player player){
+        Player newPlayer = databaseHandler.findPlayer(player.getName());
+        addPlayer(newPlayer);
+        newPlayer.setToOnline();
+    }
+
+    /**
      * Adds a new player into the server by searching the Bukkit Player instance into the database and by sending the new player to the server if it does not contain it already.
      * @param player The Bukkit Player instance to add into the server.
      */
@@ -255,5 +265,16 @@ public class MhlController {
             message.append("\n\t" + player.getName() + ": " + player.getLives() + " lives (unloaded)");
 
         commandSender.sendMessage(message.toString());
+    }
+
+    /**
+     * Handle the event of a player quitting the server. It will find the player in this Server instance and set its state to offline.
+     * @param player The gone player.
+     */
+    public void playerQuit(org.bukkit.entity.Player player) {
+        Player gonePlayer = findPlayer(player.getUniqueId());
+        if(gonePlayer == null)
+            return;
+        gonePlayer.setToOffline();
     }
 }
