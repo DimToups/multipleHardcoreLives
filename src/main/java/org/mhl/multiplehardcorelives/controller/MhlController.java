@@ -100,6 +100,7 @@ public class MhlController {
         Player newPlayer = databaseHandler.findPlayer(player.getName());
         addPlayer(newPlayer);
         newPlayer.setToOnline();
+        Bukkit.getLogger().log(Level.INFO, "Player " + player.getName() + " is now registered as online.");
     }
 
     /**
@@ -260,7 +261,7 @@ public class MhlController {
 
         StringBuilder message = new StringBuilder("Every player of the server: ");
         for(Player player : loadedPlayers)
-            message.append("\n\t" + player.getName() + ": " + player.getLives() + " lives (loaded)");
+            message.append("\n\t" + player.getName() + ": " + player.getLives() + " lives (loaded and is " + player.isOnlineToString().toLowerCase() + ")");
         for(Player player : unloadedPlayers)
             message.append("\n\t" + player.getName() + ": " + player.getLives() + " lives (unloaded)");
 
@@ -276,5 +277,6 @@ public class MhlController {
         if(gonePlayer == null)
             return;
         gonePlayer.setToOffline();
+        Bukkit.getLogger().log(Level.INFO, "Player " + player.getName() + " is now registered as offline.");
     }
 }

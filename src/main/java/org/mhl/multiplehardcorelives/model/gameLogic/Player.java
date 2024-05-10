@@ -60,6 +60,18 @@ public class Player {
     }
 
     /**
+     * Tells by a boolean if the player is connected or not.
+     * @return The state of the player on the server.
+     */
+    public boolean isOnline() {
+        return isOnline;
+    }
+
+    public String isOnlineToString(){
+        return isOnline() ? "Online" : "Offline";
+    }
+
+    /**
      * Sets the number of lives of the player.
      * @param lives The number of lives of the player.
      */
@@ -68,14 +80,14 @@ public class Player {
     }
 
     /**
-     * Sets the player to online
+     * Sets the player to online.
      */
     public void setToOnline() {
         this.isOnline = true;
     }
 
     /**
-     * Sets the player to online
+     * Sets the player to offline.
      */
     public void setToOffline() {
         this.isOnline = false;
