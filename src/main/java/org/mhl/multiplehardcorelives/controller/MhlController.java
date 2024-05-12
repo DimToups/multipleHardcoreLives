@@ -132,6 +132,14 @@ public class MhlController {
      * @param lives  The wanted number of lives.
      */
     public void setNbLivesOfPlayer(Player player, int lives){
+        if(player.isOnline() && player.getLives() == 0 && lives > 0){
+            Bukkit.getLogger().log(Level.INFO, "Resurrecting " + player.getName() +"...");
+            try{
+                Bukkit.getPlayer(player.getUuid()).setGameMode(GameMode.SURVIVAL);
+            } catch (Exception e){
+                Bukkit.getLogger().log(Level.WARNING, "Could not resurrect player " + player.getName() + ". You may have to set its gameMode to survival manually.\n" + e);
+            }
+        }
         player.setNbLives(lives);
         Bukkit.getLogger().log(Level.INFO, "Player \"" + player.getName() + "\" has now " + lives + " lives");
         if(lives > server.getDefaultNbLives())
