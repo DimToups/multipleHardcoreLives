@@ -97,14 +97,14 @@ public class MhlController {
      * @param player The player who has joined the server.
      */
     public void playerJoin(org.bukkit.entity.Player player){
-        Player newPlayer = databaseHandler.findPlayer(player.getName());
+        Player newPlayer = findPlayerSafelyByUUID(player.getUniqueId());
         if(newPlayer == null){
-            Bukkit.getLogger().log(Level.INFO, "The player " + player.getName() + " has may not connected yet on the server. Instantiating a new Player...");
+            Bukkit.getLogger().log(Level.INFO, "The player " + player.getName() + " with the UUID " + player.getUniqueId() + " has may not connected yet on the server. Instantiating a new Player...");
             newPlayer = new Player(player.getUniqueId(), player.getName(), this.server.getDefaultNbLives());
         }
         addPlayer(newPlayer);
         newPlayer.setToOnline();
-        Bukkit.getLogger().log(Level.INFO, "Player " + player.getName() + " is now registered as online.");
+        Bukkit.getLogger().log(Level.INFO, "Player " + player.getName() + " with the UUID " + player.getUniqueId() + " is now registered as online.");
     }
 
     /**
@@ -112,8 +112,8 @@ public class MhlController {
      * @param player The Bukkit Player instance to add into the server.
      */
     public void addPlayer(org.bukkit.entity.Player player){
-        Player newPlayer =  databaseHandler.findPlayer(player);
-        if(!server.getPlayers().contains(newPlayer))
+        Player newPlayer =  findPlayerSafelyByUUID(player.getUniqueId());
+        if(newPlayer != null && !server.hasPlayerWithUUID(newPlayer.getUuid()))
             server.addPlayer(newPlayer);
     }
 
@@ -122,7 +122,7 @@ public class MhlController {
      * @param newPlayer The new player instance to add into the server.
      */
     public void addPlayer(Player newPlayer) {
-        if(!server.getPlayers().contains(newPlayer))
+        if(!server.hasPlayerWithUUID(newPlayer.getUuid()))
             server.addPlayer(newPlayer);
     }
 
@@ -150,7 +150,7 @@ public class MhlController {
         }
 
         //
-        Player deadPlayer = findPlayer(bukkitPlayer.getUniqueId());
+        Player deadPlayer = findPlayerInServer(bukkitPlayer.getUniqueId());
 
         //
         if(deadPlayer == null){
@@ -167,7 +167,7 @@ public class MhlController {
     }
 
     @Nullable
-    private Player findPlayer(UUID uniqueId) {
+    private Player findPlayerInServer(UUID uniqueId) {
         for(Player p : server.getPlayers())
             if(p.getUuid() == uniqueId)
                 return p;
@@ -227,11 +227,24 @@ public class MhlController {
      * @return     The corresponding player.
      */
     @Nullable
-    public Player findPlayer(String name) {
+    public Player findPlayerSafelyByName(String name) {
         for(Player player : server.getPlayers())
             if(Objects.equals(player.getName(), name))
                 return player;
-        return findPlayerInDatabase(name);
+        return findPlayerInDatabaseByName(name);
+    }
+
+    /**
+     * Finds a player by searching it with its name.
+     * @param playerUUID The player's UUID.
+     * @return           The corresponding player.
+     */
+    @Nullable
+    public Player findPlayerSafelyByUUID(UUID playerUUID) {
+        for(Player player : server.getPlayers())
+            if(Objects.equals(player.getUuid(), playerUUID))
+                return player;
+        return findPlayerInDatabaseByUUID(playerUUID);
     }
 
     /**
@@ -240,12 +253,22 @@ public class MhlController {
      * @return     The wanted player.
      */
     @Nullable
-    public Player findPlayerInDatabase(String name) {
-        return databaseHandler.findPlayer(name);
+    public Player findPlayerInDatabaseByName(String name) {
+        return databaseHandler.findPlayerByName(name);
+    }
+
+    /**
+     * Finds a player by asking the databaseHandler to search it with the player's name.
+     * @param playerUUID The player's name.
+     * @return           The wanted player.
+     */
+    @Nullable
+    public Player findPlayerInDatabaseByUUID(UUID playerUUID) {
+        return databaseHandler.findPlayerByUUID(playerUUID);
     }
 
     public void displayPlayerInformations(CommandSender commandSender, String playerName) {
-        Player player = findPlayer(playerName);
+        Player player = findPlayerSafelyByName(playerName);
 
         if(player == null){
             commandSender.sendMessage("Player \"" + playerName + "\" has not been found.");
@@ -265,9 +288,9 @@ public class MhlController {
 
         StringBuilder message = new StringBuilder("Every player of the server: ");
         for(Player player : loadedPlayers)
-            message.append("\n\t" + player.getName() + ": " + player.getLives() + " lives (loaded and is " + player.isOnlineToString().toLowerCase() + ")");
+            message.append("\n\t" + player.getName() + "(" + player.getUuid() + "): " + player.getLives() + " lives (loaded and is " + player.isOnlineToString().toLowerCase() + ")");
         for(Player player : unloadedPlayers)
-            message.append("\n\t" + player.getName() + ": " + player.getLives() + " lives (unloaded)");
+            message.append("\n\t" + player.getName() + "(" + player.getUuid() + "): " + player.getLives() + " lives (unloaded)");
 
         commandSender.sendMessage(message.toString());
     }
@@ -277,10 +300,12 @@ public class MhlController {
      * @param player The gone player.
      */
     public void playerQuit(org.bukkit.entity.Player player) {
-        Player gonePlayer = findPlayer(player.getUniqueId());
-        if(gonePlayer == null)
+        Player gonePlayer = findPlayerSafelyByUUID(player.getUniqueId());
+        if(gonePlayer == null) {
+            Bukkit.getLogger().log(Level.WARNING, "Player " + player.getName() + " with the UUID " + player.getUniqueId() + " is null. Could not register the player as offline.");
             return;
+        }
         gonePlayer.setToOffline();
-        Bukkit.getLogger().log(Level.INFO, "Player " + player.getName() + " is now registered as offline.");
+        Bukkit.getLogger().log(Level.INFO, "Player " + player.getName() + " with the UUID " + player.getUniqueId() + " is now registered as offline.");
     }
 }

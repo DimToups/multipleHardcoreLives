@@ -200,7 +200,7 @@ public class DatabaseHandler {
      * @return A new Player instance corresponding to the Bukkit player class.
      */
     @Nullable
-    public Player findPlayer(org.bukkit.entity.Player player) {
+    public Player findPlayerByName(org.bukkit.entity.Player player) {
         this.openConnection();
 
         int nbLives = 5;
@@ -229,7 +229,7 @@ public class DatabaseHandler {
      * @return A new Player instance corresponding to the player's name.
      */
     @Nullable
-    public Player findPlayer(String name) {
+    public Player findPlayerByName(String name) {
         Player player = null;
 
         //
@@ -240,6 +240,28 @@ public class DatabaseHandler {
             player = new Player(UUID.fromString(rs.getString("player")), name, rs.getInt("lives"));
         } catch (Exception e){
             Bukkit.getLogger().log(Level.WARNING, "Could not find the player " + name + " in the database");
+        }
+
+        return player;
+    }
+
+    /**
+     * Finds the wanted player in the database and converts it into a new Player instance.
+     * @param playerUUID The player's name.
+     * @return           A new Player instance corresponding to the player's name.
+     */
+    @Nullable
+    public Player findPlayerByUUID(UUID playerUUID) {
+        Player player = null;
+
+        //
+        openConnection();
+        try{
+            Statement st = connection.createStatement();
+            ResultSet rs = st.executeQuery("SELECT * FROM playerOnServerData WHERE player IN(SELECT UUID FROM player WHERE UUID =\""+ playerUUID + "\");");
+            player = new Player(UUID.fromString(rs.getString("player")), rs.getString("name"), rs.getInt("lives"));
+        } catch (Exception e){
+            Bukkit.getLogger().log(Level.WARNING, "Could not find the player with the UUID" + playerUUID + " in the database");
         }
 
         return player;

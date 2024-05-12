@@ -40,11 +40,10 @@ public class CommandSetNumberOfLivesToPlayer extends MhlCommand {
         }
         //
         int numberOfLives;
-        Player player = controller.findPlayer(strings[0]);
+        Player player = controller.findPlayerSafelyByName(strings[0]);
         if(player == null){
             commandSender.sendMessage("Player \"" + strings[0] + "\" has not been found. He may did not connect to the server yet.");
-            if ((player = controller.findPlayerInDatabase(strings[0])) == null)
-                return false;
+            return false;
         }
         try{
             numberOfLives = Integer.parseInt(strings[1]);

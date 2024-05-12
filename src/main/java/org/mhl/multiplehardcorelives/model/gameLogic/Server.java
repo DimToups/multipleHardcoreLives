@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.logging.Level;
 
 /**
@@ -81,5 +82,13 @@ public class Server {
     public void addPlayer(Player newPlayer) {
         players.add(newPlayer);
         Bukkit.getLogger().log(Level.INFO, "Added the player with the UUID " + newPlayer.getUuid() + " to the controller's server instance");
+    }
+
+    public boolean hasPlayerWithUUID(UUID uuid) {
+        for(Player player : players)
+            if (player.getUuid() == uuid)
+                return true;
+        Bukkit.getLogger().log(Level.WARNING, "No player has the UUID " + uuid + " in the server.");
+        return false;
     }
 }
