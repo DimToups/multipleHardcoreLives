@@ -310,10 +310,36 @@ public class MhlController {
     public void playerQuit(org.bukkit.entity.Player player) {
         Player gonePlayer = findPlayerSafelyByUUID(player.getUniqueId());
         if(gonePlayer == null) {
-            Bukkit.getLogger().log(Level.WARNING, "Player " + player.getName() + " with the UUID " + player.getUniqueId() + " is null. Could not register the player as offline.");
+            Bukkit.getLogger().log(Level.WARNING, "Player " + player.getName() + " with the UUID " + player.getUniqueId() + " is null. Could not register the player as offline");
             return;
         }
         gonePlayer.setToOffline();
-        Bukkit.getLogger().log(Level.INFO, "Player " + player.getName() + " with the UUID " + player.getUniqueId() + " is now registered as offline.");
+        Bukkit.getLogger().log(Level.INFO, "Player " + player.getName() + " with the UUID " + player.getUniqueId() + " is now registered as offline");
+    }
+
+    /**
+     * Verifies if the server's information is coherent.
+     */
+    public void verifyServerState() {
+        Bukkit.getLogger().log(Level.INFO, "Starting the verification of the server's informations...");
+        List<Player> players = server.getPlayers();
+        for(int i = 0; i < players.size(); i++){
+            for (int j = i + 1; j < players.size(); j++){
+                if(players.get(i).getUuid() == players.get(j).getUuid() && Objects.equals(players.get(i).getName(), players.get(j).getName()) && players.get(i).getLives() == players.get(j).getLives())
+                    Bukkit.getLogger().log(Level.WARNING, "Two registered players have the same UUID, name, and number of lives. They both have this identity :\n\t" + players.get(i).getName() + " (" + players.get(i).getUuid() + ") : " + players.get(i).getLives() + " lives");
+                if(players.get(i).getUuid() == players.get(j).getUuid())
+                    Bukkit.getLogger().log(Level.WARNING, "Two registered players have the same UUID. Their name are " + players.get(i).getName() + " and " + players.get(j).getName());
+                if(Objects.equals(players.get(i).getName(), players.get(j).getName()))
+                    Bukkit.getLogger().log(Level.WARNING, "Two registered players have the same name. Their name are " + players.get(i).getName() + " and their UUID are " + players.get(i).getUuid() + ", and " + players.get(j).getUuid());
+            }
+        }
+        Bukkit.getLogger().log(Level.INFO, "Finished the verification of the server's players");
+        if(!Objects.equals(server.getAddress(), Bukkit.getServer().getName()))
+            Bukkit.getLogger().log(Level.WARNING, "The MhlController's Server instance and the current server have not the same address. The MhlController's Server instance has for address \"" + server.getAddress() + "\" and the current server has for address + \"" + Bukkit.getServer().getName() + "\"");
+        Bukkit.getLogger().log(Level.INFO, "Finished the verification of the server's address");
+        if(server.getDefaultNbLives() <= 0)
+            Bukkit.getLogger().log(Level.WARNING, "The server have a non positive default number of lives. It has " + server.getDefaultNbLives() + " as a default number of lives");
+        Bukkit.getLogger().log(Level.INFO, "Finished the verification of the server's default number of lives");
+        Bukkit.getLogger().log(Level.INFO, "Finished the verification of the server");
     }
 }

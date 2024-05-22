@@ -71,6 +71,10 @@ public class Server {
      * @param defaultNbLives The default number of lives.
      */
     public void setDefaultNbLives(int defaultNbLives) {
+        if(defaultNbLives <=0 ){
+            Bukkit.getLogger().log(Level.WARNING, "The server cannot have a zero or negative default number of lives like " + defaultNbLives);
+            return;
+        }
         Bukkit.getLogger().log(Level.INFO, "Setting the default number of lives to " + defaultNbLives);
         this.defaultNbLives = defaultNbLives;
     }

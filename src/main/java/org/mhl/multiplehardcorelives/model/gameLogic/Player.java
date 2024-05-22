@@ -67,6 +67,10 @@ public class Player {
         return isOnline;
     }
 
+    /**
+     * Tells if the player is connected or not by returning a string.
+     * @return "Online" if the player is online, "Offline" otherwise.
+     */
     public String isOnlineToString(){
         return isOnline() ? "Online" : "Offline";
     }

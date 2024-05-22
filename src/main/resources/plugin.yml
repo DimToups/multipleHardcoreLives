@@ -43,3 +43,7 @@ commands:
     description: Lists every player the server has
     usage: /playerList
     permission: admin.manage.playerpermission
+  verifyServerState:
+    description: Verify if the data stores in the server is coherent
+    usage: /verifyServerState
+    permission: admin.manage.playerpermission
