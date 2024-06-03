@@ -9,6 +9,7 @@ import org.mhl.multiplehardcorelives.model.*;
 import org.mhl.multiplehardcorelives.model.gameLogic.Player;
 import org.mhl.multiplehardcorelives.model.gameLogic.Server;
 import org.mhl.multiplehardcorelives.model.gameLogic.SessionManager;
+import org.mhl.multiplehardcorelives.view.PlayerList;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -41,6 +42,11 @@ public class MhlController {
     private final DatabaseHandler databaseHandler;
 
     /**
+     * The plugin's custom scoreboard
+     */
+    private final PlayerList playerList;
+
+    /**
      * Creates a MhlController that will initialise its databaseHandler, server, and sessionManager.
      * @param plugin The MultipleHardcoreLives current running plugin instance.
      */
@@ -61,6 +67,7 @@ public class MhlController {
             server = foundServer;
 
         this.sessionManager = new SessionManager(this);
+        this.playerList = new PlayerList(this);
     }
 
     /**
@@ -105,6 +112,7 @@ public class MhlController {
         addPlayer(newPlayer);
         newPlayer.setToOnline();
         Bukkit.getLogger().log(Level.INFO, "Player " + player.getName() + " with the UUID " + player.getUniqueId() + " is now registered as online.");
+        this.playerList.updatePlayerList();
     }
 
     /**
@@ -142,6 +150,7 @@ public class MhlController {
         }
         player.setNbLives(lives);
         Bukkit.getLogger().log(Level.INFO, "Player \"" + player.getName() + "\" has now " + lives + " lives");
+        this.playerList.updatePlayerNumberOfLives(player);
         if(lives > server.getDefaultNbLives())
             Bukkit.getLogger().log(Level.WARNING, "Player \"" + player.getName() + "\" has more lives than the default number of " + server.getDefaultNbLives());
     }
@@ -167,7 +176,7 @@ public class MhlController {
         }
 
         //
-        deadPlayer.setNbLives(deadPlayer.getLives() - 1);
+        this.setNbLivesOfPlayer(deadPlayer, deadPlayer.getLives() - 1);
 
         //
         if(deadPlayer.getLives() <= 0)
