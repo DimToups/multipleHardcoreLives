@@ -258,10 +258,10 @@ public class DatabaseHandler {
         openConnection();
         try{
             Statement st = connection.createStatement();
-            ResultSet rs = st.executeQuery("SELECT * FROM playerOnServerData WHERE player IN(SELECT UUID FROM player WHERE UUID =\""+ playerUUID + "\");");
+            ResultSet rs = st.executeQuery("SELECT ps.player AS player, p.name AS name, ps.lives AS lives FROM playerOnServerData ps JOIN player p ON ps.player = p.UUID WHERE p.UUID=\"" + playerUUID + "\";");
             player = new Player(UUID.fromString(rs.getString("player")), rs.getString("name"), rs.getInt("lives"));
         } catch (Exception e){
-            Bukkit.getLogger().log(Level.WARNING, "Could not find the player with the UUID" + playerUUID + " in the database");
+            Bukkit.getLogger().log(Level.WARNING, "Could not find the player with the UUID " + playerUUID.toString() + " in the database\n" + e);
         }
 
         return player;
