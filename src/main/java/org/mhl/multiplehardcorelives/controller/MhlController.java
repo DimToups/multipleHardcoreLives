@@ -183,6 +183,11 @@ public class MhlController {
             definitiveKill(deadPlayer, bukkitPlayer);
     }
 
+    /**
+     * Finds a Player instance inside the constroller's server field by searching the player with its UUID.
+     * @param uniqueId The player's UUID
+     * @return The corresponding Player instance
+     */
     @Nullable
     private Player findPlayerInServer(UUID uniqueId) {
         for(Player p : server.getPlayers())
@@ -284,6 +289,11 @@ public class MhlController {
         return databaseHandler.findPlayerByUUID(playerUUID);
     }
 
+    /**
+     * Displays information about a specified player like its number of lives to the entity who called the method.
+     * @param commandSender The sender of the command.
+     * @param playerName    The wanted player's name.
+     */
     public void displayPlayerInformations(CommandSender commandSender, String playerName) {
         Player player = findPlayerSafelyByName(playerName);
 
@@ -295,6 +305,10 @@ public class MhlController {
         commandSender.sendMessage("Player \"" + playerName + "\" has " + player.getLives() + " lives.");
     }
 
+    /**
+     * Displays the whole player list to the entity who called the method.
+     * @param commandSender The sender of the command.
+     */
     public void displayPlayerList(CommandSender commandSender) {
         List<Player> loadedPlayers, unloadedPlayers;
         loadedPlayers = server.getPlayers();
