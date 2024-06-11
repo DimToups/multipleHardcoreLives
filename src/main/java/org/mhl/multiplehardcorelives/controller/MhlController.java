@@ -185,14 +185,14 @@ public class MhlController {
 
     /**
      * Finds a Player instance inside the constroller's server field by searching the player with its UUID.
-     * @param uniqueId The player's UUID
+     * @param playerUUID The player's UUID
      * @return The corresponding Player instance
      */
     @Nullable
-    private Player findPlayerInServer(UUID uniqueId) {
-        for(Player p : server.getPlayers())
-            if(p.getUuid() == uniqueId)
-                return p;
+    private Player findPlayerInServer(UUID playerUUID) {
+        for(Player player : server.getPlayers())
+            if(Objects.equals(player.getUuid(), playerUUID))
+                return player;
         return null;
     }
 
