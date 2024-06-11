@@ -31,6 +31,7 @@ public class CommandWriteChanges extends MhlCommand {
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
         Bukkit.getLogger().log(Level.INFO ,"Write changes command has been detected. Sending request to write changes in the database.");
         this.controller.writeChanges();
+        commandSender.sendMessage("Changes has been written in the database");
 
         return true;
     }

@@ -3,6 +3,13 @@ package org.mhl.multiplehardcorelives;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.mhl.multiplehardcorelives.controller.MhlController;
 import org.mhl.multiplehardcorelives.model.commands.*;
+import org.mhl.multiplehardcorelives.model.commands.mhlDebug.CommandVerify;
+import org.mhl.multiplehardcorelives.model.commands.mhlDebug.VerifyTabCompleter;
+import org.mhl.multiplehardcorelives.model.commands.mhlPlayer.*;
+import org.mhl.multiplehardcorelives.model.commands.mhlServer.CommandServer;
+import org.mhl.multiplehardcorelives.model.commands.mhlServer.ServerTabCompleter;
+import org.mhl.multiplehardcorelives.model.commands.session.CommandSession;
+import org.mhl.multiplehardcorelives.model.commands.session.SessionTabCompleter;
 
 /**
  * The main class of the plugin.
@@ -30,15 +37,19 @@ public final class MultipleHardcoreLives extends JavaPlugin {
      *  Each command need to be added manually in this method for it to be loaded.
      */
     private void loadCommands(){
-        this.getCommand("startSession").setExecutor(new CommandStartSession(controller));
-        this.getCommand("endSession").setExecutor(new CommandEndSession(controller));
-        this.getCommand("setDefaultNumberOfLives").setExecutor(new CommandSetDefaultNumberOfLives(controller));
         this.getCommand("writeChanges").setExecutor(new CommandWriteChanges(controller));
-        this.getCommand("setNumberOfLivesToPlayer").setExecutor(new CommandSetNumberOfLivesToPlayer(controller));
-        this.getCommand("resetServer").setExecutor(new CommandResetServer(controller));
-        this.getCommand("playerInformations").setExecutor(new CommandPlayerInformations(controller));
-        this.getCommand("playerList").setExecutor(new CommandPlayerList(controller));
-        this.getCommand("verifyServerState").setExecutor(new CommandVerifyServerState(controller));
+
+        this.getCommand("verify").setExecutor(new CommandVerify(controller));
+        this.getCommand("verify").setTabCompleter(new VerifyTabCompleter());
+
+        this.getCommand("player").setExecutor(new CommandPlayer(controller));
+        this.getCommand("player").setTabCompleter(new PlayerTabCompleter());
+
+        this.getCommand("server").setExecutor(new CommandServer(controller));
+        this.getCommand("server").setTabCompleter(new ServerTabCompleter());
+
+        this.getCommand("session").setExecutor(new CommandSession(controller));
+        this.getCommand("session").setTabCompleter(new SessionTabCompleter());
     }
 
     /**

@@ -365,4 +365,8 @@ public class MhlController {
         Bukkit.getLogger().log(Level.INFO, "Finished the verification of the server's default number of lives");
         Bukkit.getLogger().log(Level.INFO, "Finished the verification of the server");
     }
+
+    public void displayDefaultNumberOfLives(CommandSender sender) {
+        sender.sendMessage("Default number of lives is set to " + server.getDefaultNbLives());
+    }
 }
