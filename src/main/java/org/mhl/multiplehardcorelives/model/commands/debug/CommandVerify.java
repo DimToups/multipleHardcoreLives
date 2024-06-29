@@ -1,4 +1,4 @@
-package org.mhl.multiplehardcorelives.model.commands.mhlDebug;
+package org.mhl.multiplehardcorelives.model.commands.debug;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;

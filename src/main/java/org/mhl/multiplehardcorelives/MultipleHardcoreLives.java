@@ -3,11 +3,11 @@ package org.mhl.multiplehardcorelives;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.mhl.multiplehardcorelives.controller.MhlController;
 import org.mhl.multiplehardcorelives.model.commands.*;
-import org.mhl.multiplehardcorelives.model.commands.mhlDebug.CommandVerify;
-import org.mhl.multiplehardcorelives.model.commands.mhlDebug.VerifyTabCompleter;
-import org.mhl.multiplehardcorelives.model.commands.mhlPlayer.*;
-import org.mhl.multiplehardcorelives.model.commands.mhlServer.CommandServer;
-import org.mhl.multiplehardcorelives.model.commands.mhlServer.ServerTabCompleter;
+import org.mhl.multiplehardcorelives.model.commands.debug.CommandVerify;
+import org.mhl.multiplehardcorelives.model.commands.debug.VerifyTabCompleter;
+import org.mhl.multiplehardcorelives.model.commands.player.*;
+import org.mhl.multiplehardcorelives.model.commands.server.CommandServer;
+import org.mhl.multiplehardcorelives.model.commands.server.ServerTabCompleter;
 import org.mhl.multiplehardcorelives.model.commands.session.CommandSession;
 import org.mhl.multiplehardcorelives.model.commands.session.SessionTabCompleter;
 
