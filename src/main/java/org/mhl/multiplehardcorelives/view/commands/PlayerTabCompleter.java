@@ -1,4 +1,4 @@
-package org.mhl.multiplehardcorelives.model.commands.player;
+package org.mhl.multiplehardcorelives.view.commands;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
