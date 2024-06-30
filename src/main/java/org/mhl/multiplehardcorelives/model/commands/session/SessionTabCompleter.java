@@ -10,15 +10,12 @@ import java.util.List;
 public class SessionTabCompleter implements TabCompleter {
     @Override
     public List<String> onTabComplete(CommandSender commandSender, Command command, String s, String[] strings) {
+        List<String> args = new ArrayList<>();
         if(strings.length == 1){
-            List<String> args = new ArrayList<>();
             args.add("end");
             args.add("start");
             return args;
         }
-
-        List<String> args = new ArrayList<>();
-        args.add("");
         return args;
     }
 }
