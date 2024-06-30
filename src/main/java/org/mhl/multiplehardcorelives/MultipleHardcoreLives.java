@@ -5,6 +5,8 @@ import org.mhl.multiplehardcorelives.controller.MhlController;
 import org.mhl.multiplehardcorelives.model.commands.*;
 import org.mhl.multiplehardcorelives.model.commands.debug.CommandVerify;
 import org.mhl.multiplehardcorelives.model.commands.debug.VerifyTabCompleter;
+import org.mhl.multiplehardcorelives.model.commands.mhlWorldBorder.CommandMhlWorldBorder;
+import org.mhl.multiplehardcorelives.model.commands.mhlWorldBorder.MhlWorldBorderTabCompeter;
 import org.mhl.multiplehardcorelives.model.commands.player.*;
 import org.mhl.multiplehardcorelives.model.commands.server.CommandServer;
 import org.mhl.multiplehardcorelives.model.commands.server.ServerTabCompleter;
@@ -50,6 +52,9 @@ public final class MultipleHardcoreLives extends JavaPlugin {
 
         this.getCommand("session").setExecutor(new CommandSession(controller));
         this.getCommand("session").setTabCompleter(new SessionTabCompleter());
+
+        this.getCommand("mhlWorldBorder").setExecutor(new CommandMhlWorldBorder(controller));
+        this.getCommand("mhlWorldBorder").setTabCompleter(new MhlWorldBorderTabCompeter());
     }
 
     /**

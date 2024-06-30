@@ -2,6 +2,8 @@ package org.mhl.multiplehardcorelives.controller;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.World;
+import org.bukkit.WorldBorder;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
 import org.mhl.multiplehardcorelives.MultipleHardcoreLives;
@@ -319,9 +321,9 @@ public class MhlController {
 
         StringBuilder message = new StringBuilder("Every player of the server: ");
         for(Player player : loadedPlayers)
-            message.append("\n\t" + player.getName() + "(" + player.getUuid() + "): " + player.getLives() + " lives (loaded and is " + player.isOnlineToString().toLowerCase() + ")");
+            message.append("\n\t").append(player.getName()).append("(").append(player.getUuid()).append("): ").append(player.getLives()).append(" lives (loaded and is ").append(player.isOnlineToString().toLowerCase()).append(")");
         for(Player player : unloadedPlayers)
-            message.append("\n\t" + player.getName() + "(" + player.getUuid() + "): " + player.getLives() + " lives (unloaded)");
+            message.append("\n\t").append(player.getName()).append("(").append(player.getUuid()).append("): ").append(player.getLives()).append(" lives (unloaded)");
 
         commandSender.sendMessage(message.toString());
     }
@@ -368,5 +370,31 @@ public class MhlController {
 
     public void displayDefaultNumberOfLives(CommandSender sender) {
         sender.sendMessage("Default number of lives is set to " + server.getDefaultNbLives());
+    }
+
+    public void setWorldBorderLength(int length){
+        Bukkit.getLogger().log(Level.INFO, "Setting the new world border length to " + length + " blocks");
+        try{
+            World wr = Bukkit.getWorld("world");
+            WorldBorder w = wr.getWorldBorder();
+            w.setCenter(wr.getSpawnLocation());
+            w.setSize(length);
+            this.server.setWorldBorderLength(length);
+        } catch (Exception e) {
+            Bukkit.getLogger().log(Level.SEVERE, "Could not set the world border length\n" + e);
+        }
+    }
+
+    public Double getWorldBorderLength() {
+        try{
+            return Bukkit.getWorld("world").getWorldBorder().getSize();
+        } catch (Exception e) {
+            Bukkit.getLogger().log(Level.SEVERE, "Could not set the world border length\n" + e);
+        }
+        return null;
+    }
+
+    public void reloadWorldBorder() {
+        this.setWorldBorderLength(this.server.getWorldBorderLength());
     }
 }

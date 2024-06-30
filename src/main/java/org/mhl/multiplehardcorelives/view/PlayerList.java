@@ -1,7 +1,6 @@
 package org.mhl.multiplehardcorelives.view;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.mhl.multiplehardcorelives.controller.MhlController;
 import org.mhl.multiplehardcorelives.model.gameLogic.Player;
 
@@ -81,10 +80,10 @@ public class PlayerList {
      * @return       The String corresponding to its nam entry.
      */
     private String buildPlayerListName(Player player){
-        StringBuilder playerListName = new StringBuilder(ChatColor.stripColor("ff00FF") + player.getName());
+        StringBuilder playerListName = new StringBuilder(player.getName());
         for(int i = getNameEntrySize(player); i < longestNameEntry; i++)
             playerListName.append(" ");
-        playerListName.append("  " + ChatColor.WHITE).append(player.getLives());
+        playerListName.append("  ").append(player.getLives());
         return playerListName.toString();
     }
 

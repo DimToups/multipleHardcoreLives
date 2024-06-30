@@ -25,6 +25,11 @@ public class Server {
     private final List<Player> players = new ArrayList<>();
 
     /**
+     * The server's world border length
+     */
+    private int worldBorderLength = 500;
+
+    /**
      * Initialises a new Server by using its address.
      * @param address The server's address.
      */
@@ -94,5 +99,13 @@ public class Server {
                 return true;
         Bukkit.getLogger().log(Level.WARNING, "No player has the UUID " + uuid + " in the server.");
         return false;
+    }
+
+    public void setWorldBorderLength(int length) {
+        this.worldBorderLength = length;
+    }
+
+    public int getWorldBorderLength() {
+        return worldBorderLength;
     }
 }

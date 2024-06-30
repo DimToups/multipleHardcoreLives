@@ -31,3 +31,7 @@ commands:
     description: Verify data from the plugin
     usage: /verify [server]
     permission: admin.manage.playerpermission
+  mhlWorldBorder:
+    description: Manages and displays informations about the world border
+    usage: /mhlWorldBorder [length | reload] [length]
+    permission: admin.manage.playerpermission
