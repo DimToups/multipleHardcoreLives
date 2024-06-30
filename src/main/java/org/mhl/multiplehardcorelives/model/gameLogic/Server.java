@@ -48,6 +48,17 @@ public class Server {
     }
 
     /**
+     * Initialises a new Server by using its address, the wanted default number of lives, and its world border length.
+     * @param address The server's address.
+     * @param nbLives The wanted default number of lives.
+     */
+    public Server(String address, int nbLives, int worldBorderLength){
+        this.address = address;
+        this.defaultNbLives = nbLives;
+        this.worldBorderLength = worldBorderLength;
+    }
+
+    /**
      * Sends the server's address.
      * @return The server's address.
      */

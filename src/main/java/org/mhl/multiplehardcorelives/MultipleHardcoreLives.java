@@ -3,15 +3,15 @@ package org.mhl.multiplehardcorelives;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.mhl.multiplehardcorelives.controller.MhlController;
 import org.mhl.multiplehardcorelives.model.commands.*;
-import org.mhl.multiplehardcorelives.model.commands.debug.CommandVerify;
-import org.mhl.multiplehardcorelives.model.commands.debug.VerifyTabCompleter;
-import org.mhl.multiplehardcorelives.model.commands.mhlWorldBorder.CommandMhlWorldBorder;
-import org.mhl.multiplehardcorelives.model.commands.mhlWorldBorder.MhlWorldBorderTabCompeter;
-import org.mhl.multiplehardcorelives.model.commands.player.*;
-import org.mhl.multiplehardcorelives.model.commands.server.CommandServer;
-import org.mhl.multiplehardcorelives.model.commands.server.ServerTabCompleter;
-import org.mhl.multiplehardcorelives.model.commands.session.CommandSession;
-import org.mhl.multiplehardcorelives.model.commands.session.SessionTabCompleter;
+import org.mhl.multiplehardcorelives.model.commands.CommandVerify;
+import org.mhl.multiplehardcorelives.view.commands.VerifyTabCompleter;
+import org.mhl.multiplehardcorelives.model.commands.CommandMhlWorldBorder;
+import org.mhl.multiplehardcorelives.view.commands.MhlWorldBorderTabCompeter;
+import org.mhl.multiplehardcorelives.model.commands.CommandServer;
+import org.mhl.multiplehardcorelives.view.commands.PlayerTabCompleter;
+import org.mhl.multiplehardcorelives.view.commands.ServerTabCompleter;
+import org.mhl.multiplehardcorelives.model.commands.CommandSession;
+import org.mhl.multiplehardcorelives.view.commands.SessionTabCompleter;
 
 /**
  * The main class of the plugin.

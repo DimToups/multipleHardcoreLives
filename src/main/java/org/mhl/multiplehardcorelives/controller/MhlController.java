@@ -14,6 +14,7 @@ import org.mhl.multiplehardcorelives.model.gameLogic.SessionManager;
 import org.mhl.multiplehardcorelives.view.PlayerList;
 
 import javax.annotation.Nullable;
+import javax.sound.sampled.Line;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -67,6 +68,16 @@ public class MhlController {
             server = new Server(Bukkit.getServer().getName());
         else
             server = foundServer;
+
+        //
+        try{
+            World w = Bukkit.getWorld("world");
+            if(w.getWorldBorder().getSize() > 0 && server.getWorldBorderLength() == 0)
+                server.setWorldBorderLength((int)w.getWorldBorder().getSize());
+        } catch (Exception e){
+            Bukkit.getLogger().log(Level.WARNING, "Could not set the world border length correctly");
+        }
+        this.reloadWorldBorder();
 
         this.sessionManager = new SessionManager(this);
         this.playerList = new PlayerList(this);
@@ -380,6 +391,7 @@ public class MhlController {
             w.setCenter(wr.getSpawnLocation());
             w.setSize(length);
             this.server.setWorldBorderLength(length);
+            Bukkit.getLogger().log(Level.INFO, "World border length has been set to " + length + " block");
         } catch (Exception e) {
             Bukkit.getLogger().log(Level.SEVERE, "Could not set the world border length\n" + e);
         }

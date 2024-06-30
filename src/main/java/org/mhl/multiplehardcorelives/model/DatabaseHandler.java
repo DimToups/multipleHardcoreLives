@@ -81,7 +81,7 @@ public class DatabaseHandler {
         try{
             this.openConnection();
             Statement statement = connection.createStatement();
-            statement.execute("INSERT OR REPLACE INTO server (address, defaultNbLives) VALUES (\"" + Bukkit.getServer().getName() + "\", " + currentServer.getDefaultNbLives() + ");");
+            statement.execute("INSERT OR REPLACE INTO server (address, defaultNbLives, worldBorderLength) VALUES (\"" + Bukkit.getServer().getName() + "\", " + currentServer.getDefaultNbLives() + ", " + currentServer.getWorldBorderLength() + ");");
             Bukkit.getLogger().log(Level.INFO, "Updated the database on the server's data");
             for(Player player : currentServer.getPlayers()) {
                 statement.execute("INSERT OR REPLACE INTO player (UUID, name) VALUES (\"" + player.getUuid() + "\", \"" + player.getName() + "\");");
@@ -174,6 +174,7 @@ public class DatabaseHandler {
 
         //
         int defaultNbLives;
+        int worldBorderLength;
         try {
             Statement st = connection.createStatement();
             ResultSet rs1 = st.executeQuery("SELECT COUNT(address) FROM server WHERE address=\"" + serverAddress + "\"");
@@ -185,13 +186,18 @@ public class DatabaseHandler {
             PreparedStatement ps = connection.prepareStatement("SELECT defaultNbLives FROM server WHERE address=\"" + serverAddress + "\"");
             ResultSet rs = ps.executeQuery();
             defaultNbLives = rs.getInt("defaultNbLives");
+
+            ps = connection.prepareStatement("SELECT worldBorderLength FROM server WHERE address=\"" + serverAddress + "\"");
+            rs = ps.executeQuery();
+            worldBorderLength = rs.getInt("worldBorderLength");
+
             Bukkit.getLogger().log(Level.INFO, "Server has been found in the database");
         } catch (SQLException e) {
             Bukkit.getLogger().warning("An error occurred during the research.\n" + e);
             return new Server(serverAddress);
         }
         this.closeConnection();
-        return new Server(serverAddress, defaultNbLives);
+        return new Server(serverAddress, defaultNbLives, worldBorderLength);
     }
 
     /**
