@@ -151,7 +151,7 @@ public class TableFactory {
 
             //
             for(SessionEvents event : SessionEvents.values())
-                statement.execute("INSERT INTO eventType (type) VALUES (\"" + SessionEvents.cleanName(event) + "\")");
+                statement.execute("INSERT OR REPLACE INTO eventType (type) VALUES (\"" + SessionEvents.cleanName(event) + "\")");
 
             //
             dbHandler.closeConnection();
