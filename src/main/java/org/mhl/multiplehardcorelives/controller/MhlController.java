@@ -135,6 +135,8 @@ public class MhlController {
             Bukkit.getLogger().log(Level.INFO, "The player " + player.getName() + " with the UUID " + player.getUniqueId() + " has may not connected yet on the server. Instantiating a new Player...");
             newPlayer = new Player(player.getUniqueId(), player.getName(), this.server.getDefaultNbLives());
         }
+        if(sessionManager.isSessionActive())
+            sessionManager.playerJoined(player);
         addPlayer(newPlayer);
         newPlayer.setToOnline();
         Bukkit.getLogger().log(Level.INFO, "Player " + player.getName() + " with the UUID " + player.getUniqueId() + " is now registered as online.");
@@ -364,6 +366,8 @@ public class MhlController {
             Bukkit.getLogger().log(Level.WARNING, "Player " + player.getName() + " with the UUID " + player.getUniqueId() + " is null. Could not register the player as offline");
             return;
         }
+        if(sessionManager.isSessionActive())
+            sessionManager.playerQuit(player);
         gonePlayer.setToOffline();
         Bukkit.getLogger().log(Level.INFO, "Player " + player.getName() + " with the UUID " + player.getUniqueId() + " is now registered as offline");
     }

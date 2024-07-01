@@ -107,4 +107,12 @@ public class SessionManager {
     public void playerAdvancementDone(PlayerAdvancementDoneEvent pade) {
         this.currentSession.addEvent(SessionEvents.Advancement, Calendar.getInstance(), "Player " + pade.getPlayer().getName() + " just got the advancement \"" + Objects.requireNonNull(pade.getAdvancement().getDisplay()).getTitle() + "\"");
     }
+
+    public void playerQuit(org.bukkit.entity.Player player) {
+        this.currentSession.addEvent(SessionEvents.Player_quit, Calendar.getInstance(), "Player " + player.getName() + " has quit the game");
+    }
+
+    public void playerJoined(org.bukkit.entity.Player player) {
+        this.currentSession.addEvent(SessionEvents.Player_join, Calendar.getInstance(), "Player " + player.getName() + " has joined the game");
+    }
 }
