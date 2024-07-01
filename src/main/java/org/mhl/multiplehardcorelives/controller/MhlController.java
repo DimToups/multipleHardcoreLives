@@ -431,6 +431,8 @@ public class MhlController {
     public void playerDeath(PlayerDeathEvent pde) {
         this.decrementLivesOfPlayer(pde.getEntity());
         this.sessionManager.playerDied(pde);
+        if(Objects.requireNonNull(findPlayerSafelyByUUID(pde.getEntity().getUniqueId())).getLives() <= 0)
+            this.sessionManager.definitivePlayerDeath(pde);
     }
 
     public List<Session> getSessions() {

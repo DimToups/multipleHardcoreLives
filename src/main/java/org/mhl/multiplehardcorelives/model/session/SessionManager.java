@@ -92,4 +92,8 @@ public class SessionManager {
     public void playerDied(PlayerDeathEvent pde) {
         this.currentSession.addEvent(SessionEvents.Player_death, Calendar.getInstance(), pde.getDeathMessage());
     }
+
+    public void definitivePlayerDeath(PlayerDeathEvent pde) {
+        this.currentSession.addEvent(SessionEvents.Player_definitive_death, Calendar.getInstance(), pde.getDeathMessage());
+    }
 }
