@@ -2,7 +2,7 @@ CREATE TABLE IF NOT EXISTS sessionEvent (
 	"server"	TEXT NOT NULL,
 	"sessionNumber"	TEXT NOT NULL,
 	"eventId"	INTEGER NOT NULL,
-	"eventDate"	DATE,
+	"eventDate"	TEXT,
 	"description"	TEXT NOT NULL,
 	"type"	TEXT NOT NULL,
 	PRIMARY KEY("eventId","server","sessionNumber"),

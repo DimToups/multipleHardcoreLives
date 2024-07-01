@@ -4,10 +4,13 @@ import org.bukkit.Bukkit;
 import org.mhl.multiplehardcorelives.controller.MhlController;
 import org.mhl.multiplehardcorelives.model.gameLogic.Player;
 import org.mhl.multiplehardcorelives.model.gameLogic.Server;
+import org.mhl.multiplehardcorelives.model.session.Session;
+import org.mhl.multiplehardcorelives.model.session.SessionEvent;
 
 import javax.annotation.Nullable;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -91,10 +94,32 @@ public class DatabaseHandler {
                 statement.execute("INSERT OR REPLACE INTO playerOnServerData (player, server, lives) VALUES (\"" + player.getUuid() + "\", \"" + Bukkit.getServer().getName() + "\", " + player.getLives() + ");");
             }
             Bukkit.getLogger().log(Level.INFO, "Updated the database on the players data");
+            for(Session session : controller.getSessions()){
+                Date sessionStart = session.getSessionStart().getTime();
+                Date sessionEnd = session.getSessionEnd().getTime();
+                String request = "INSERT OR REPLACE INTO session (server, sessionNumber, sessionStart, sessionEnd) VALUES (\""
+                        + Bukkit.getServer().getName() + "\", "
+                        + session.getSessionNumber()
+                        + ", \"" + dateToSQLDate(sessionStart) + "\""
+                        + ", \"" + dateToSQLDate(sessionEnd) + "\");";
+                statement.execute(request);
+                for(SessionEvent event : session.getEvents())
+                    statement.execute("INSERT OR REPLACE INTO sessionEvent (server, sessionNumber, eventId, eventDate, description, type) VALUES (\""
+                            + Bukkit.getServer().getName() + "\", "
+                            + session.getSessionNumber() + ", "
+                            + event.eventId + ", \""
+                            + dateToSQLDate(event.date.getTime()) + "\", \""
+                            + event.description+ "\", \""
+                            + event.event + "\");");
+            }
             closeConnection();
         } catch (Exception e){
             Bukkit.getLogger().log(Level.SEVERE, "Failed to write changes in the database\n" + e);
         }
+    }
+
+    private String dateToSQLDate(Date date){
+        return (1900 + date.getYear()) + "/" + (date.getMonth() + 1) + "/" + date.getDay() + " " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
     }
 
     /**
@@ -247,5 +272,21 @@ public class DatabaseHandler {
         }
 
         return players;
+    }
+
+    public int getNbOfPreviousSessions(){
+        int nbOfPreviousSessions = 0;
+        Bukkit.getLogger().log(Level.WARNING, "Trying to find the number of previous sessions");
+
+        try{
+            openConnection();
+            Statement st = connection.createStatement();
+            ResultSet rs = st.executeQuery("SELECT COUNT(server) FROM session WHERE server=\"" + Bukkit.getServer().getName() +"\";");
+            nbOfPreviousSessions = rs.getInt("COUNT(server)");
+        } catch (Exception e){
+            Bukkit.getLogger().log(Level.WARNING, "Could not find the number of previous sessions");
+        }
+
+        return nbOfPreviousSessions;
     }
 }

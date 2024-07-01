@@ -82,4 +82,8 @@ public class SessionManager {
         //
         isSessionActive = false;
     }
+
+    public ArrayList<Session> getSessions(){
+        return this.sessions;
+    }
 }
