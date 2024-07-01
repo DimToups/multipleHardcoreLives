@@ -1,9 +1,6 @@
 package org.mhl.multiplehardcorelives.controller;
 
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
-import org.bukkit.World;
-import org.bukkit.WorldBorder;
+import org.bukkit.*;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
 import org.mhl.multiplehardcorelives.MultipleHardcoreLives;
@@ -386,10 +383,16 @@ public class MhlController {
     public void setWorldBorderLength(int length){
         Bukkit.getLogger().log(Level.INFO, "Setting the new world border length to " + length + " blocks");
         try{
-            World wr = Bukkit.getWorld("world");
-            WorldBorder w = wr.getWorldBorder();
-            w.setCenter(wr.getSpawnLocation());
-            w.setSize(length);
+            World surface = Bukkit.getWorld("world");
+            WorldBorder ws = surface.getWorldBorder();
+            ws.setCenter(surface.getSpawnLocation());
+            ws.setSize(length);
+
+            World nether = Bukkit.getWorld("world_nether");
+            WorldBorder wn = nether.getWorldBorder();
+            wn.setCenter(new Location(nether, nether.getSpawnLocation().getX() / 8, nether.getSpawnLocation().getY() / 8, nether.getSpawnLocation().getZ()));
+            wn.setSize(length);
+
             this.server.setWorldBorderLength(length);
             Bukkit.getLogger().log(Level.INFO, "World border length has been set to " + length + " block");
         } catch (Exception e) {
