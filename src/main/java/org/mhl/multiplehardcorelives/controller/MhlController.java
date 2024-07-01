@@ -3,6 +3,7 @@ package org.mhl.multiplehardcorelives.controller;
 import org.bukkit.*;
 import org.bukkit.command.CommandSender;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerAdvancementDoneEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.mhl.multiplehardcorelives.MultipleHardcoreLives;
@@ -439,5 +440,10 @@ public class MhlController {
 
     public List<Session> getSessions() {
         return this.sessionManager.getSessions();
+    }
+
+    public void playerAdvancementDone(PlayerAdvancementDoneEvent pade) {
+        if(sessionManager.isSessionActive())
+            sessionManager.playerAdvancementDone(pade);
     }
 }

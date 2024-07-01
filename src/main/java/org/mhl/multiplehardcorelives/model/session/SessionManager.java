@@ -2,11 +2,13 @@ package org.mhl.multiplehardcorelives.model.session;
 
 import org.bukkit.Bukkit;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerAdvancementDoneEvent;
 import org.mhl.multiplehardcorelives.model.enums.SessionEvents;
 import org.mhl.multiplehardcorelives.model.gameLogic.Player;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Objects;
 import java.util.logging.Level;
 
 /**
@@ -100,5 +102,9 @@ public class SessionManager {
 
     public void playerResurrected(Player player) {
         this.currentSession.addEvent(SessionEvents.Player_resurrection, Calendar.getInstance(), "Player " + player.getName() + " has been sent back to life");
+    }
+
+    public void playerAdvancementDone(PlayerAdvancementDoneEvent pade) {
+        this.currentSession.addEvent(SessionEvents.Advancement, Calendar.getInstance(), "Player " + pade.getPlayer().getName() + " just got the advancement \"" + Objects.requireNonNull(pade.getAdvancement().getDisplay()).getTitle() + "\"");
     }
 }
