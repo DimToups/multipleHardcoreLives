@@ -53,6 +53,6 @@ public class PlayerListener implements Listener {
      */
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent pde){
-        controller.playerDeath(pde.getEntity());
+        controller.playerDeath(pde);
     }
 }

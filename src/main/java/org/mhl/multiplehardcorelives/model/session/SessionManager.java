@@ -1,6 +1,8 @@
 package org.mhl.multiplehardcorelives.model.session;
 
 import org.bukkit.Bukkit;
+import org.bukkit.event.entity.PlayerDeathEvent;
+import org.mhl.multiplehardcorelives.model.enums.SessionEvents;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -85,5 +87,9 @@ public class SessionManager {
 
     public ArrayList<Session> getSessions(){
         return this.sessions;
+    }
+
+    public void playerDied(PlayerDeathEvent pde) {
+        this.currentSession.addEvent(SessionEvents.Player_death, Calendar.getInstance(), pde.getDeathMessage());
     }
 }

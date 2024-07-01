@@ -2,6 +2,7 @@ package org.mhl.multiplehardcorelives.controller;
 
 import org.bukkit.*;
 import org.bukkit.command.CommandSender;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.mhl.multiplehardcorelives.MultipleHardcoreLives;
@@ -427,8 +428,9 @@ public class MhlController {
         this.setWorldBorderLength(this.server.getWorldBorderLength());
     }
 
-    public void playerDeath(org.bukkit.entity.Player player) {
-        this.decrementLivesOfPlayer(player);
+    public void playerDeath(PlayerDeathEvent pde) {
+        this.decrementLivesOfPlayer(pde.getEntity());
+        this.sessionManager.playerDied(pde);
     }
 
     public List<Session> getSessions() {
