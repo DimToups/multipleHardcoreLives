@@ -169,6 +169,8 @@ public class MhlController {
             Bukkit.getLogger().log(Level.INFO, "Resurrecting " + player.getName() +"...");
             try{
                 Bukkit.getPlayer(player.getUuid()).setGameMode(GameMode.SURVIVAL);
+                if(sessionManager.isSessionActive())
+                    this.sessionManager.playerResurrected(player);
             } catch (Exception e){
                 Bukkit.getLogger().log(Level.WARNING, "Could not resurrect player " + player.getName() + ". You may have to set its gameMode to survival manually.\n" + e);
             }

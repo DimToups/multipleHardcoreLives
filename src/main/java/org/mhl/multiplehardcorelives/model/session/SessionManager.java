@@ -3,6 +3,7 @@ package org.mhl.multiplehardcorelives.model.session;
 import org.bukkit.Bukkit;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.mhl.multiplehardcorelives.model.enums.SessionEvents;
+import org.mhl.multiplehardcorelives.model.gameLogic.Player;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -95,5 +96,9 @@ public class SessionManager {
 
     public void definitivePlayerDeath(PlayerDeathEvent pde) {
         this.currentSession.addEvent(SessionEvents.Player_definitive_death, Calendar.getInstance(), pde.getDeathMessage());
+    }
+
+    public void playerResurrected(Player player) {
+        this.currentSession.addEvent(SessionEvents.Player_resurrection, Calendar.getInstance(), "Player " + player.getName() + " has been sent back to life");
     }
 }
