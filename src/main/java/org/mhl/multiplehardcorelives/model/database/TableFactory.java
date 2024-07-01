@@ -1,6 +1,7 @@
 package org.mhl.multiplehardcorelives.model.database;
 
 import org.bukkit.Bukkit;
+import org.mhl.multiplehardcorelives.model.enums.SessionEvents;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -147,6 +148,12 @@ public class TableFactory {
             Statement statement = dbHandler.connection.createStatement();
             statement.execute(eventTypeSchema.toString());
             Bukkit.getLogger().log(Level.INFO, "Created the eventType's table in the database");
+
+            //
+            for(SessionEvents event : SessionEvents.values())
+                statement.execute("INSERT INTO eventType (type) VALUES (\"" + SessionEvents.cleanName(event) + "\")");
+
+            //
             dbHandler.closeConnection();
         } catch (Exception e){
             Bukkit.getLogger().log(Level.WARNING, "Could not create the eventType's table in the database");
