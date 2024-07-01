@@ -1,0 +1,8 @@
+CREATE TABLE "session" (
+	"server"	TEXT NOT NULL,
+	"sessionNumber"	INTEGER NOT NULL,
+	"sessionStart"	TEXT,
+	"sessionEnd"	TEXT,
+	PRIMARY KEY("sessionNumber","server"),
+	FOREIGN KEY("server") REFERENCES "server"("address")
+)

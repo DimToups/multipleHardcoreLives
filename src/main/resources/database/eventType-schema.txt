@@ -1,0 +1,4 @@
+CREATE TABLE "eventType" (
+	"type"	TEXT NOT NULL UNIQUE,
+	PRIMARY KEY("type")
+)

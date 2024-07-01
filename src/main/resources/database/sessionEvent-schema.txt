@@ -1,0 +1,12 @@
+CREATE TABLE "sessionEvent" (
+	"server"	TEXT NOT NULL,
+	"sessionNumber"	TEXT NOT NULL,
+	"eventId"	INTEGER NOT NULL,
+	"eventDate"	TEXT,
+	"description"	TEXT NOT NULL,
+	"type"	TEXT NOT NULL,
+	PRIMARY KEY("eventId","server","sessionNumber"),
+	FOREIGN KEY("sessionNumber") REFERENCES "session"("sessionNumber"),
+	FOREIGN KEY("server") REFERENCES "session"("server"),
+	FOREIGN KEY("type") REFERENCES "eventType"("type")
+)

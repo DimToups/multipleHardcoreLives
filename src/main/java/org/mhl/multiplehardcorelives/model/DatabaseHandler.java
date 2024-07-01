@@ -106,22 +106,45 @@ public class DatabaseHandler {
         StringBuilder serverSchema = new StringBuilder();
         StringBuilder playerOnServerDataSchema = new StringBuilder();
         StringBuilder playerSchema = new StringBuilder();
+        StringBuilder eventTypeSchema = new StringBuilder();
+        StringBuilder sessionSchema = new StringBuilder();
+        StringBuilder sessionEventSchema = new StringBuilder();
+
 
         String readString;
         InputStream iptStrmServerSchema = getClass().getResourceAsStream("/database/server-schema.txt");
         if (iptStrmServerSchema == null)
             Bukkit.getLogger().log(Level.WARNING, "iptStrmServerSchema is null");
+
         InputStream iptStrmPlayerOnServerDataSchema = getClass().getResourceAsStream("/database/playerOnServerData-schema.txt");
         if (iptStrmPlayerOnServerDataSchema == null)
             Bukkit.getLogger().log(Level.WARNING, "iptStrmPlayerOnServerDataSchema is null");
+
         InputStream iptStrmPlayerSchema = getClass().getResourceAsStream("/database/player-schema.txt");
         if (iptStrmPlayerSchema == null)
             Bukkit.getLogger().log(Level.WARNING, "iptStrmPlayerSchema is null");
+
+        InputStream iptStrmEventTypeSchema = getClass().getResourceAsStream("/database/eventType-schema.txt");
+        if (iptStrmEventTypeSchema == null)
+            Bukkit.getLogger().log(Level.WARNING, "iptStrmEventTypeSchema is null");
+
+        InputStream iptStrmSessionSchema = getClass().getResourceAsStream("/database/session-schema.txt");
+        if (iptStrmSessionSchema == null)
+            Bukkit.getLogger().log(Level.WARNING, "iptStrmSessionSchema is null");
+
+        InputStream iptStrmSessionEventSchema = getClass().getResourceAsStream("/database/sessionEvent-schema.txt");
+        if (iptStrmSessionEventSchema == null)
+            Bukkit.getLogger().log(Level.WARNING, "iptStrmSessionEventSchema is null");
+
 
         try{
             BufferedReader serverSchemaReader = new BufferedReader(new InputStreamReader(iptStrmServerSchema));
             BufferedReader playerOnServerDataSchemaReader = new BufferedReader(new InputStreamReader(iptStrmPlayerOnServerDataSchema));
             BufferedReader playerSchemaReader = new BufferedReader(new InputStreamReader(iptStrmPlayerSchema));
+            BufferedReader eventTypeSchemaReader = new BufferedReader(new InputStreamReader(iptStrmEventTypeSchema));
+            BufferedReader sessionSchemaReader = new BufferedReader(new InputStreamReader(iptStrmSessionSchema));
+            BufferedReader sessionEventSchemaReader = new BufferedReader(new InputStreamReader(iptStrmSessionEventSchema));
+
             while((readString = serverSchemaReader.readLine()) != null)
                 serverSchema.append(readString);
             serverSchemaReader.close();
@@ -136,6 +159,21 @@ public class DatabaseHandler {
                 playerSchema.append(readString);
             playerSchemaReader.close();
             Bukkit.getLogger().log(Level.INFO, "Loaded player schema files for the database");
+
+            while((readString = eventTypeSchemaReader.readLine()) != null)
+                eventTypeSchema.append(readString);
+            eventTypeSchemaReader.close();
+            Bukkit.getLogger().log(Level.INFO, "Loaded enventType schema files for the database");
+
+            while((readString = sessionSchemaReader.readLine()) != null)
+                sessionSchema.append(readString);
+            sessionSchemaReader.close();
+            Bukkit.getLogger().log(Level.INFO, "Loaded session schema files for the database");
+
+            while((readString = sessionEventSchemaReader.readLine()) != null)
+                sessionEventSchema.append(readString);
+            sessionEventSchemaReader.close();
+            Bukkit.getLogger().log(Level.INFO, "Loaded sessionEvent schema files for the database");
         } catch (Exception e){
             Bukkit.getLogger().log(Level.SEVERE, "Could not read schema files for the creation of the database\n" + e);
         }
@@ -152,6 +190,12 @@ public class DatabaseHandler {
             Bukkit.getLogger().log(Level.INFO, "Created the player's table in the database");
             statement.execute(playerOnServerDataSchema.toString());
             Bukkit.getLogger().log(Level.INFO, "Created the playerOnServerData's table in the database");
+            statement.execute(eventTypeSchema.toString());
+            Bukkit.getLogger().log(Level.INFO, "Created the eventType's table in the database");
+            statement.execute(sessionSchema.toString());
+            Bukkit.getLogger().log(Level.INFO, "Created the session's table in the database");
+            statement.execute(sessionEventSchema.toString());
+            Bukkit.getLogger().log(Level.INFO, "Created the sessionEvent's table in the database");
 
             //
             closeConnection();
