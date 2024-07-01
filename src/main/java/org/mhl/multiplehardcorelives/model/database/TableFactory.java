@@ -1,7 +1,7 @@
 package org.mhl.multiplehardcorelives.model.database;
 
 import org.bukkit.Bukkit;
-import org.mhl.multiplehardcorelives.model.enums.SessionEvents;
+import org.mhl.multiplehardcorelives.model.session.enums.SessionEvents;
 
 import java.io.BufferedReader;
 import java.io.InputStream;

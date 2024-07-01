@@ -1,6 +1,6 @@
 package org.mhl.multiplehardcorelives.model.session;
 
-import org.mhl.multiplehardcorelives.model.enums.SessionEvents;
+import org.mhl.multiplehardcorelives.model.session.enums.SessionEvents;
 
 import java.util.Calendar;
 

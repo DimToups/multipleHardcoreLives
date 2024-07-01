@@ -3,7 +3,7 @@ package org.mhl.multiplehardcorelives.model.session;
 import org.bukkit.Bukkit;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerAdvancementDoneEvent;
-import org.mhl.multiplehardcorelives.model.enums.SessionEvents;
+import org.mhl.multiplehardcorelives.model.session.enums.SessionEvents;
 import org.mhl.multiplehardcorelives.model.gameLogic.Player;
 
 import java.util.ArrayList;

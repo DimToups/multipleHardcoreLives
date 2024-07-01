@@ -1,4 +1,4 @@
-package org.mhl.multiplehardcorelives.model.enums;
+package org.mhl.multiplehardcorelives.model.session.enums;
 
 /**
  * An enumeration for every registered kinds of events
