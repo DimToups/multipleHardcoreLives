@@ -1,8 +1,8 @@
-CREATE TABLE "sessionEvent" (
+CREATE TABLE IF NOT EXISTS sessionEvent (
 	"server"	TEXT NOT NULL,
 	"sessionNumber"	TEXT NOT NULL,
 	"eventId"	INTEGER NOT NULL,
-	"eventDate"	TEXT,
+	"eventDate"	DATE,
 	"description"	TEXT NOT NULL,
 	"type"	TEXT NOT NULL,
 	PRIMARY KEY("eventId","server","sessionNumber"),

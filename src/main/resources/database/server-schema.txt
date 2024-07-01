@@ -1,5 +1,6 @@
 CREATE TABLE IF NOT EXISTS server (
 	address TEXT NOT NULL UNIQUE,
 	defaultNbLives INTEGER NOT NULL DEFAULT 5,
+	worldBorderLength INTEGER,
 	PRIMARY KEY(address)
 );

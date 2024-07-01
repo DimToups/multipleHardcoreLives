@@ -4,14 +4,13 @@ import org.bukkit.*;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
 import org.mhl.multiplehardcorelives.MultipleHardcoreLives;
-import org.mhl.multiplehardcorelives.model.*;
+import org.mhl.multiplehardcorelives.model.database.DatabaseHandler;
 import org.mhl.multiplehardcorelives.model.gameLogic.Player;
 import org.mhl.multiplehardcorelives.model.gameLogic.Server;
 import org.mhl.multiplehardcorelives.model.gameLogic.SessionManager;
 import org.mhl.multiplehardcorelives.view.PlayerList;
 
 import javax.annotation.Nullable;
-import javax.sound.sampled.Line;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;

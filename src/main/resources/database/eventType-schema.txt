@@ -1,4 +1,4 @@
-CREATE TABLE "eventType" (
+CREATE TABLE IF NOT EXISTS eventType (
 	"type"	TEXT NOT NULL UNIQUE,
 	PRIMARY KEY("type")
 )

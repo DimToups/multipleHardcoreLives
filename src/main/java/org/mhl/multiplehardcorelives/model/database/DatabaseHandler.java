@@ -1,4 +1,4 @@
-package org.mhl.multiplehardcorelives.model;
+package org.mhl.multiplehardcorelives.model.database;
 
 import org.bukkit.Bukkit;
 import org.mhl.multiplehardcorelives.controller.MhlController;
@@ -6,9 +6,6 @@ import org.mhl.multiplehardcorelives.model.gameLogic.Player;
 import org.mhl.multiplehardcorelives.model.gameLogic.Server;
 
 import javax.annotation.Nullable;
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,11 +23,16 @@ public class DatabaseHandler {
     /**
      * The Connection's instance to the database
      */
-    private Connection connection = null;
+    protected Connection connection = null;
     /**
      * The plugin's controller.
      */
     private final MhlController controller;
+
+    /**
+     * The class's own tableFactory
+     */
+    private final TableFactory tableFactory;
 
     /**
      * Initialises the DatabaseHandler. It sets the path to the database by using the absolute path of the plugin, and defines the controller of the class.
@@ -39,13 +41,14 @@ public class DatabaseHandler {
      */
     public DatabaseHandler(MhlController controller, String absolutePath){
         this.controller = controller;
+        this.tableFactory = new TableFactory(this);
         url = "jdbc:sqlite:" + absolutePath + ".db";
     }
 
     /**
      * Opens the connection to the database using the Connection's instance of the class.
      */
-    private void openConnection(){
+    protected void openConnection(){
         Bukkit.getLogger().log(Level.INFO, "Trying to connect to the database");
 
         //
@@ -64,7 +67,7 @@ public class DatabaseHandler {
     /**
      * Closes the connection to the database using the Connection's instance of the class.
      */
-    private void closeConnection() {
+    protected void closeConnection() {
         try {
             connection.close();
         } catch (SQLException e) {
@@ -100,109 +103,13 @@ public class DatabaseHandler {
     public void createDatabase(){
         //
         Bukkit.getLogger().log(Level.INFO, "Creating the database...");
-        Bukkit.getLogger().log(Level.INFO, "Loading the database's txt schema files...");
 
-        //
-        StringBuilder serverSchema = new StringBuilder();
-        StringBuilder playerOnServerDataSchema = new StringBuilder();
-        StringBuilder playerSchema = new StringBuilder();
-        StringBuilder eventTypeSchema = new StringBuilder();
-        StringBuilder sessionSchema = new StringBuilder();
-        StringBuilder sessionEventSchema = new StringBuilder();
-
-
-        String readString;
-        InputStream iptStrmServerSchema = getClass().getResourceAsStream("/database/server-schema.txt");
-        if (iptStrmServerSchema == null)
-            Bukkit.getLogger().log(Level.WARNING, "iptStrmServerSchema is null");
-
-        InputStream iptStrmPlayerOnServerDataSchema = getClass().getResourceAsStream("/database/playerOnServerData-schema.txt");
-        if (iptStrmPlayerOnServerDataSchema == null)
-            Bukkit.getLogger().log(Level.WARNING, "iptStrmPlayerOnServerDataSchema is null");
-
-        InputStream iptStrmPlayerSchema = getClass().getResourceAsStream("/database/player-schema.txt");
-        if (iptStrmPlayerSchema == null)
-            Bukkit.getLogger().log(Level.WARNING, "iptStrmPlayerSchema is null");
-
-        InputStream iptStrmEventTypeSchema = getClass().getResourceAsStream("/database/eventType-schema.txt");
-        if (iptStrmEventTypeSchema == null)
-            Bukkit.getLogger().log(Level.WARNING, "iptStrmEventTypeSchema is null");
-
-        InputStream iptStrmSessionSchema = getClass().getResourceAsStream("/database/session-schema.txt");
-        if (iptStrmSessionSchema == null)
-            Bukkit.getLogger().log(Level.WARNING, "iptStrmSessionSchema is null");
-
-        InputStream iptStrmSessionEventSchema = getClass().getResourceAsStream("/database/sessionEvent-schema.txt");
-        if (iptStrmSessionEventSchema == null)
-            Bukkit.getLogger().log(Level.WARNING, "iptStrmSessionEventSchema is null");
-
-
-        try{
-            BufferedReader serverSchemaReader = new BufferedReader(new InputStreamReader(iptStrmServerSchema));
-            BufferedReader playerOnServerDataSchemaReader = new BufferedReader(new InputStreamReader(iptStrmPlayerOnServerDataSchema));
-            BufferedReader playerSchemaReader = new BufferedReader(new InputStreamReader(iptStrmPlayerSchema));
-            BufferedReader eventTypeSchemaReader = new BufferedReader(new InputStreamReader(iptStrmEventTypeSchema));
-            BufferedReader sessionSchemaReader = new BufferedReader(new InputStreamReader(iptStrmSessionSchema));
-            BufferedReader sessionEventSchemaReader = new BufferedReader(new InputStreamReader(iptStrmSessionEventSchema));
-
-            while((readString = serverSchemaReader.readLine()) != null)
-                serverSchema.append(readString);
-            serverSchemaReader.close();
-            Bukkit.getLogger().log(Level.INFO, "Loaded server schema files for the database");
-
-            while((readString = playerOnServerDataSchemaReader.readLine()) != null)
-                playerOnServerDataSchema.append(readString);
-            playerOnServerDataSchemaReader.close();
-            Bukkit.getLogger().log(Level.INFO, "Loaded playerOnServerData schema files for the database");
-
-            while((readString = playerSchemaReader.readLine()) != null)
-                playerSchema.append(readString);
-            playerSchemaReader.close();
-            Bukkit.getLogger().log(Level.INFO, "Loaded player schema files for the database");
-
-            while((readString = eventTypeSchemaReader.readLine()) != null)
-                eventTypeSchema.append(readString);
-            eventTypeSchemaReader.close();
-            Bukkit.getLogger().log(Level.INFO, "Loaded enventType schema files for the database");
-
-            while((readString = sessionSchemaReader.readLine()) != null)
-                sessionSchema.append(readString);
-            sessionSchemaReader.close();
-            Bukkit.getLogger().log(Level.INFO, "Loaded session schema files for the database");
-
-            while((readString = sessionEventSchemaReader.readLine()) != null)
-                sessionEventSchema.append(readString);
-            sessionEventSchemaReader.close();
-            Bukkit.getLogger().log(Level.INFO, "Loaded sessionEvent schema files for the database");
-        } catch (Exception e){
-            Bukkit.getLogger().log(Level.SEVERE, "Could not read schema files for the creation of the database\n" + e);
-        }
-
-        try {
-            //
-            openConnection();
-            Statement statement = connection.createStatement();
-
-            //
-            statement.execute(serverSchema.toString());
-            Bukkit.getLogger().log(Level.INFO, "Created the server's table in the database");
-            statement.execute(playerSchema.toString());
-            Bukkit.getLogger().log(Level.INFO, "Created the player's table in the database");
-            statement.execute(playerOnServerDataSchema.toString());
-            Bukkit.getLogger().log(Level.INFO, "Created the playerOnServerData's table in the database");
-            statement.execute(eventTypeSchema.toString());
-            Bukkit.getLogger().log(Level.INFO, "Created the eventType's table in the database");
-            statement.execute(sessionSchema.toString());
-            Bukkit.getLogger().log(Level.INFO, "Created the session's table in the database");
-            statement.execute(sessionEventSchema.toString());
-            Bukkit.getLogger().log(Level.INFO, "Created the sessionEvent's table in the database");
-
-            //
-            closeConnection();
-            Bukkit.getLogger().log(Level.INFO, "The database has been created !");
-        } catch (SQLException e) {
-            Bukkit.getLogger().log(Level.SEVERE, "Failed to create the database\n" + e);
-        }
+        tableFactory.createPlayerTable();
+        tableFactory.createServerTable();
+        tableFactory.createPlayerOnServerDataTable();
+        tableFactory.createEventTypeTable();
+        tableFactory.createSessionTable();
+        tableFactory.createSessionEventTable();
     }
 
     /**
@@ -242,35 +149,6 @@ public class DatabaseHandler {
         }
         this.closeConnection();
         return new Server(serverAddress, defaultNbLives, worldBorderLength);
-    }
-
-    /**
-     * Finds the wanted player in the database and converts it into a new Player instance.
-     * @param player The targeted Bukkit player class.
-     * @return A new Player instance corresponding to the Bukkit player class.
-     */
-    @Nullable
-    public Player findPlayerByName(org.bukkit.entity.Player player) {
-        this.openConnection();
-
-        int nbLives = 5;
-        try{
-            PreparedStatement ps = connection.prepareStatement("SELECT defaultNbLives FROM server WHERE address = \"" + Bukkit.getServer().getName() + "\";");
-            ResultSet rs = ps.executeQuery();
-            nbLives = rs.getInt("defaultNbLives");
-        } catch (Exception e){
-            Bukkit.getLogger().log(Level.WARNING, "Could not load server's default number of lives");
-        }
-        try {
-            PreparedStatement ps = connection.prepareStatement("SELECT lives FROM playerOnServerData WHERE Server=\"" + Bukkit.getServer().getName() + "\" and Player=\"" + player.getUniqueId() + "\";");
-            ResultSet rs = ps.executeQuery();
-            nbLives = rs.getInt("lives");
-        } catch (Exception e){
-            Bukkit.getLogger().log(Level.WARNING, "Player has not been found on this server.\n" + e);
-        }
-
-        closeConnection();
-        return new Player(player.getUniqueId(), player.getName(), nbLives);
     }
 
     /**
@@ -315,15 +193,6 @@ public class DatabaseHandler {
         }
 
         return player;
-    }
-
-    /**
-     * Sets the number of lives of a player from a server into the database.
-     * @param player The targeted player.
-     * @param number The wanted number of lives.
-     */
-    public void setNumberOfLivesToPlayer(Player player, int number) {
-
     }
 
     /**
