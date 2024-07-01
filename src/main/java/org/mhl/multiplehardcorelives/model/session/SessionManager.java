@@ -1,10 +1,13 @@
-package org.mhl.multiplehardcorelives.model.gameLogic;
+package org.mhl.multiplehardcorelives.model.session;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 import org.mhl.multiplehardcorelives.controller.MhlController;
 import org.mhl.multiplehardcorelives.model.PlayerListener;
 
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 import java.util.logging.Level;
 
 /**
@@ -28,12 +31,28 @@ public class SessionManager {
     private final MhlController controller;
 
     /**
+     * The list of sessions the server had host since its launch
+     */
+    private final List<Session> sessions = new ArrayList<>();
+
+    /**
+     * The number of previous sessions
+     */
+    private final int nbOfPreviousSessions;
+
+    /**
+     * The currently running session
+     */
+    private Session currentSession;
+
+    /**
      * Initialises a SessionManager that will listen to players events.
      * @param controller The plugin's controller.
      */
-    public SessionManager(MhlController controller){
+    public SessionManager(MhlController controller, int nbOfPreviousSessions){
         this.controller = controller;
         playerListener = new PlayerListener(controller);
+        this.nbOfPreviousSessions = nbOfPreviousSessions;
 
         //
         PluginManager pm = Bukkit.getServer().getPluginManager();
@@ -60,6 +79,10 @@ public class SessionManager {
         }
 
         //
+        this.sessions.add(new Session(nbOfPreviousSessions + sessions.size() + 1, Calendar.getInstance()));
+        this.currentSession = sessions.getLast();
+
+        //
         isSessionActive = true;
     }
 
@@ -72,6 +95,11 @@ public class SessionManager {
             return;
         }
 
+        //
+        this.currentSession.setSessionEnd(Calendar.getInstance());
+        this.currentSession = null;
+
+        //
         isSessionActive = false;
     }
 }

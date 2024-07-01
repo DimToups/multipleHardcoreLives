@@ -7,7 +7,7 @@ import org.mhl.multiplehardcorelives.MultipleHardcoreLives;
 import org.mhl.multiplehardcorelives.model.database.DatabaseHandler;
 import org.mhl.multiplehardcorelives.model.gameLogic.Player;
 import org.mhl.multiplehardcorelives.model.gameLogic.Server;
-import org.mhl.multiplehardcorelives.model.gameLogic.SessionManager;
+import org.mhl.multiplehardcorelives.model.session.SessionManager;
 import org.mhl.multiplehardcorelives.view.PlayerList;
 
 import javax.annotation.Nullable;
@@ -75,7 +75,9 @@ public class MhlController {
         }
         this.reloadWorldBorder();
 
-        this.sessionManager = new SessionManager(this);
+        //
+        this.sessionManager = new SessionManager(this, 0);
+
         this.playerList = new PlayerList(this);
     }
 
@@ -410,5 +412,9 @@ public class MhlController {
 
     public void reloadWorldBorder() {
         this.setWorldBorderLength(this.server.getWorldBorderLength());
+    }
+
+    public void playerDeath(org.bukkit.entity.Player player) {
+        this.decrementLivesOfPlayer(player);
     }
 }
