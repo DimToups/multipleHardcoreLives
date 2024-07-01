@@ -7,6 +7,9 @@ import org.mhl.multiplehardcorelives.controller.MhlController;
  * An abstract class serving as a template to every command of the plugin.
  */
 public abstract class MhlCommand implements CommandExecutor {
+    /**
+     * The command's controller
+     */
     protected final MhlController controller;
 
     /**

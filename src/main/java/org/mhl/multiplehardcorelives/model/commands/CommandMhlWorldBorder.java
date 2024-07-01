@@ -7,6 +7,9 @@ import org.mhl.multiplehardcorelives.controller.MhlController;
 
 import java.util.logging.Level;
 
+/**
+ * A command class having the logic of the command mhlWorldBorder
+ */
 public class CommandMhlWorldBorder extends MhlCommand {
     /**
      * Initialise a CommandMhlWorldBorder by using the plugin's controller.

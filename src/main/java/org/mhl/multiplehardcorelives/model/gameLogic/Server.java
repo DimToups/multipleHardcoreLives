@@ -48,9 +48,10 @@ public class Server {
     }
 
     /**
-     * Initialises a new Server by using its address, the wanted default number of lives, and its world border length.
-     * @param address The server's address.
-     * @param nbLives The wanted default number of lives.
+     * Initialises a new Server by using its address, the wanted default number of lives, and its world border length
+     * @param address The server's address
+     * @param nbLives The wanted default number of lives
+     * @param worldBorderLength The wanted world border length
      */
     public Server(String address, int nbLives, int worldBorderLength){
         this.address = address;
@@ -104,6 +105,11 @@ public class Server {
         Bukkit.getLogger().log(Level.INFO, "Added the player with the UUID " + newPlayer.getUuid() + " to the controller's server instance");
     }
 
+    /**
+     * Tells if the server has a player with the specified UUID
+     * @param uuid The wanted player UUID
+     * @return True if the server has this player, false otherwise
+     */
     public boolean hasPlayerWithUUID(UUID uuid) {
         for(Player player : players)
             if (player.getUuid() == uuid)
@@ -112,10 +118,18 @@ public class Server {
         return false;
     }
 
+    /**
+     * Sets the value of the worldBorderLength field
+     * @param length The wanted length
+     */
     public void setWorldBorderLength(int length) {
         this.worldBorderLength = length;
     }
 
+    /**
+     * Sends the server's world border length
+     * @return The server's world border length
+     */
     public int getWorldBorderLength() {
         return worldBorderLength;
     }

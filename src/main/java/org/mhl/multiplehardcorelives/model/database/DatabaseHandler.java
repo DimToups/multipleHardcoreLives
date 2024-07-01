@@ -258,6 +258,10 @@ public class DatabaseHandler {
         closeConnection();
     }
 
+    /**
+     * Searches every player from the server in the database
+     * @return Every player from the server
+     */
     public List<Player> getPlayers() {
         List<Player> players = new ArrayList<>();
 
@@ -274,6 +278,10 @@ public class DatabaseHandler {
         return players;
     }
 
+    /**
+     * Searches the number of previous sessions from the current server in the database
+     * @return The number of previous sessions
+     */
     public int getNbOfPreviousSessions(){
         int nbOfPreviousSessions = 0;
         Bukkit.getLogger().log(Level.WARNING, "Trying to find the number of previous sessions");

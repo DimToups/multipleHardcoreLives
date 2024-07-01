@@ -88,30 +88,58 @@ public class SessionManager {
         isSessionActive = false;
     }
 
+    /**
+     * Sends every session
+     * @return Every session
+     */
     public ArrayList<Session> getSessions(){
         return this.sessions;
     }
 
+    /**
+     * Handles the registration of a player dying
+     * @param pde The event of the player dying
+     */
     public void playerDied(PlayerDeathEvent pde) {
         this.currentSession.addEvent(SessionEvents.Player_death, Calendar.getInstance(), pde.getDeathMessage());
     }
 
+    /**
+     * Handles the registration of a player being definitively dead
+     * @param pde The event of a player dying
+     */
     public void definitivePlayerDeath(PlayerDeathEvent pde) {
         this.currentSession.addEvent(SessionEvents.Player_definitive_death, Calendar.getInstance(), pde.getDeathMessage());
     }
 
+    /**
+     * Handles the registration of a player resurrecting
+     * @param player The player who has been resurrected
+     */
     public void playerResurrected(Player player) {
         this.currentSession.addEvent(SessionEvents.Player_resurrection, Calendar.getInstance(), "Player " + player.getName() + " has been sent back to life");
     }
 
+    /**
+     * Handles the registration of a player who have done an advancement
+     * @param pade The event of an advancement which has been done
+     */
     public void playerAdvancementDone(PlayerAdvancementDoneEvent pade) {
         this.currentSession.addEvent(SessionEvents.Advancement, Calendar.getInstance(), "Player " + pade.getPlayer().getName() + " just got the advancement " + Objects.requireNonNull(pade.getAdvancement().getDisplay()).getTitle());
     }
 
+    /**
+     * Handles the registration of a player quitting the server
+     * @param player The player who has quit
+     */
     public void playerQuit(org.bukkit.entity.Player player) {
         this.currentSession.addEvent(SessionEvents.Player_quit, Calendar.getInstance(), "Player " + player.getName() + " has quit the game");
     }
 
+    /**
+     * Handles the registration of a player joining the server
+     * @param player The player who has joined
+     */
     public void playerJoined(org.bukkit.entity.Player player) {
         this.currentSession.addEvent(SessionEvents.Player_join, Calendar.getInstance(), "Player " + player.getName() + " has joined the game");
     }

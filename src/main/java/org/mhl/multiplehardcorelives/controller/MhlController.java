@@ -398,10 +398,18 @@ public class MhlController {
         Bukkit.getLogger().log(Level.INFO, "Finished the verification of the server");
     }
 
+    /**
+     * Displays to the command sender the default number of lives
+     * @param sender The command sender
+     */
     public void displayDefaultNumberOfLives(CommandSender sender) {
         sender.sendMessage("Default number of lives is set to " + server.getDefaultNbLives());
     }
 
+    /**
+     * Sets the world border length to the parameter's value
+     * @param length The wanted world border length
+     */
     public void setWorldBorderLength(int length){
         Bukkit.getLogger().log(Level.INFO, "Setting the new world border length to " + length + " blocks");
         try{
@@ -422,6 +430,10 @@ public class MhlController {
         }
     }
 
+    /**
+     * Sends the actual world border length
+     * @return The actual world border length
+     */
     public Double getWorldBorderLength() {
         try{
             return Bukkit.getWorld("world").getWorldBorder().getSize();
@@ -431,10 +443,17 @@ public class MhlController {
         return null;
     }
 
+    /**
+     * Reloads the world border with the server's parameters
+     */
     public void reloadWorldBorder() {
         this.setWorldBorderLength(this.server.getWorldBorderLength());
     }
 
+    /**
+     * Handles the event of a player dying
+     * @param pde The event
+     */
     public void playerDeath(PlayerDeathEvent pde) {
         this.decrementLivesOfPlayer(pde.getEntity());
         if(sessionManager.isSessionActive()){
@@ -445,10 +464,18 @@ public class MhlController {
         }
     }
 
+    /**
+     * Sends every session the server instance has
+     * @return Every session the server instance has
+     */
     public List<Session> getSessions() {
         return this.sessionManager.getSessions();
     }
 
+    /**
+     * Handles the event of a player having an advancement done
+     * @param pade The event
+     */
     public void playerAdvancementDone(PlayerAdvancementDoneEvent pade) {
         if(sessionManager.isSessionActive())
             sessionManager.playerAdvancementDone(pade);

@@ -57,6 +57,10 @@ public class PlayerListener implements Listener {
         controller.playerDeath(pde);
     }
 
+    /**
+     * Detects when a player has done an advancement. It will tell the controller to handle the situation
+     * @param pade The event of the player's advancement
+     */
     @EventHandler
     public void onPlayerAdvancement(PlayerAdvancementDoneEvent pade){
         controller.playerAdvancementDone(pade);
