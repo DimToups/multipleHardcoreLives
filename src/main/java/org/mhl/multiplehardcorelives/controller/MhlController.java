@@ -3,7 +3,9 @@ package org.mhl.multiplehardcorelives.controller;
 import org.bukkit.*;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.PluginManager;
 import org.mhl.multiplehardcorelives.MultipleHardcoreLives;
+import org.mhl.multiplehardcorelives.model.PlayerListener;
 import org.mhl.multiplehardcorelives.model.database.DatabaseHandler;
 import org.mhl.multiplehardcorelives.model.gameLogic.Player;
 import org.mhl.multiplehardcorelives.model.gameLogic.Server;
@@ -46,6 +48,11 @@ public class MhlController {
     private final PlayerList playerList;
 
     /**
+     * The event listener about players data.
+     */
+    private final PlayerListener playerListener;
+
+    /**
      * Creates a MhlController that will initialise its databaseHandler, server, and sessionManager.
      * @param plugin The MultipleHardcoreLives current running plugin instance.
      */
@@ -53,6 +60,11 @@ public class MhlController {
         Bukkit.getLogger().log(Level.INFO, "Initialisation of the plugin...");
         //
         this.plugin = plugin;
+
+        //
+        playerListener = new PlayerListener(this);
+        PluginManager pm = Bukkit.getServer().getPluginManager();
+        pm.registerEvents(playerListener, plugin);
 
         //
         databaseHandler = new DatabaseHandler(this, plugin.getDataFolder().getAbsolutePath());
@@ -76,7 +88,7 @@ public class MhlController {
         this.reloadWorldBorder();
 
         //
-        this.sessionManager = new SessionManager(this, 0);
+        this.sessionManager = new SessionManager( 0);
 
         this.playerList = new PlayerList(this);
     }

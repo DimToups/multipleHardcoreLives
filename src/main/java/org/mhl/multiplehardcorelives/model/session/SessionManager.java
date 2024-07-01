@@ -1,13 +1,9 @@
 package org.mhl.multiplehardcorelives.model.session;
 
 import org.bukkit.Bukkit;
-import org.bukkit.plugin.PluginManager;
-import org.mhl.multiplehardcorelives.controller.MhlController;
-import org.mhl.multiplehardcorelives.model.PlayerListener;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 import java.util.logging.Level;
 
 /**
@@ -21,19 +17,9 @@ public class SessionManager {
     private boolean isSessionActive = false;
 
     /**
-     * The event listener about players data.
-     */
-    private final PlayerListener playerListener;
-
-    /**
-     * The plugin's controller.
-     */
-    private final MhlController controller;
-
-    /**
      * The list of sessions the server had host since its launch
      */
-    private final List<Session> sessions = new ArrayList<>();
+    private final ArrayList<Session> sessions = new ArrayList<>();
 
     /**
      * The number of previous sessions
@@ -47,16 +33,10 @@ public class SessionManager {
 
     /**
      * Initialises a SessionManager that will listen to players events.
-     * @param controller The plugin's controller.
+     * @param nbOfPreviousSessions The number of previous sessions
      */
-    public SessionManager(MhlController controller, int nbOfPreviousSessions){
-        this.controller = controller;
-        playerListener = new PlayerListener(controller);
+    public SessionManager(int nbOfPreviousSessions){
         this.nbOfPreviousSessions = nbOfPreviousSessions;
-
-        //
-        PluginManager pm = Bukkit.getServer().getPluginManager();
-        pm.registerEvents(playerListener, this.controller.getPlugin());
         Bukkit.getLogger().log(Level.INFO, "Now listening to player informations");
     }
 
