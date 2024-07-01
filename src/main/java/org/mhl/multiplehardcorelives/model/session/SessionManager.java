@@ -105,7 +105,7 @@ public class SessionManager {
     }
 
     public void playerAdvancementDone(PlayerAdvancementDoneEvent pade) {
-        this.currentSession.addEvent(SessionEvents.Advancement, Calendar.getInstance(), "Player " + pade.getPlayer().getName() + " just got the advancement \"" + Objects.requireNonNull(pade.getAdvancement().getDisplay()).getTitle() + "\"");
+        this.currentSession.addEvent(SessionEvents.Advancement, Calendar.getInstance(), "Player " + pade.getPlayer().getName() + " just got the advancement " + Objects.requireNonNull(pade.getAdvancement().getDisplay()).getTitle());
     }
 
     public void playerQuit(org.bukkit.entity.Player player) {
