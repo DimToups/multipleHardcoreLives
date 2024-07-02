@@ -13,6 +13,7 @@ import org.mhl.multiplehardcorelives.model.gameLogic.Player;
 import org.mhl.multiplehardcorelives.model.gameLogic.Server;
 import org.mhl.multiplehardcorelives.model.session.Session;
 import org.mhl.multiplehardcorelives.model.session.SessionManager;
+import org.mhl.multiplehardcorelives.view.PlayerCommunicator;
 import org.mhl.multiplehardcorelives.view.PlayerList;
 
 import javax.annotation.Nullable;
@@ -56,6 +57,11 @@ public class MhlController {
     private final PlayerListener playerListener;
 
     /**
+     * The controller's view for displaying information to players
+     */
+    private final PlayerCommunicator playerCommunicator;
+
+    /**
      * Creates a MhlController that will initialise its databaseHandler, server, and sessionManager.
      * @param plugin The MultipleHardcoreLives current running plugin instance.
      */
@@ -92,7 +98,7 @@ public class MhlController {
 
         //
         this.sessionManager = new SessionManager(databaseHandler.getNbOfPreviousSessions());
-
+        this.playerCommunicator = new PlayerCommunicator();
         this.playerList = new PlayerList(this);
     }
 
@@ -232,8 +238,8 @@ public class MhlController {
      * @param bukkitPlayer The dead Bukkit player.
      */
     private void definitiveKill(Player player, org.bukkit.entity.Player bukkitPlayer){
+        playerCommunicator.informPlayerDefinitiveDeath(bukkitPlayer);
         bukkitPlayer.setGameMode(GameMode.SPECTATOR);
-        bukkitPlayer.sendTitle("You are out of lives !", "", 0, 70, 40);
         Bukkit.getLogger().log(Level.INFO, player.getName() + " has definitively died");
     }
 
