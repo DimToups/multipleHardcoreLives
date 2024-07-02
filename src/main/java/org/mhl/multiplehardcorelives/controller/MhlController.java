@@ -118,7 +118,8 @@ public class MhlController {
      * Starts the session by telling it to the sessionManager.
      */
     public void startSession(){
-        playerCommunicator.tellSessionStart();
+        if(!sessionManager.isSessionActive())
+            playerCommunicator.tellSessionStart();
         sessionManager.startSession();
     }
 
@@ -126,19 +127,21 @@ public class MhlController {
      * Ends the session by telling it to the sessionManager and by asking to write changes into the database.
      */
     public void endSession(){
-        if(sessionManager.isSessionActive()) {
+        if(sessionManager.areMajorEventsAllowed()) {
             this.playerCommunicator.tellSessionNearlyEnded();
             Thread thread = new Thread(new Runnable() {
                 @Override
                 public void run() {
                     try{
+                        sessionManager.stopMajorEvents();
                         TimeUnit.SECONDS.sleep(20);
                         playerCommunicator.tellTimeLeft(10);
+                        TimeUnit.SECONDS.sleep(10);
+                        sessionManager.endSession();
                     } catch(Exception e){
                         Bukkit.getLogger().log(Level.WARNING, "Timer could not wait for 30 seconds:\n" + e);
                     } finally {
                         playerCommunicator.tellSessionEnd();
-                        sessionManager.endSession();
                         writeChanges();
                     }
 
@@ -147,7 +150,7 @@ public class MhlController {
             thread.start();
         }
         else
-            Bukkit.getLogger().warning("Session has already stopped");
+            Bukkit.getLogger().warning("Session has already stopped, or cannot be stopped");
     }
 
     /**

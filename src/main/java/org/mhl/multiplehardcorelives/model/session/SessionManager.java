@@ -22,6 +22,11 @@ public class SessionManager {
     private boolean isSessionActive = false;
 
     /**
+     * A boolean for knowing if major events can happen or not
+     */
+    private boolean allowMajorEvents = false;
+
+    /**
      * The list of sessions the server had host since its launch
      */
     private final ArrayList<Session> sessions = new ArrayList<>();
@@ -54,6 +59,14 @@ public class SessionManager {
     }
 
     /**
+     * Sends the state of major events allowance
+     * @return The state of major events allowance
+     */
+    public boolean areMajorEventsAllowed() {
+        return allowMajorEvents;
+    }
+
+    /**
      * Starts the session by setting the field isSessionActive to true.
      */
     public void startSession(){
@@ -69,6 +82,9 @@ public class SessionManager {
 
         //
         isSessionActive = true;
+        allowMajorEvents = true;
+
+        Bukkit.getLogger().log(Level.INFO, "Session has started");
     }
 
     /**
@@ -86,6 +102,22 @@ public class SessionManager {
 
         //
         isSessionActive = false;
+        allowMajorEvents = false;
+
+        Bukkit.getLogger().log(Level.INFO, "Session has ended");
+    }
+
+    /**
+     * Stops major events from happening
+     */
+    public void stopMajorEvents() {
+        if(!allowMajorEvents){
+            Bukkit.getLogger().log(Level.WARNING, "Major events are already not hallowed");
+            return;
+        }
+
+        this.allowMajorEvents = false;
+        Bukkit.getLogger().log(Level.INFO, "Session cannot have major events anymore");
     }
 
     /**
