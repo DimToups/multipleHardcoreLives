@@ -19,7 +19,9 @@ import org.mhl.multiplehardcorelives.view.PlayerList;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Objects;
+import java.util.Timer;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 /**
@@ -116,6 +118,7 @@ public class MhlController {
      * Starts the session by telling it to the sessionManager.
      */
     public void startSession(){
+        playerCommunicator.tellSessionStart();
         sessionManager.startSession();
     }
 
@@ -124,8 +127,24 @@ public class MhlController {
      */
     public void endSession(){
         if(sessionManager.isSessionActive()) {
-            this.sessionManager.endSession();
-            this.writeChanges();
+            this.playerCommunicator.tellSessionNearlyEnded();
+            Thread thread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try{
+                        TimeUnit.SECONDS.sleep(20);
+                        playerCommunicator.tellTimeLeft(10);
+                    } catch(Exception e){
+                        Bukkit.getLogger().log(Level.WARNING, "Timer could not wait for 30 seconds:\n" + e);
+                    } finally {
+                        playerCommunicator.tellSessionEnd();
+                        sessionManager.endSession();
+                        writeChanges();
+                    }
+
+                }
+            });
+            thread.start();
         }
         else
             Bukkit.getLogger().warning("Session has already stopped");
