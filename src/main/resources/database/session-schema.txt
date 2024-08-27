@@ -1,8 +1,10 @@
-CREATE TABLE IF NOT EXISTS session (
-	"server"	TEXT NOT NULL,
+CREATE TABLE "session" (
 	"sessionNumber"	INTEGER NOT NULL,
+	"server"	TEXT NOT NULL,
+	"gameMode"	TEXT NOT NULL,
 	"sessionStart"	TEXT,
 	"sessionEnd"	TEXT,
-	PRIMARY KEY("sessionNumber","server"),
-	FOREIGN KEY("server") REFERENCES "server"("address")
+	FOREIGN KEY("gameMode") REFERENCES "gameMode"("gameMode"),
+	FOREIGN KEY("server") REFERENCES "server"("address"),
+	PRIMARY KEY("sessionNumber","server","gameMode")
 )

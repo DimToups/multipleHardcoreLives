@@ -1,0 +1,4 @@
+CREATE TABLE "gameMode" (
+	"gameMode"	TEXT NOT NULL UNIQUE,
+	PRIMARY KEY("gameMode")
+);

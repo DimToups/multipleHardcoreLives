@@ -1,6 +1,7 @@
 package org.mhl.multiplehardcorelives.model.database;
 
 import org.bukkit.Bukkit;
+import org.mhl.multiplehardcorelives.model.gameModes.enums.GameModes;
 import org.mhl.multiplehardcorelives.model.session.enums.SessionEvents;
 
 import java.io.BufferedReader;
@@ -221,6 +222,44 @@ public class TableFactory {
             dbHandler.closeConnection();
         } catch (Exception e){
             Bukkit.getLogger().log(Level.WARNING, "Could not create the sessionEvent's table in the database");
+        }
+    }
+
+    /**
+     * Creates an eventType table inside the database
+     */
+    public void createGameModeTable(){
+        StringBuilder gameModeSchema = new StringBuilder();
+        String readString;
+
+        Bukkit.getLogger().log(Level.INFO, "Loading the database's txt schema file...");
+        InputStream iptStrmGameModeSchema = getClass().getResourceAsStream("/database/gameMode-schema.txt");
+        if (iptStrmGameModeSchema == null) {
+            Bukkit.getLogger().log(Level.WARNING, "iptStrmGameModeSchema is null");
+            return;
+        }
+        try{
+            BufferedReader GameModeSchemaReader = new BufferedReader(new InputStreamReader(iptStrmGameModeSchema));
+
+            while((readString = GameModeSchemaReader.readLine()) != null)
+                gameModeSchema.append(readString);
+            GameModeSchemaReader.close();
+            Bukkit.getLogger().log(Level.INFO, "Loaded gameMode schema files for the database");
+
+            //
+            dbHandler.openConnection();
+            Statement statement = dbHandler.connection.createStatement();
+            statement.execute(gameModeSchema.toString());
+            Bukkit.getLogger().log(Level.INFO, "Created the gameMode's table in the database");
+
+            //
+            for(GameModes gameMode : GameModes.values())
+                statement.execute("INSERT OR REPLACE INTO gameMode (gameMode) VALUES (\"" + gameMode.getName() + "\")");
+
+            //
+            dbHandler.closeConnection();
+        } catch (Exception e){
+            Bukkit.getLogger().log(Level.WARNING, "Could not create the gameMode's table in the database");
         }
     }
 }

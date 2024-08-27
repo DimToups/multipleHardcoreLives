@@ -11,6 +11,8 @@ import org.mhl.multiplehardcorelives.model.PlayerListener;
 import org.mhl.multiplehardcorelives.model.database.DatabaseHandler;
 import org.mhl.multiplehardcorelives.model.gameLogic.Player;
 import org.mhl.multiplehardcorelives.model.gameLogic.Server;
+import org.mhl.multiplehardcorelives.model.gameModes.MhlGameMode;
+import org.mhl.multiplehardcorelives.model.gameModes.enums.GameModes;
 import org.mhl.multiplehardcorelives.model.session.Session;
 import org.mhl.multiplehardcorelives.model.session.SessionManager;
 import org.mhl.multiplehardcorelives.view.PlayerCommunicator;
@@ -19,7 +21,6 @@ import org.mhl.multiplehardcorelives.view.PlayerList;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Objects;
-import java.util.Timer;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -63,6 +64,8 @@ public class MhlController {
      */
     private final PlayerCommunicator playerCommunicator;
 
+    private MhlGameMode gameMode;
+
     /**
      * Creates a MhlController that will initialise its databaseHandler, server, and sessionManager.
      * @param plugin The MultipleHardcoreLives current running plugin instance.
@@ -102,6 +105,7 @@ public class MhlController {
         this.sessionManager = new SessionManager(databaseHandler.getNbOfPreviousSessions());
         this.playerCommunicator = new PlayerCommunicator();
         this.playerList = new PlayerList(this);
+        this.gameMode = GameModes.toMhlGameMode(databaseHandler.lastPlayedGameMode());
     }
 
     /**
@@ -507,5 +511,9 @@ public class MhlController {
     public void playerAdvancementDone(PlayerAdvancementDoneEvent pade) {
         if(sessionManager.isSessionActive())
             sessionManager.playerAdvancementDone(pade);
+    }
+
+    public GameModes getGameMode() {
+        return this.gameMode.getGameMode();
     }
 }

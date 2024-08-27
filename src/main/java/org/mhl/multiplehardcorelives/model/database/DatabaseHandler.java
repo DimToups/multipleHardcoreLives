@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.mhl.multiplehardcorelives.controller.MhlController;
 import org.mhl.multiplehardcorelives.model.gameLogic.Player;
 import org.mhl.multiplehardcorelives.model.gameLogic.Server;
+import org.mhl.multiplehardcorelives.model.gameModes.enums.GameModes;
 import org.mhl.multiplehardcorelives.model.session.Session;
 import org.mhl.multiplehardcorelives.model.session.SessionEvent;
 
@@ -97,11 +98,12 @@ public class DatabaseHandler {
             for(Session session : controller.getSessions()){
                 Date sessionStart = session.getSessionStart().getTime();
                 Date sessionEnd = session.getSessionEnd().getTime();
-                String request = "INSERT OR REPLACE INTO session (server, sessionNumber, sessionStart, sessionEnd) VALUES (\""
+                String request = "INSERT OR REPLACE INTO session (server, sessionNumber, sessionStart, sessionEnd, gameMode) VALUES (\""
                         + Bukkit.getServer().getName() + "\", "
                         + session.getSessionNumber()
                         + ", \"" + dateToSQLDate(sessionStart) + "\""
-                        + ", \"" + dateToSQLDate(sessionEnd) + "\");";
+                        + ", \"" + dateToSQLDate(sessionEnd) + "\""
+                        + ", \""+ controller.getGameMode().getName() + "\");";
                 statement.execute(request);
                 for(SessionEvent event : session.getEvents())
                     statement.execute("INSERT OR REPLACE INTO sessionEvent (server, sessionNumber, eventId, eventDate, description, type) VALUES (\""
@@ -133,6 +135,7 @@ public class DatabaseHandler {
         tableFactory.createServerTable();
         tableFactory.createPlayerOnServerDataTable();
         tableFactory.createEventTypeTable();
+        tableFactory.createGameModeTable();
         tableFactory.createSessionTable();
         tableFactory.createSessionEventTable();
     }
@@ -296,5 +299,25 @@ public class DatabaseHandler {
         }
 
         return nbOfPreviousSessions;
+    }
+
+    public GameModes lastPlayedGameMode(){
+        GameModes gameMode = GameModes.Classic;
+        Bukkit.getLogger().log(Level.INFO, "Trying to find the last played GameMode");
+
+        try{
+            openConnection();
+            Statement st = connection.createStatement();
+            ResultSet rs = st.executeQuery("SELECT gameMode FROM session WHERE server=\"" + Bukkit.getServer().getName() +"\";");
+
+            if(!rs.wasNull())
+                gameMode = GameModes.valueOf(rs.getString("gameMode"));
+        } catch (Exception e){
+            Bukkit.getLogger().log(Level.WARNING, "Could not find the last played GameMode");
+            Bukkit.getLogger().log(Level.INFO, "Setting the current GameMode to classic");
+        }
+        closeConnection();
+
+        return gameMode;
     }
 }
