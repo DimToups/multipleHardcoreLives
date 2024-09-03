@@ -237,8 +237,8 @@ public class DatabaseHandler {
         try{
             Statement st = connection.createStatement();
             if(controller.getGameMode().getLifeCurrency().getClass() == NumericLifeToken.class) {
-                ResultSet rs = st.executeQuery("SELECT pl.player AS player, p.name AS name, pl.lifeTokens AS lives FROM numericLifeTokensOfPlayer pl JOIN player p ON pl.player = p.UUID WHERE p.UUID=\"" + playerUUID + "\";");
-                if(!rs.wasNull())
+                ResultSet rs = st.executeQuery("SELECT COUNT(pl.player), pl.player AS player, p.name AS name, pl.lifeTokens AS lives FROM numericLifeTokensOfPlayer pl JOIN player p ON pl.player = p.UUID WHERE p.UUID=\"" + playerUUID + "\";");
+                if(rs.getInt("COUNT(pl.player)") > 0)
                     player = new Player(playerUUID, rs.getString("name"), new NumericLifeToken(rs.getInt("lives")));
             }
         } catch (Exception e){
@@ -350,5 +350,23 @@ public class DatabaseHandler {
         closeConnection();
 
         return gameMode;
+    }
+
+    @Nullable
+    public LifeToken getPlayerLifeTokensFromGameMode(Player player, GameModes gameModes){
+        Bukkit.getLogger().log(Level.INFO, "Trying to find the lifeTokens of the player " + player.getName() + " for the GameMode " + gameModes.getName());
+        try{
+            openConnection();
+            Statement st = connection.createStatement();
+            ResultSet rs = st.executeQuery("SELECT COUNT(lifeTokens), lifeTokens FROM " + gameModes.getLifeCurrency().getCleanName() + "LifeTokensOfPlayer WHERE player=\"" + player.getUuid().toString() + "\" AND server=\"" + this.controller.getServer().getAddress() + "\" AND gameMode=\"" + gameModes.getName() + "\";");
+            if(rs.getInt("COUNT(lifeTokens)") > 0){
+                switch (gameModes.getLifeCurrency()){
+                    case NumericLifeToken : return new NumericLifeToken(rs.getInt("lifeTokens"));
+                }
+            }
+        } catch (Exception e) {
+            Bukkit.getLogger().log(Level.WARNING, "Could not find the lifeTokens for the player " + player.getName() + " for the GameMode " + gameModes + "\n" + e);
+        }
+        return null;
     }
 }

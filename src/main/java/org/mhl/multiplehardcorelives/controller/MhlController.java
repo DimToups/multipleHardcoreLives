@@ -13,6 +13,7 @@ import org.mhl.multiplehardcorelives.model.gameLogic.Player;
 import org.mhl.multiplehardcorelives.model.gameLogic.Server;
 import org.mhl.multiplehardcorelives.model.gameModes.Classic;
 import org.mhl.multiplehardcorelives.model.gameModes.MhlGameMode;
+import org.mhl.multiplehardcorelives.model.gameModes.enums.GameModes;
 import org.mhl.multiplehardcorelives.model.lifeToken.LifeToken;
 import org.mhl.multiplehardcorelives.model.session.Session;
 import org.mhl.multiplehardcorelives.model.session.SessionManager;
@@ -524,5 +525,24 @@ public class MhlController {
 
     public Server getServer() {
         return this.server;
+    }
+
+    public void setGameMode(GameModes gameModeEnum, CommandSender commandSender) {
+        if(this.sessionManager.isSessionActive())
+            commandSender.sendMessage("You cannot change the GameMode during an active session");
+        else if (gameModeEnum != this.getGameMode().getGameMode()){
+            writeChanges();
+            MhlGameMode gameMode = GameModes.toMhlGameMode(gameModeEnum);
+            this.gameMode = gameMode;
+            this.server.setDefaultNbLivesTokens(gameMode.getDefaultNbLifeTokens());
+            for(Player player : this.server.getPlayers()){
+                LifeToken lt = databaseHandler.getPlayerLifeTokensFromGameMode(player, gameModeEnum);
+                player.setLivesTokens(lt == null ? GameModes.toMhlGameMode(gameModeEnum).getDefaultNbLifeTokens() : lt);
+            }
+            this.playerList.updatePlayerList();
+            commandSender.sendMessage("The GameMode has been set to " + gameModeEnum.getName());
+        }
+        else
+            commandSender.sendMessage("The current gameMode has already been set to " + gameModeEnum);
     }
 }

@@ -9,12 +9,12 @@ public enum GameModes {
     ;
     private final String name;
     private final String description;
-    private final LifeTokens numericLifeToken;
+    private final LifeTokens lifeTokens;
 
     GameModes(String name, String description, LifeTokens numericLifeToken){
         this.name = name;
         this.description = description;
-        this.numericLifeToken = numericLifeToken;
+        this.lifeTokens = numericLifeToken;
     }
 
     public String getName() {
@@ -32,10 +32,10 @@ public enum GameModes {
     }
 
     public LifeTokens getLifeCurrency() {
-        return this.numericLifeToken;
+        return this.lifeTokens;
     }
 
-    public LifeTokens getNumericLifeToken() {
-        return numericLifeToken;
+    public LifeTokens getLifeTokens() {
+        return lifeTokens;
     }
 }

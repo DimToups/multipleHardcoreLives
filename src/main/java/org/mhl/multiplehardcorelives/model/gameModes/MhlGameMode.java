@@ -9,15 +9,20 @@ public abstract class MhlGameMode {
 
     protected LifeToken defaultDeathPenalty;
 
+    protected LifeToken defaultNbLifeTokens;
+
     protected GameModes gameMode;
 
-    public MhlGameMode(LifeToken lifeCurrency, LifeToken defaultSanctionForDeath, GameModes gameMode){
+    public MhlGameMode(LifeToken lifeCurrency, LifeToken defaultNbLifeTokens, LifeToken defaultSanctionForDeath, GameModes gameMode){
         this.lifeCurrency = lifeCurrency;
+        this.defaultNbLifeTokens = defaultNbLifeTokens;
         this.defaultDeathPenalty = defaultSanctionForDeath;
         this.gameMode = gameMode;
     }
 
-    public abstract LifeToken getDeathPenalty();
+    public LifeToken getDeathPenalty(){
+        return this.defaultDeathPenalty;
+    }
 
     public LifeToken getLifeCurrency() {
         return lifeCurrency;
@@ -27,5 +32,7 @@ public abstract class MhlGameMode {
         return this.gameMode;
     }
 
-    public abstract LifeToken getDefaultNbLifeTokens();
+    public LifeToken getDefaultNbLifeTokens(){
+        return this.defaultNbLifeTokens;
+    }
 }

@@ -35,3 +35,7 @@ commands:
     description: Manages and displays informations about the world border
     usage: /mhlWorldBorder [length | reload] [length]
     permission: admin.manage.playerpermission
+  mhlGameMode:
+    description: Changes the current gamemode while the session is not active
+    usage: /mhlWorldBorder [GameMode]
+    permission: admin.manage.playerpermission
