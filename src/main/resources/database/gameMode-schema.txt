@@ -1,4 +1,6 @@
-CREATE TABLE "gameMode" (
+CREATE TABLE IF NOT EXISTS "gameMode" (
 	"gameMode"	TEXT NOT NULL UNIQUE,
-	PRIMARY KEY("gameMode")
+	"lifeToken"	TEXT NOT NULL,
+	PRIMARY KEY("gameMode","lifeToken"),
+	FOREIGN KEY("lifeToken") REFERENCES "lifeToken"("lifeToken")
 );

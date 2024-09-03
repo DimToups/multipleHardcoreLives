@@ -1,10 +1,8 @@
-CREATE TABLE IF NOT EXISTS "session" (
-	"sessionNumber"	INTEGER NOT NULL,
+CREATE TABLE IF NOT EXISTS "defaultNumericLifeTokens" (
 	"server"	TEXT NOT NULL,
 	"gameMode"	TEXT NOT NULL,
-	"sessionStart"	TEXT,
-	"sessionEnd"	TEXT,
+	"lifeTokens"	INTEGER NOT NULL,
 	FOREIGN KEY("gameMode") REFERENCES "gameMode"("gameMode"),
 	FOREIGN KEY("server") REFERENCES "server"("address"),
-	PRIMARY KEY("sessionNumber","server","gameMode")
-)
+	PRIMARY KEY("server","lifeTokens","gameMode")
+);

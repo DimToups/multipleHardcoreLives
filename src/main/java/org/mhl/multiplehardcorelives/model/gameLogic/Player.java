@@ -1,5 +1,7 @@
 package org.mhl.multiplehardcorelives.model.gameLogic;
 
+import org.mhl.multiplehardcorelives.model.lifeToken.LifeToken;
+
 import java.util.UUID;
 
 /**
@@ -17,7 +19,7 @@ public class Player {
     /**
      * The player's number of lives
      */
-    private int lives;
+    private LifeToken livesTokens;
     /**
      * Indicates the state of the player on the server
      */
@@ -27,12 +29,12 @@ public class Player {
      * Initialises a new Player by defining its UUID, name and its number of lives.
      * @param uuid    The player's UUID from its minecraft account.
      * @param name    The player's name.
-     * @param nbLives The player's number of lives
+     * @param livesTokens The player's number of lives
      */
-    public Player(UUID uuid, String name, int nbLives){
+    public Player(UUID uuid, String name, LifeToken livesTokens){
         this.uuid = uuid;
         this.name = name;
-        this.lives = nbLives;
+        this.livesTokens = livesTokens;
     }
 
     /**
@@ -55,8 +57,8 @@ public class Player {
      * Sends the player's number of lives.
      * @return The player's number of lives.
      */
-    public int getLives() {
-        return lives;
+    public LifeToken getLivesTokens() {
+        return livesTokens;
     }
 
     /**
@@ -79,8 +81,8 @@ public class Player {
      * Sets the number of lives of the player.
      * @param lives The number of lives of the player.
      */
-    public void setNbLives(int lives) {
-        this.lives = lives;
+    public void setLivesTokens(LifeToken lives) {
+        this.livesTokens = lives;
     }
 
     /**

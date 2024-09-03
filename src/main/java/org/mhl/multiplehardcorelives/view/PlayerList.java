@@ -3,9 +3,8 @@ package org.mhl.multiplehardcorelives.view;
 import org.bukkit.Bukkit;
 import org.mhl.multiplehardcorelives.controller.MhlController;
 import org.mhl.multiplehardcorelives.model.gameLogic.Player;
+import org.mhl.multiplehardcorelives.model.lifeToken.NumericLifeToken;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.logging.Level;
@@ -55,21 +54,22 @@ public class PlayerList {
      */
     public void updatePlayerList(){
         Bukkit.getLogger().log(Level.INFO, "Updating the scoreboard");
-        Collection<? extends org.bukkit.entity.Player> players = Bukkit.getOnlinePlayers();
-        List<Player> mhlPlayers = new ArrayList<>();
+        List<Player> mhlPlayers = controller.getServer().getPlayers();
 
-        for(org.bukkit.entity.Player player : players) {
-            Player foundPlayer = controller.findPlayerSafelyByUUID(player.getUniqueId());
-            mhlPlayers.add(foundPlayer);
+        for(Player player : mhlPlayers)
+            if(getNameEntrySize(player) > longestNameEntry)
+                longestNameEntry = player.getName().length();
 
-            if(getNameEntrySize(foundPlayer) > longestNameEntry)
-                longestNameEntry = foundPlayer.getName().length();
-        }
 
         for(Player p : mhlPlayers){
             org.bukkit.entity.Player player = Bukkit.getPlayer(p.getUuid());
-            player.setPlayerListName(this.buildPlayerListName(p));
-            Bukkit.getLogger().log(Level.INFO, "Player " + player.getName() + " is now registered in the scoreboard");
+            if(player != null) {
+                player.setPlayerListName(this.buildPlayerListName(p));
+                Bukkit.getLogger().log(Level.INFO, "Player " + player.getName() + " is now registered in the scoreboard");
+            }
+            else {
+                Bukkit.getLogger().log(Level.WARNING, "The player " + p.getName() + "has not been found in the Bukkit instance");
+            }
         }
         Bukkit.getLogger().log(Level.INFO, "The scoreboard has been updated");
     }
@@ -83,7 +83,7 @@ public class PlayerList {
         StringBuilder playerListName = new StringBuilder(player.getName());
         for(int i = getNameEntrySize(player); i < longestNameEntry; i++)
             playerListName.append(" ");
-        playerListName.append("  ").append(player.getLives());
+        playerListName.append("  ").append(player.getLivesTokens().toString());
         return playerListName.toString();
     }
 
@@ -93,8 +93,9 @@ public class PlayerList {
      * @return       The processed name entry's size
      */
     private int getNameEntrySize(Player player){
-        if(player.getLives() == 0)
+
+        if(((NumericLifeToken) player.getLivesTokens()).getRemainingLives() == 0)
             return player.getName().length() + 1;
-        return player.getName().length() + (int)(Math.log(player.getLives()));
+        return player.getName().length() + (int)(Math.log(((NumericLifeToken)player.getLivesTokens()).getRemainingLives()));
     }
 }

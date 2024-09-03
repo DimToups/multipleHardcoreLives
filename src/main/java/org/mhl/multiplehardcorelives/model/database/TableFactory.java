@@ -2,6 +2,7 @@ package org.mhl.multiplehardcorelives.model.database;
 
 import org.bukkit.Bukkit;
 import org.mhl.multiplehardcorelives.model.gameModes.enums.GameModes;
+import org.mhl.multiplehardcorelives.model.lifeToken.LifeTokens;
 import org.mhl.multiplehardcorelives.model.session.enums.SessionEvents;
 
 import java.io.BufferedReader;
@@ -88,38 +89,6 @@ public class TableFactory {
             dbHandler.closeConnection();
         } catch (Exception e){
             Bukkit.getLogger().log(Level.WARNING, "Could not create the player's table in the database");
-        }
-    }
-
-    /**
-     * Creates a playerOnServerData table inside the database
-     */
-    public void createPlayerOnServerDataTable(){
-        StringBuilder playerOnServerDataSchema = new StringBuilder();
-        String readString;
-
-        Bukkit.getLogger().log(Level.INFO, "Loading the database's txt schema file...");
-        InputStream iptStrmPlayerOnServerDataSchema = getClass().getResourceAsStream("/database/playerOnServerData-schema.txt");
-        if (iptStrmPlayerOnServerDataSchema == null) {
-            Bukkit.getLogger().log(Level.WARNING, "iptStrmPlayerOnServerDataSchema is null");
-            return;
-        }
-        try{
-            BufferedReader playerOnServerDataSchemaReader = new BufferedReader(new InputStreamReader(iptStrmPlayerOnServerDataSchema));
-
-            while((readString = playerOnServerDataSchemaReader.readLine()) != null)
-                playerOnServerDataSchema.append(readString);
-            playerOnServerDataSchemaReader.close();
-            Bukkit.getLogger().log(Level.INFO, "Loaded server schema files for the database");
-
-            //
-            dbHandler.openConnection();
-            Statement statement = dbHandler.connection.createStatement();
-            statement.execute(playerOnServerDataSchema.toString());
-            Bukkit.getLogger().log(Level.INFO, "Created the playerOnServerData's table in the database");
-            dbHandler.closeConnection();
-        } catch (Exception e){
-            Bukkit.getLogger().log(Level.WARNING, "Could not create the playerOnServerData's table in the database");
         }
     }
 
@@ -254,12 +223,115 @@ public class TableFactory {
 
             //
             for(GameModes gameMode : GameModes.values())
-                statement.execute("INSERT OR REPLACE INTO gameMode (gameMode) VALUES (\"" + gameMode.getName() + "\")");
+                statement.execute("INSERT OR REPLACE INTO gameMode (gameMode, lifeToken) VALUES (\"" + gameMode.getName() + "\", \"" + gameMode.getLifeCurrency() + "\")");
 
             //
             dbHandler.closeConnection();
         } catch (Exception e){
             Bukkit.getLogger().log(Level.WARNING, "Could not create the gameMode's table in the database");
+        }
+    }
+
+    /**
+     * Creates a session table inside the database
+     */
+    public void createDefaultNumericLifeTokensTable(){
+        StringBuilder defaultNumericLifeTokens = new StringBuilder();
+        String readString;
+
+        Bukkit.getLogger().log(Level.INFO, "Loading the database's txt schema file...");
+        InputStream iptStrmDefaultNumericLifeTokensSchema = getClass().getResourceAsStream("/database/defaultNumericLifeTokens-schema.txt");
+        if (iptStrmDefaultNumericLifeTokensSchema == null) {
+            Bukkit.getLogger().log(Level.WARNING, "iptStrmDefaultNumericLifeTokensSchema is null");
+            return;
+        }
+        try{
+            BufferedReader defaultNumericLifeTokensSchemaReader = new BufferedReader(new InputStreamReader(iptStrmDefaultNumericLifeTokensSchema));
+
+            while((readString = defaultNumericLifeTokensSchemaReader.readLine()) != null)
+                defaultNumericLifeTokens.append(readString);
+            defaultNumericLifeTokensSchemaReader.close();
+            Bukkit.getLogger().log(Level.INFO, "Loaded defaultNumericLifeTokens schema files for the database");
+
+            //
+            dbHandler.openConnection();
+            Statement statement = dbHandler.connection.createStatement();
+            statement.execute(defaultNumericLifeTokens.toString());
+            Bukkit.getLogger().log(Level.INFO, "Created the defaultNumericLifeTokens table in the database");
+            dbHandler.closeConnection();
+        } catch (Exception e){
+            Bukkit.getLogger().log(Level.WARNING, "Could not create the defaultNumericLifeTokens table in the database");
+        }
+    }
+
+    /**
+     * Creates a session table inside the database
+     */
+    public void createNumericLifeTokensOfPlayer(){
+        StringBuilder numericLifeTokensOfPlayer = new StringBuilder();
+        String readString;
+
+        Bukkit.getLogger().log(Level.INFO, "Loading the database's txt schema file...");
+        InputStream iptStrmNumericLifeTokensOfPlayerSchema = getClass().getResourceAsStream("/database/numericLifeTokensOfPlayer-schema.txt");
+        if (iptStrmNumericLifeTokensOfPlayerSchema == null) {
+            Bukkit.getLogger().log(Level.WARNING, "iptStrmNumericLifeTokensOfPlayerSchema is null");
+            return;
+        }
+        try{
+            BufferedReader numericLifeTokensOfPlayerSchemaReader = new BufferedReader(new InputStreamReader(iptStrmNumericLifeTokensOfPlayerSchema));
+
+            while((readString = numericLifeTokensOfPlayerSchemaReader.readLine()) != null)
+                numericLifeTokensOfPlayer.append(readString);
+            numericLifeTokensOfPlayerSchemaReader.close();
+            Bukkit.getLogger().log(Level.INFO, "Loaded numericLifeTokensOfPlayer schema files for the database");
+
+            //
+            dbHandler.openConnection();
+            Statement statement = dbHandler.connection.createStatement();
+            statement.execute(numericLifeTokensOfPlayer.toString());
+            Bukkit.getLogger().log(Level.INFO, "Created the numericLifeTokensOfPlayer table in the database");
+
+            dbHandler.closeConnection();
+        } catch (Exception e){
+            Bukkit.getLogger().log(Level.WARNING, "Could not create the numericLifeTokensOfPlayer table in the database");
+        }
+    }
+
+    /**
+     * Creates a session table inside the database
+     */
+    public void createLifeTokenTable(){
+        StringBuilder lifeTokenStr = new StringBuilder();
+        String readString;
+
+        Bukkit.getLogger().log(Level.INFO, "Loading the database's txt schema file...");
+        InputStream iptStrmLifeTokenSchema = getClass().getResourceAsStream("/database/lifeToken-schema.txt");
+        if (iptStrmLifeTokenSchema == null) {
+            Bukkit.getLogger().log(Level.WARNING, "iptStrmLifeTokenSchema is null");
+            return;
+        }
+        try{
+            BufferedReader lifeTokenSchemaReader = new BufferedReader(new InputStreamReader(iptStrmLifeTokenSchema));
+
+            while((readString = lifeTokenSchemaReader.readLine()) != null)
+                lifeTokenStr.append(readString);
+            lifeTokenSchemaReader.close();
+            Bukkit.getLogger().log(Level.INFO, "Loaded lifeToken schema files for the database");
+
+            //
+            dbHandler.openConnection();
+            Statement statement = dbHandler.connection.createStatement();
+            statement.execute(lifeTokenStr.toString());
+            Bukkit.getLogger().log(Level.INFO, "Created the lifeToken table in the database");
+
+
+            //
+            for(LifeTokens lifeToken : LifeTokens.values())
+                statement.execute("INSERT OR REPLACE INTO lifeToken (lifeToken) VALUES (\"" + lifeToken.name() + "\");");
+
+            dbHandler.closeConnection();
+        } catch (Exception e){
+            Bukkit.getLogger().log(Level.WARNING, "Could not create the lifeToken table in the database");
         }
     }
 }

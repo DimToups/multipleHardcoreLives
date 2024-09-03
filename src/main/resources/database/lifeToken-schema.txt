@@ -1,0 +1,4 @@
+CREATE TABLE IF NOT EXISTS "lifeToken" (
+	"lifeToken"	TEXT NOT NULL UNIQUE,
+	PRIMARY KEY("lifeToken")
+);

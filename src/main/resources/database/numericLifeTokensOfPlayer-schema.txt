@@ -1,0 +1,10 @@
+CREATE TABLE IF NOT EXISTS "numericLifeTokensOfPlayer" (
+	"player"	TEXT NOT NULL,
+	"server"	TEXT NOT NULL,
+	"gameMode"	TEXT NOT NULL,
+	"lifeTokens"	INTEGER NOT NULL,
+	FOREIGN KEY("gameMode") REFERENCES "gameMode"("gameMode"),
+	FOREIGN KEY("server") REFERENCES "server"("address"),
+	FOREIGN KEY("player") REFERENCES "player"("UUID"),
+	PRIMARY KEY("gameMode","server","player")
+);

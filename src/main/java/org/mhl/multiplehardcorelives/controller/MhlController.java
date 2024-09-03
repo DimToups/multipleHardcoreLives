@@ -11,8 +11,9 @@ import org.mhl.multiplehardcorelives.model.PlayerListener;
 import org.mhl.multiplehardcorelives.model.database.DatabaseHandler;
 import org.mhl.multiplehardcorelives.model.gameLogic.Player;
 import org.mhl.multiplehardcorelives.model.gameLogic.Server;
+import org.mhl.multiplehardcorelives.model.gameModes.Classic;
 import org.mhl.multiplehardcorelives.model.gameModes.MhlGameMode;
-import org.mhl.multiplehardcorelives.model.gameModes.enums.GameModes;
+import org.mhl.multiplehardcorelives.model.lifeToken.LifeToken;
 import org.mhl.multiplehardcorelives.model.session.Session;
 import org.mhl.multiplehardcorelives.model.session.SessionManager;
 import org.mhl.multiplehardcorelives.view.PlayerCommunicator;
@@ -81,13 +82,16 @@ public class MhlController {
         pm.registerEvents(playerListener, plugin);
 
         //
+        this.gameMode = new Classic();
+
+        //
         databaseHandler = new DatabaseHandler(this, plugin.getDataFolder().getAbsolutePath());
         if(!plugin.getDataFolder().exists())
             plugin.getDataFolder().mkdirs();
         databaseHandler.createDatabase();
         Server foundServer = databaseHandler.findServer(Bukkit.getServer().getName());
         if(foundServer == null)
-            server = new Server(Bukkit.getServer().getName());
+            server = new Server(Bukkit.getServer().getName(), this.gameMode.getDefaultNbLifeTokens());
         else
             server = foundServer;
 
@@ -105,7 +109,6 @@ public class MhlController {
         this.sessionManager = new SessionManager(databaseHandler.getNbOfPreviousSessions());
         this.playerCommunicator = new PlayerCommunicator();
         this.playerList = new PlayerList(this);
-        this.gameMode = GameModes.toMhlGameMode(databaseHandler.lastPlayedGameMode());
     }
 
     /**
@@ -115,7 +118,7 @@ public class MhlController {
         Bukkit.getLogger().log(Level.WARNING, "Resetting the server's data.");
         if(this.sessionManager.isSessionActive())
             this.sessionManager.endSession();
-        this.setDefaultNumberOfLives(5);
+        this.setDefaultNumberOfLives(this.gameMode.getDefaultNbLifeTokens());
     }
 
     /**
@@ -165,8 +168,10 @@ public class MhlController {
         Player newPlayer = findPlayerSafelyByUUID(player.getUniqueId());
         if(newPlayer == null){
             Bukkit.getLogger().log(Level.INFO, "The player " + player.getName() + " with the UUID " + player.getUniqueId() + " has may not connected yet on the server. Instantiating a new Player...");
-            newPlayer = new Player(player.getUniqueId(), player.getName(), this.server.getDefaultNbLives());
+            newPlayer = new Player(player.getUniqueId(), player.getName(), this.server.getDefaultNbLivesTokens());
         }
+        else
+            Bukkit.getLogger().log(Level.INFO, "The player " + newPlayer.getName() + " with the UUID " + player.getUniqueId() + " has been found");
         if(sessionManager.isSessionActive())
             sessionManager.playerJoined(player);
         addPlayer(newPlayer);
@@ -195,26 +200,26 @@ public class MhlController {
     }
 
     /**
-     * Sets a number of lives to a specified player.
+     * Sets a number of lifeTokens to a specified player.
      * @param player The targeted player.
-     * @param lives  The wanted number of lives.
+     * @param lifeTokens  The wanted number of lifeTokens.
      */
-    public void setNbLivesOfPlayer(Player player, int lives){
-        if(player.isOnline() && player.getLives() == 0 && lives > 0){
+    public void setNbLivesOfPlayer(Player player, LifeToken lifeTokens){
+        if(player.isOnline() && player.getLivesTokens().isNull() && !lifeTokens.isNull()){
             Bukkit.getLogger().log(Level.INFO, "Resurrecting " + player.getName() +"...");
             try{
-                Bukkit.getPlayer(player.getUuid()).setGameMode(GameMode.SURVIVAL);
+                Objects.requireNonNull(Bukkit.getPlayer(player.getUuid())).setGameMode(GameMode.SURVIVAL);
                 if(sessionManager.isSessionActive())
                     this.sessionManager.playerResurrected(player);
             } catch (Exception e){
                 Bukkit.getLogger().log(Level.WARNING, "Could not resurrect player " + player.getName() + ". You may have to set its gameMode to survival manually.\n" + e);
             }
         }
-        player.setNbLives(lives);
-        Bukkit.getLogger().log(Level.INFO, "Player \"" + player.getName() + "\" has now " + lives + " lives");
+        player.setLivesTokens(lifeTokens);
+        Bukkit.getLogger().log(Level.INFO, "Player \"" + player.getName() + "\" has now " + lifeTokens + " lifeTokens");
         this.playerList.updatePlayerNumberOfLives(player);
-        if(lives > server.getDefaultNbLives())
-            Bukkit.getLogger().log(Level.WARNING, "Player \"" + player.getName() + "\" has more lives than the default number of " + server.getDefaultNbLives());
+        if(lifeTokens.isSuperior(server.getDefaultNbLivesTokens()))
+            Bukkit.getLogger().log(Level.WARNING, "Player \"" + player.getName() + "\" has more lifeTokens than the default number of " + server.getDefaultNbLivesTokens());
     }
 
     /**
@@ -238,10 +243,10 @@ public class MhlController {
         }
 
         //
-        this.setNbLivesOfPlayer(deadPlayer, deadPlayer.getLives() - 1);
+        this.setNbLivesOfPlayer(deadPlayer, deadPlayer.getLivesTokens().minus(this.gameMode.getDeathPenalty()));
 
         //
-        if(deadPlayer.getLives() <= 0)
+        if(deadPlayer.getLivesTokens().isNull())
             definitiveKill(deadPlayer, bukkitPlayer);
     }
 
@@ -287,15 +292,15 @@ public class MhlController {
 
     /**
      * Sets the default number of lives to every player who has ever joined the server only if the session is not running.
-     * @param defaultNbLives The wanted default number of lives.
+     * @param defaultNbLifeToken The wanted default number of lives.
      */
-    public void setDefaultNumberOfLives(int defaultNbLives) {
+    public void setDefaultNumberOfLives(LifeToken defaultNbLifeToken) {
         if(sessionManager.isSessionActive()){
             Bukkit.getLogger().log(Level.WARNING, "Cannot change the default number of lives of the server, the session is still running.");
             return;
         }
-        this.databaseHandler.setNumberOfLivesToEveryPlayer(defaultNbLives);
-        this.server.setDefaultNbLives(defaultNbLives);
+        this.databaseHandler.setNumberOfLivesToEveryPlayer(defaultNbLifeToken);
+        this.server.setDefaultNbLivesTokens(defaultNbLifeToken);
     }
 
     /**
@@ -364,7 +369,7 @@ public class MhlController {
             return;
         }
 
-        commandSender.sendMessage("Player \"" + playerName + "\" has " + player.getLives() + " lives.");
+        commandSender.sendMessage("Player \"" + playerName + "\" has " + player.getLivesTokens() + " lives.");
     }
 
     /**
@@ -381,9 +386,9 @@ public class MhlController {
 
         StringBuilder message = new StringBuilder("Every player of the server: ");
         for(Player player : loadedPlayers)
-            message.append("\n\t").append(player.getName()).append("(").append(player.getUuid()).append("): ").append(player.getLives()).append(" lives (loaded and is ").append(player.isOnlineToString().toLowerCase()).append(")");
+            message.append("\n\t").append(player.getName()).append("(").append(player.getUuid()).append("): ").append(player.getLivesTokens()).append(" lives (loaded and is ").append(player.isOnlineToString().toLowerCase()).append(")");
         for(Player player : unloadedPlayers)
-            message.append("\n\t").append(player.getName()).append("(").append(player.getUuid()).append("): ").append(player.getLives()).append(" lives (unloaded)");
+            message.append("\n\t").append(player.getName()).append("(").append(player.getUuid()).append("): ").append(player.getLivesTokens()).append(" lives (unloaded)");
 
         commandSender.sendMessage(message.toString());
     }
@@ -412,8 +417,8 @@ public class MhlController {
         List<Player> players = server.getPlayers();
         for(int i = 0; i < players.size(); i++){
             for (int j = i + 1; j < players.size(); j++){
-                if(players.get(i).getUuid() == players.get(j).getUuid() && Objects.equals(players.get(i).getName(), players.get(j).getName()) && players.get(i).getLives() == players.get(j).getLives())
-                    Bukkit.getLogger().log(Level.WARNING, "Two registered players have the same UUID, name, and number of lives. They both have this identity :\n\t" + players.get(i).getName() + " (" + players.get(i).getUuid() + ") : " + players.get(i).getLives() + " lives");
+                if(players.get(i).getUuid() == players.get(j).getUuid() && Objects.equals(players.get(i).getName(), players.get(j).getName()) && players.get(i).getLivesTokens() == players.get(j).getLivesTokens())
+                    Bukkit.getLogger().log(Level.WARNING, "Two registered players have the same UUID, name, and number of lives. They both have this identity :\n\t" + players.get(i).getName() + " (" + players.get(i).getUuid() + ") : " + players.get(i).getLivesTokens() + " lives");
                 if(players.get(i).getUuid() == players.get(j).getUuid())
                     Bukkit.getLogger().log(Level.WARNING, "Two registered players have the same UUID. Their name are " + players.get(i).getName() + " and " + players.get(j).getName());
                 if(Objects.equals(players.get(i).getName(), players.get(j).getName()))
@@ -424,8 +429,8 @@ public class MhlController {
         if(!Objects.equals(server.getAddress(), Bukkit.getServer().getName()))
             Bukkit.getLogger().log(Level.WARNING, "The MhlController's Server instance and the current server have not the same address. The MhlController's Server instance has for address \"" + server.getAddress() + "\" and the current server has for address + \"" + Bukkit.getServer().getName() + "\"");
         Bukkit.getLogger().log(Level.INFO, "Finished the verification of the server's address");
-        if(server.getDefaultNbLives() <= 0)
-            Bukkit.getLogger().log(Level.WARNING, "The server have a non positive default number of lives. It has " + server.getDefaultNbLives() + " as a default number of lives");
+        if(server.getDefaultNbLivesTokens().isNull())
+            Bukkit.getLogger().log(Level.WARNING, "The server have a non positive default number of lives. It has " + server.getDefaultNbLivesTokens() + " as a default number of lives");
         Bukkit.getLogger().log(Level.INFO, "Finished the verification of the server's default number of lives");
         Bukkit.getLogger().log(Level.INFO, "Finished the verification of the server");
     }
@@ -435,7 +440,7 @@ public class MhlController {
      * @param sender The command sender
      */
     public void displayDefaultNumberOfLives(CommandSender sender) {
-        sender.sendMessage("Default number of lives is set to " + server.getDefaultNbLives());
+        sender.sendMessage("Default number of lives is set to " + server.getDefaultNbLivesTokens());
     }
 
     /**
@@ -490,7 +495,7 @@ public class MhlController {
         this.decrementLivesOfPlayer(pde.getEntity());
         if(sessionManager.isSessionActive()){
             this.sessionManager.playerDied(pde);
-            if(Objects.requireNonNull(findPlayerSafelyByUUID(pde.getEntity().getUniqueId())).getLives() <= 0) {
+            if(Objects.requireNonNull(findPlayerSafelyByUUID(pde.getEntity().getUniqueId())).getLivesTokens().isNull()) {
                 this.sessionManager.definitivePlayerDeath(pde);
             }
         }
@@ -513,7 +518,11 @@ public class MhlController {
             sessionManager.playerAdvancementDone(pade);
     }
 
-    public GameModes getGameMode() {
-        return this.gameMode.getGameMode();
+    public MhlGameMode getGameMode() {
+        return this.gameMode;
+    }
+
+    public Server getServer() {
+        return this.server;
     }
 }

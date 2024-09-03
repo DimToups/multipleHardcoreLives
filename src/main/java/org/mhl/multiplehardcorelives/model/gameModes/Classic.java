@@ -1,6 +1,5 @@
 package org.mhl.multiplehardcorelives.model.gameModes;
 
-import org.bukkit.event.entity.PlayerDeathEvent;
 import org.mhl.multiplehardcorelives.model.gameModes.enums.GameModes;
 import org.mhl.multiplehardcorelives.model.lifeToken.LifeToken;
 import org.mhl.multiplehardcorelives.model.lifeToken.NumericLifeToken;
@@ -12,11 +11,11 @@ public class Classic extends MhlGameMode {
 
     @Override
     public LifeToken getDeathPenalty() {
-        return null;
+        return new NumericLifeToken(1);
     }
 
     @Override
-    public void playerDeath(PlayerDeathEvent deathEvent) {
-
+    public LifeToken getDefaultNbLifeTokens() {
+        return new NumericLifeToken(5);
     }
 }

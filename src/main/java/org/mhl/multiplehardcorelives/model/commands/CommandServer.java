@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.mhl.multiplehardcorelives.controller.MhlController;
+import org.mhl.multiplehardcorelives.model.lifeToken.NumericLifeToken;
 
 import java.util.logging.Level;
 
@@ -44,8 +45,10 @@ public class CommandServer extends MhlCommand {
                             commandSender.sendMessage("\"" + strings[1] + "\" is not a number");
                             return false;
                         }
-                        controller.setDefaultNumberOfLives(numberOfLives);
-                        return true;
+                        if(controller.getGameMode().getLifeCurrency().getClass() == NumericLifeToken.class) {
+                            controller.setDefaultNumberOfLives(new NumericLifeToken(numberOfLives));
+                            return true;
+                        }
                     }
                     controller.displayDefaultNumberOfLives(commandSender);
                     return true;

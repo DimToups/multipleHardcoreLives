@@ -5,6 +5,8 @@ import org.mhl.multiplehardcorelives.controller.MhlController;
 import org.mhl.multiplehardcorelives.model.gameLogic.Player;
 import org.mhl.multiplehardcorelives.model.gameLogic.Server;
 import org.mhl.multiplehardcorelives.model.gameModes.enums.GameModes;
+import org.mhl.multiplehardcorelives.model.lifeToken.LifeToken;
+import org.mhl.multiplehardcorelives.model.lifeToken.NumericLifeToken;
 import org.mhl.multiplehardcorelives.model.session.Session;
 import org.mhl.multiplehardcorelives.model.session.SessionEvent;
 
@@ -88,11 +90,16 @@ public class DatabaseHandler {
         try{
             this.openConnection();
             Statement statement = connection.createStatement();
-            statement.execute("INSERT OR REPLACE INTO server (address, defaultNbLives, worldBorderLength) VALUES (\"" + Bukkit.getServer().getName() + "\", " + currentServer.getDefaultNbLives() + ", " + currentServer.getWorldBorderLength() + ");");
+            statement.execute("INSERT OR REPLACE INTO server (address, worldBorderLength) VALUES (\"" + Bukkit.getServer().getName() + "\", " + currentServer.getWorldBorderLength() + ");");
             Bukkit.getLogger().log(Level.INFO, "Updated the database on the server's data");
+            if(controller.getGameMode().getLifeCurrency().getClass() == NumericLifeToken.class) {
+                statement.execute("INSERT OR REPLACE INTO defaultNumericLifeTokens (server, gameMode, lifeTokens) VALUES (\"" + Bukkit.getServer().getName() + "\", \"" + controller.getGameMode().getGameMode().getName() + "\", " + ((NumericLifeToken)controller.getServer().getDefaultNbLivesTokens()).getRemainingLives() +");");
+                Bukkit.getLogger().log(Level.INFO, "Updated the database on the defaultNumericLifeTokens data");
+            }
             for(Player player : currentServer.getPlayers()) {
                 statement.execute("INSERT OR REPLACE INTO player (UUID, name) VALUES (\"" + player.getUuid() + "\", \"" + player.getName() + "\");");
-                statement.execute("INSERT OR REPLACE INTO playerOnServerData (player, server, lives) VALUES (\"" + player.getUuid() + "\", \"" + Bukkit.getServer().getName() + "\", " + player.getLives() + ");");
+                if(controller.getGameMode().getLifeCurrency().getClass() == NumericLifeToken.class)
+                    statement.execute("INSERT OR REPLACE INTO numericLifeTokensOfPlayer (player, server, gameMode, lifeTokens) VALUES (\"" + player.getUuid() + "\", \"" + Bukkit.getServer().getName() + "\", \"" + controller.getGameMode().getGameMode().getName() + "\", " + player.getLivesTokens() + ");");
             }
             Bukkit.getLogger().log(Level.INFO, "Updated the database on the players data");
             for(Session session : controller.getSessions()){
@@ -103,7 +110,7 @@ public class DatabaseHandler {
                         + session.getSessionNumber()
                         + ", \"" + dateToSQLDate(sessionStart) + "\""
                         + ", \"" + dateToSQLDate(sessionEnd) + "\""
-                        + ", \""+ controller.getGameMode().getName() + "\");";
+                        + ", \""+ controller.getGameMode().getGameMode().getName() + "\");";
                 statement.execute(request);
                 for(SessionEvent event : session.getEvents())
                     statement.execute("INSERT OR REPLACE INTO sessionEvent (server, sessionNumber, eventId, eventDate, description, type) VALUES (\""
@@ -133,9 +140,11 @@ public class DatabaseHandler {
 
         tableFactory.createPlayerTable();
         tableFactory.createServerTable();
-        tableFactory.createPlayerOnServerDataTable();
         tableFactory.createEventTypeTable();
+        tableFactory.createLifeTokenTable();
         tableFactory.createGameModeTable();
+        tableFactory.createNumericLifeTokensOfPlayer();
+        tableFactory.createDefaultNumericLifeTokensTable();
         tableFactory.createSessionTable();
         tableFactory.createSessionEventTable();
     }
@@ -152,28 +161,36 @@ public class DatabaseHandler {
         openConnection();
 
         //
-        int defaultNbLives;
+        LifeToken defaultNbLives = controller.getGameMode().getDefaultNbLifeTokens();
         int worldBorderLength;
         try {
             Statement st = connection.createStatement();
-            ResultSet rs1 = st.executeQuery("SELECT COUNT(address) FROM server WHERE address=\"" + serverAddress + "\"");
+            ResultSet rs1 = st.executeQuery("SELECT COUNT(address) FROM server WHERE address=\"" + serverAddress + "\";");
             if(rs1.getInt("COUNT(address)") == 0){
                 this.closeConnection();
-                return new Server(serverAddress);
+                return new Server(serverAddress, controller.getGameMode().getDefaultNbLifeTokens(), 500);
             }
+            Bukkit.getLogger().log(Level.INFO, "The server has been found. Loading its default number of life tokens");
 
-            PreparedStatement ps = connection.prepareStatement("SELECT defaultNbLives FROM server WHERE address=\"" + serverAddress + "\"");
-            ResultSet rs = ps.executeQuery();
-            defaultNbLives = rs.getInt("defaultNbLives");
+            PreparedStatement ps;
+            ResultSet rs;
+            if(this.controller.getGameMode().getLifeCurrency().getClass() == NumericLifeToken.class){
+                ps = connection.prepareStatement("SELECT COUNT(lifeTokens), lifeTokens FROM defaultNumericLifeTokens WHERE server=\"" + serverAddress + "\" AND gameMode=\"" + controller.getGameMode().getGameMode().getName() + "\";");
+                rs = ps.executeQuery();
+                if(!(rs.getInt("COUNT(lifeTokens)") == 0)) {
+                    defaultNbLives = new NumericLifeToken(rs.getInt("lifeTokens"));
+                    Bukkit.getLogger().log(Level.INFO, "The default number of lifeTokens has been found.");
+                }
+            }
 
             ps = connection.prepareStatement("SELECT worldBorderLength FROM server WHERE address=\"" + serverAddress + "\"");
             rs = ps.executeQuery();
             worldBorderLength = rs.getInt("worldBorderLength");
 
-            Bukkit.getLogger().log(Level.INFO, "Server has been found in the database");
+            Bukkit.getLogger().log(Level.INFO, "Server has been found and loaded from the database");
         } catch (SQLException e) {
             Bukkit.getLogger().warning("An error occurred during the research.\n" + e);
-            return new Server(serverAddress);
+            return new Server(serverAddress, defaultNbLives);
         }
         this.closeConnection();
         return new Server(serverAddress, defaultNbLives, worldBorderLength);
@@ -192,8 +209,10 @@ public class DatabaseHandler {
         openConnection();
         try{
             Statement st = connection.createStatement();
-            ResultSet rs = st.executeQuery("SELECT * FROM playerOnServerData WHERE player IN(SELECT UUID FROM player WHERE name =\""+ name + "\");");
-            player = new Player(UUID.fromString(rs.getString("player")), name, rs.getInt("lives"));
+            if(controller.getGameMode().getLifeCurrency().getClass() == NumericLifeToken.class) {
+                ResultSet rs = st.executeQuery("SELECT player, lifeTokens FROM numericLifeTokensOfPlayer WHERE server=\"" + controller.getServer().getAddress() + "\" AND gameMode=\"" + controller.getGameMode().getGameMode().getName() + "\" player IN(SELECT UUID FROM player WHERE name =\"" + name + "\");");
+                player = new Player(UUID.fromString(rs.getString("player")), name, new NumericLifeToken(rs.getInt("lifeTokens")));
+            }
         } catch (Exception e){
             Bukkit.getLogger().log(Level.WARNING, "Could not find the player " + name + " in the database");
         }
@@ -214,8 +233,11 @@ public class DatabaseHandler {
         openConnection();
         try{
             Statement st = connection.createStatement();
-            ResultSet rs = st.executeQuery("SELECT ps.player AS player, p.name AS name, ps.lives AS lives FROM playerOnServerData ps JOIN player p ON ps.player = p.UUID WHERE p.UUID=\"" + playerUUID + "\";");
-            player = new Player(UUID.fromString(rs.getString("player")), rs.getString("name"), rs.getInt("lives"));
+            if(controller.getGameMode().getLifeCurrency().getClass() == NumericLifeToken.class) {
+                ResultSet rs = st.executeQuery("SELECT pl.player AS player, p.name AS name, pl.lifeTokens AS lives FROM numericLifeTokensOfPlayer pl JOIN player p ON pl.player = p.UUID WHERE p.UUID=\"" + playerUUID + "\";");
+                if(!rs.wasNull())
+                    player = new Player(playerUUID, rs.getString("name"), new NumericLifeToken(rs.getInt("lives")));
+            }
         } catch (Exception e){
             Bukkit.getLogger().log(Level.WARNING, "Could not find the player with the UUID " + playerUUID.toString() + " in the database\n" + e);
         }
@@ -225,20 +247,22 @@ public class DatabaseHandler {
 
     /**
      * Sets the number of lives to every player from a server into the database
-     * @param nbLives The wanted number of lives.
+     * @param nbLifeTokens The wanted number of lives.
      */
-    public void setNumberOfLivesToEveryPlayer(int nbLives) {
+    public void setNumberOfLivesToEveryPlayer(LifeToken nbLifeTokens) {
         Bukkit.getLogger().log(Level.INFO, "Started the setting the number of lives of every player");
         this.openConnection();
         List<Player> players = new ArrayList<>();
         try {
             Bukkit.getLogger().log(Level.INFO, "Loading every player");
             Statement st = connection.createStatement();
-            ResultSet rs = st.executeQuery("SELECT ps.player, p.name FROM playerOnServerData ps JOIN player p ON p.UUID = ps.player WHERE server=\"" + Bukkit.getServer().getName() + "\";");
-
-            //
-            while(rs.next())
-                players.add(new Player(UUID.fromString(rs.getString("player")), rs.getString("name"), nbLives));
+            ResultSet rs;
+            if(controller.getGameMode().getLifeCurrency().getClass() == NumericLifeToken.class) {
+                rs = st.executeQuery("SELECT pl.player, p.name FROM numericLifeTokensOfPlayer pl JOIN player p ON p.UUID = pl.player WHERE server=\"" + Bukkit.getServer().getName() + "\";");
+                //
+                while (rs.next())
+                    players.add(new Player(UUID.fromString(rs.getString("player")), rs.getString("name"), nbLifeTokens));
+            }
         } catch (SQLException e) {
             Bukkit.getLogger().log(Level.SEVERE, "Could not load every players\n" + e);
             Bukkit.getLogger().log(Level.SEVERE, "Stopping the setting of the number of lives of every player");
@@ -248,16 +272,18 @@ public class DatabaseHandler {
         try {
             Bukkit.getLogger().log(Level.INFO, "Setting the number of lives of every player");
             Statement st = connection.createStatement();
-            for(Player player : players) {
-                st.execute("UPDATE playerOnServerData SET lives=" + nbLives + " WHERE player=\"" + player.getUuid() + "\" AND server=\"" + Bukkit.getServer().getName() + "\";");
-                Bukkit.getLogger().log(Level.INFO, "Player \"" + player.getName() + "\" has now " + nbLives + " lives");
+            if(controller.getGameMode().getLifeCurrency().getClass() == NumericLifeToken.class) {
+                for (Player player : players) {
+                    st.execute("UPDATE numericLifeTokensOfPlayer SET lifeTokens=" + nbLifeTokens + " WHERE player=\"" + player.getUuid() + "\" AND server=\"" + Bukkit.getServer().getName() + "\" AND gameMode=\"" + controller.getGameMode().getGameMode().getName() + "\";");
+                    Bukkit.getLogger().log(Level.INFO, "Player \"" + player.getName() + "\" has now " + nbLifeTokens + " lives");
+                }
             }
         } catch (Exception e){
             Bukkit.getLogger().log(Level.SEVERE, "Could not write changes in the database\n" + e);
             Bukkit.getLogger().log(Level.SEVERE, "Stopping the setting of the number of lives of every player");
             return;
         }
-        Bukkit.getLogger().log(Level.INFO, "Every player has now " + nbLives + " lives");
+        Bukkit.getLogger().log(Level.INFO, "Every player has now " + nbLifeTokens + " lives");
         closeConnection();
     }
 
@@ -271,9 +297,11 @@ public class DatabaseHandler {
         try{
             openConnection();
             Statement st = connection.createStatement();
-            ResultSet rs = st.executeQuery("SELECT p.UUID, p.name, ps.lives FROM player p JOIN playerOnServerData ps ON ps.player = p.UUID WHERE ps.server=\"" + Bukkit.getServer().getName() + "\";");
-            while (rs.next())
-                players.add(new Player(UUID.fromString(rs.getString("UUID")), rs.getString("name"), rs.getInt("lives")));
+            if(controller.getGameMode().getLifeCurrency().getClass() == NumericLifeToken.class) {
+                ResultSet rs = st.executeQuery("SELECT p.UUID, p.name, pl.lifeTokens FROM player p JOIN numericLifeTokensOfPlayer pl ON pl.player = p.UUID WHERE pl.server=\"" + Bukkit.getServer().getName() + "\";");
+                while (rs.next())
+                    players.add(new Player(UUID.fromString(rs.getString("UUID")), rs.getString("name"), new NumericLifeToken(rs.getInt("lives"))));
+            }
         } catch (Exception e){
             Bukkit.getLogger().log(Level.WARNING, "Couldn't find every player in the database.\n" + e);
         }

@@ -1,6 +1,7 @@
 package org.mhl.multiplehardcorelives.model.gameLogic;
 
 import org.bukkit.Bukkit;
+import org.mhl.multiplehardcorelives.model.lifeToken.LifeToken;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +19,7 @@ public class Server {
     /**
      * The default number of lives.
      */
-    private int defaultNbLives = 5;
+    private LifeToken defaultNbLivesTokens;
     /**
      * The server's list of loaded players.
      */
@@ -40,22 +41,22 @@ public class Server {
     /**
      * Initialises a new Server by using its address and the wanted default number of lives.
      * @param address The server's address.
-     * @param nbLives The wanted default number of lives.
+     * @param livesTokens The wanted default number of lives.
      */
-    public Server(String address, int nbLives){
+    public Server(String address, LifeToken livesTokens){
         this.address = address;
-        this.defaultNbLives = nbLives;
+        this.defaultNbLivesTokens = livesTokens;
     }
 
     /**
      * Initialises a new Server by using its address, the wanted default number of lives, and its world border length
      * @param address The server's address
-     * @param nbLives The wanted default number of lives
+     * @param livesTokens The wanted default number of lives
      * @param worldBorderLength The wanted world border length
      */
-    public Server(String address, int nbLives, int worldBorderLength){
+    public Server(String address, LifeToken livesTokens, int worldBorderLength){
         this.address = address;
-        this.defaultNbLives = nbLives;
+        this.defaultNbLivesTokens = livesTokens;
         this.worldBorderLength = worldBorderLength;
     }
 
@@ -79,21 +80,21 @@ public class Server {
      * Sends the default number of lives.
      * @return The default number of lives.
      */
-    public int getDefaultNbLives() {
-        return defaultNbLives;
+    public LifeToken getDefaultNbLivesTokens() {
+        return defaultNbLivesTokens;
     }
 
     /**
      * Sets the default number of lives.
-     * @param defaultNbLives The default number of lives.
+     * @param defaultNbLivesTokens The default number of lives.
      */
-    public void setDefaultNbLives(int defaultNbLives) {
-        if(defaultNbLives <=0 ){
-            Bukkit.getLogger().log(Level.WARNING, "The server cannot have a zero or negative default number of lives like " + defaultNbLives);
+    public void setDefaultNbLivesTokens(LifeToken defaultNbLivesTokens) {
+        if(defaultNbLivesTokens.isNull()){
+            Bukkit.getLogger().log(Level.WARNING, "The server cannot have a zero or negative default number of lives like " + defaultNbLivesTokens);
             return;
         }
-        Bukkit.getLogger().log(Level.INFO, "Setting the default number of lives to " + defaultNbLives);
-        this.defaultNbLives = defaultNbLives;
+        Bukkit.getLogger().log(Level.INFO, "Setting the default number of lives to " + defaultNbLivesTokens);
+        this.defaultNbLivesTokens = defaultNbLivesTokens;
     }
 
     /**

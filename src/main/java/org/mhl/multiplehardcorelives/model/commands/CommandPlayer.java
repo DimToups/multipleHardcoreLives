@@ -5,6 +5,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.mhl.multiplehardcorelives.controller.MhlController;
 import org.mhl.multiplehardcorelives.model.gameLogic.Player;
+import org.mhl.multiplehardcorelives.model.lifeToken.NumericLifeToken;
 
 import java.util.logging.Level;
 
@@ -58,9 +59,10 @@ public class CommandPlayer extends MhlCommand {
                         }
 
                         controller.addPlayer(player);
-                        controller.setNbLivesOfPlayer(player, numberOfLives);
-
-                        return true;
+                        if(controller.getGameMode().getLifeCurrency().getClass() == NumericLifeToken.class) {
+                            controller.setNbLivesOfPlayer(player, new NumericLifeToken(numberOfLives));
+                            return true;
+                        }
                     }
                 }
                 default:
