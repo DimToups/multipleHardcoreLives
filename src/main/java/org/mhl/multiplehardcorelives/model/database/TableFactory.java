@@ -235,65 +235,65 @@ public class TableFactory {
     /**
      * Creates a session table inside the database
      */
-    public void createDefaultNumericLifeTokensTable(){
-        StringBuilder defaultNumericLifeTokens = new StringBuilder();
+    public void createDefaultLifeTokensTable(LifeTokens token){
+        StringBuilder defaultLifeTokens = new StringBuilder();
         String readString;
 
         Bukkit.getLogger().log(Level.INFO, "Loading the database's txt schema file...");
-        InputStream iptStrmDefaultNumericLifeTokensSchema = getClass().getResourceAsStream("/database/defaultNumericLifeTokens-schema.txt");
-        if (iptStrmDefaultNumericLifeTokensSchema == null) {
-            Bukkit.getLogger().log(Level.WARNING, "iptStrmDefaultNumericLifeTokensSchema is null");
+        InputStream iptStrmDefaultLifeTokensSchema = getClass().getResourceAsStream("/database/default"  + token.getCleanName() + "LifeTokens-schema.txt");
+        if (iptStrmDefaultLifeTokensSchema == null) {
+            Bukkit.getLogger().log(Level.WARNING, "iptStrmDefaultLifeTokensSchema is null");
             return;
         }
         try{
-            BufferedReader defaultNumericLifeTokensSchemaReader = new BufferedReader(new InputStreamReader(iptStrmDefaultNumericLifeTokensSchema));
+            BufferedReader defaultLifeTokensSchemaReader = new BufferedReader(new InputStreamReader(iptStrmDefaultLifeTokensSchema));
 
-            while((readString = defaultNumericLifeTokensSchemaReader.readLine()) != null)
-                defaultNumericLifeTokens.append(readString);
-            defaultNumericLifeTokensSchemaReader.close();
-            Bukkit.getLogger().log(Level.INFO, "Loaded defaultNumericLifeTokens schema files for the database");
+            while((readString = defaultLifeTokensSchemaReader.readLine()) != null)
+                defaultLifeTokens.append(readString);
+            defaultLifeTokensSchemaReader.close();
+            Bukkit.getLogger().log(Level.INFO, "Loaded default"  + token.getCleanName().toLowerCase() + "LifeTokens schema files for the database");
 
             //
             dbHandler.openConnection();
             Statement statement = dbHandler.connection.createStatement();
-            statement.execute(defaultNumericLifeTokens.toString());
-            Bukkit.getLogger().log(Level.INFO, "Created the defaultNumericLifeTokens table in the database");
+            statement.execute(defaultLifeTokens.toString());
+            Bukkit.getLogger().log(Level.INFO, "Created the default"  + token.getCleanName().toLowerCase() + "LifeTokens table in the database");
             dbHandler.closeConnection();
         } catch (Exception e){
-            Bukkit.getLogger().log(Level.WARNING, "Could not create the defaultNumericLifeTokens table in the database");
+            Bukkit.getLogger().log(Level.WARNING, "Could not create the defaultLifeTokens table in the database");
         }
     }
 
     /**
      * Creates a session table inside the database
      */
-    public void createNumericLifeTokensOfPlayer(){
-        StringBuilder numericLifeTokensOfPlayer = new StringBuilder();
+    public void createLifeTokensOfPlayerTable(LifeTokens token){
+        StringBuilder lifeTokensOfPlayer = new StringBuilder();
         String readString;
 
         Bukkit.getLogger().log(Level.INFO, "Loading the database's txt schema file...");
-        InputStream iptStrmNumericLifeTokensOfPlayerSchema = getClass().getResourceAsStream("/database/numericLifeTokensOfPlayer-schema.txt");
-        if (iptStrmNumericLifeTokensOfPlayerSchema == null) {
-            Bukkit.getLogger().log(Level.WARNING, "iptStrmNumericLifeTokensOfPlayerSchema is null");
+        InputStream iptStrmLifeTokensOfPlayerSchema = getClass().getResourceAsStream("/database/"  + token.getCleanName().toLowerCase() + "LifeTokensOfPlayer-schema.txt");
+        if (iptStrmLifeTokensOfPlayerSchema == null) {
+            Bukkit.getLogger().log(Level.WARNING, "iptStrmLifeTokensOfPlayerSchema is null");
             return;
         }
         try{
-            BufferedReader numericLifeTokensOfPlayerSchemaReader = new BufferedReader(new InputStreamReader(iptStrmNumericLifeTokensOfPlayerSchema));
+            BufferedReader lifeTokensOfPlayerSchemaReader = new BufferedReader(new InputStreamReader(iptStrmLifeTokensOfPlayerSchema));
 
-            while((readString = numericLifeTokensOfPlayerSchemaReader.readLine()) != null)
-                numericLifeTokensOfPlayer.append(readString);
-            numericLifeTokensOfPlayerSchemaReader.close();
-            Bukkit.getLogger().log(Level.INFO, "Loaded numericLifeTokensOfPlayer schema files for the database");
+            while((readString = lifeTokensOfPlayerSchemaReader.readLine()) != null)
+                lifeTokensOfPlayer.append(readString);
+            lifeTokensOfPlayerSchemaReader.close();
+            Bukkit.getLogger().log(Level.INFO, "Loaded "  + token.getCleanName().toLowerCase() + "lifeTokensOfPlayer schema files for the database");
 
             //
             dbHandler.openConnection();
             Statement statement = dbHandler.connection.createStatement();
-            statement.execute(numericLifeTokensOfPlayer.toString());
-            Bukkit.getLogger().log(Level.INFO, "Created the numericLifeTokensOfPlayer table in the database");
+            statement.execute(lifeTokensOfPlayer.toString());
+            Bukkit.getLogger().log(Level.INFO, "Created the "  + token.getCleanName().toLowerCase() + "LifeTokensOfPlayer table in the database");
 
             dbHandler.closeConnection();
         } catch (Exception e){
-            Bukkit.getLogger().log(Level.WARNING, "Could not create the numericLifeTokensOfPlayer table in the database");
+            Bukkit.getLogger().log(Level.WARNING, "Could not create the "  + token.getCleanName().toLowerCase() + "LifeTokensOfPlayer table in the database");
         }
     }
 

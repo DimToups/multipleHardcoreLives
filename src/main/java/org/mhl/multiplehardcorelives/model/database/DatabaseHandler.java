@@ -6,6 +6,7 @@ import org.mhl.multiplehardcorelives.model.gameLogic.Player;
 import org.mhl.multiplehardcorelives.model.gameLogic.Server;
 import org.mhl.multiplehardcorelives.model.gameModes.enums.GameModes;
 import org.mhl.multiplehardcorelives.model.lifeToken.LifeToken;
+import org.mhl.multiplehardcorelives.model.lifeToken.LifeTokens;
 import org.mhl.multiplehardcorelives.model.lifeToken.NumericLifeToken;
 import org.mhl.multiplehardcorelives.model.session.Session;
 import org.mhl.multiplehardcorelives.model.session.SessionEvent;
@@ -143,8 +144,10 @@ public class DatabaseHandler {
         tableFactory.createEventTypeTable();
         tableFactory.createLifeTokenTable();
         tableFactory.createGameModeTable();
-        tableFactory.createNumericLifeTokensOfPlayer();
-        tableFactory.createDefaultNumericLifeTokensTable();
+        for(LifeTokens lifeToken : LifeTokens.values()) {
+            tableFactory.createLifeTokensOfPlayerTable(lifeToken);
+            tableFactory.createDefaultLifeTokensTable(lifeToken);
+        }
         tableFactory.createSessionTable();
         tableFactory.createSessionEventTable();
     }
