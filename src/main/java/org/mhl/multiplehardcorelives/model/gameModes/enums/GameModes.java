@@ -1,12 +1,16 @@
 package org.mhl.multiplehardcorelives.model.gameModes.enums;
 
-import org.mhl.multiplehardcorelives.model.gameModes.Classic;
+import org.mhl.multiplehardcorelives.controller.MhlController;
+import org.mhl.multiplehardcorelives.model.gameModes.classic.Classic;
 import org.mhl.multiplehardcorelives.model.gameModes.MhlGameMode;
+import org.mhl.multiplehardcorelives.model.gameModes.impostor.Impostor;
 import org.mhl.multiplehardcorelives.model.lifeToken.LifeTokens;
 
 public enum GameModes {
     Classic("Classic", "Description", LifeTokens.NumericLifeToken),
+    Impostor("Impostor", "Description", LifeTokens.NumericLifeToken),
     ;
+
     private final String name;
     private final String description;
     private final LifeTokens lifeTokens;
@@ -25,9 +29,12 @@ public enum GameModes {
         return description;
     }
 
-    public static MhlGameMode toMhlGameMode(GameModes gameModes){
+    @org.jetbrains.annotations.Nullable
+    public static MhlGameMode toMhlGameMode(MhlController controller, GameModes gameModes){
         return switch (gameModes){
-            default -> new Classic();
+            case Classic -> new Classic();
+            case Impostor -> new Impostor(controller);
+            default -> null;
         };
     }
 

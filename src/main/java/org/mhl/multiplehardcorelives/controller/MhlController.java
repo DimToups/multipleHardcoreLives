@@ -11,7 +11,7 @@ import org.mhl.multiplehardcorelives.model.PlayerListener;
 import org.mhl.multiplehardcorelives.model.database.DatabaseHandler;
 import org.mhl.multiplehardcorelives.model.gameLogic.Player;
 import org.mhl.multiplehardcorelives.model.gameLogic.Server;
-import org.mhl.multiplehardcorelives.model.gameModes.Classic;
+import org.mhl.multiplehardcorelives.model.gameModes.classic.Classic;
 import org.mhl.multiplehardcorelives.model.gameModes.MhlGameMode;
 import org.mhl.multiplehardcorelives.model.gameModes.enums.GameModes;
 import org.mhl.multiplehardcorelives.model.lifeToken.LifeToken;
@@ -496,6 +496,7 @@ public class MhlController {
         this.decrementLivesOfPlayer(pde.getEntity());
         if(sessionManager.isSessionActive()){
             this.sessionManager.playerDied(pde);
+            this.gameMode.onPlayerDeath(pde);
             if(Objects.requireNonNull(findPlayerSafelyByUUID(pde.getEntity().getUniqueId())).getLivesTokens().isNull()) {
                 this.sessionManager.definitivePlayerDeath(pde);
             }
@@ -532,12 +533,12 @@ public class MhlController {
             commandSender.sendMessage("You cannot change the GameMode during an active session");
         else if (gameModeEnum != this.getGameMode().getGameMode()){
             writeChanges();
-            MhlGameMode gameMode = GameModes.toMhlGameMode(gameModeEnum);
+            MhlGameMode gameMode = GameModes.toMhlGameMode(this, gameModeEnum);
             this.gameMode = gameMode;
             this.server.setDefaultNbLivesTokens(gameMode.getDefaultNbLifeTokens());
             for(Player player : this.server.getPlayers()){
                 LifeToken lt = databaseHandler.getPlayerLifeTokensFromGameMode(player, gameModeEnum);
-                player.setLivesTokens(lt == null ? GameModes.toMhlGameMode(gameModeEnum).getDefaultNbLifeTokens() : lt);
+                player.setLivesTokens(lt == null ? GameModes.toMhlGameMode(this, gameModeEnum).getDefaultNbLifeTokens() : lt);
             }
             this.playerList.updatePlayerList();
             commandSender.sendMessage("The GameMode has been set to " + gameModeEnum.getName());
