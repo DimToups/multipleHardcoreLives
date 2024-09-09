@@ -134,4 +134,8 @@ public class Server {
     public int getWorldBorderLength() {
         return worldBorderLength;
     }
+
+    public List<Player> getOnlinePlayers() {
+        return new ArrayList<>(this.players.stream().filter(Player::isOnline).toList());
+    }
 }

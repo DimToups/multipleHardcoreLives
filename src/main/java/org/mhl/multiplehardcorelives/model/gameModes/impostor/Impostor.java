@@ -1,5 +1,6 @@
 package org.mhl.multiplehardcorelives.model.gameModes.impostor;
 
+import org.bukkit.Bukkit;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.mhl.multiplehardcorelives.controller.MhlController;
 import org.mhl.multiplehardcorelives.model.gameLogic.Player;
@@ -11,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
+import java.util.logging.Level;
 
 public class Impostor extends MhlGameMode {
     private Player impostor;
@@ -22,18 +24,21 @@ public class Impostor extends MhlGameMode {
 
     public void onSessionStart() {
         List<Player> players = new ArrayList<>();
-        for(Player player : controller.getServer().getPlayers())
+        for(Player player : controller.getServer().getOnlinePlayers())
             if(player.getLivesTokens().isSuperior(new NumericLifeToken(1)))
                 players.add(player);
         if(players.isEmpty())
-            players = controller.getServer().getPlayers();
+            players = controller.getServer().getOnlinePlayers();
         Random rand = new Random();
-        this.impostor = players.get(rand.nextInt(players.size() - 1));
+        this.impostor = players.get(rand.nextInt(players.size()));
+        Bukkit.getLogger().log(Level.INFO, "The impostor for the session is " + impostor.getName());
     }
 
     public void onPlayerDeath(PlayerDeathEvent pde) {
-        if(Objects.requireNonNull(pde.getDeathMessage()).contains(impostor.getName()) && !pde.getEntity().getName().equals(impostor.getName()))
+        if(Objects.requireNonNull(pde.getDeathMessage()).contains(impostor.getName()) && !pde.getEntity().getUniqueId().equals(impostor.getUuid())){
             hasImposterKilled = true;
+            Bukkit.getLogger().log(Level.INFO, "The imposter has killed someone");
+        }
     }
 
     public void onSessionEnd() {

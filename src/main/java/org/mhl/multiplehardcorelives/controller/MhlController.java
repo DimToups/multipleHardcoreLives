@@ -126,8 +126,10 @@ public class MhlController {
      * Starts the session by telling it to the sessionManager.
      */
     public void startSession(){
-        if(!sessionManager.isSessionActive())
+        if(!sessionManager.isSessionActive()) {
+            gameMode.onSessionStart();
             playerCommunicator.tellSessionStart();
+        }
         sessionManager.startSession();
     }
 
@@ -145,6 +147,7 @@ public class MhlController {
                         TimeUnit.SECONDS.sleep(20);
                         playerCommunicator.tellTimeLeft(10);
                         TimeUnit.SECONDS.sleep(10);
+                        gameMode.onSessionEnd();
                         sessionManager.endSession();
                     } catch(Exception e){
                         Bukkit.getLogger().log(Level.WARNING, "Timer could not wait for 30 seconds:\n" + e);
