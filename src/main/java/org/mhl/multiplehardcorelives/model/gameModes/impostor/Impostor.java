@@ -1,7 +1,9 @@
 package org.mhl.multiplehardcorelives.model.gameModes.impostor;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.mhl.multiplehardcorelives.controller.MhlController;
 import org.mhl.multiplehardcorelives.model.gameLogic.Player;
 import org.mhl.multiplehardcorelives.model.gameModes.MhlGameMode;
@@ -12,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 public class Impostor extends MhlGameMode {
@@ -23,15 +26,30 @@ public class Impostor extends MhlGameMode {
     }
 
     public void onSessionStart() {
-        List<Player> players = new ArrayList<>();
-        for(Player player : controller.getServer().getOnlinePlayers())
-            if(player.getLivesTokens().isSuperior(new NumericLifeToken(1)))
-                players.add(player);
-        if(players.isEmpty())
-            players = controller.getServer().getOnlinePlayers();
-        Random rand = new Random();
-        this.impostor = players.get(rand.nextInt(players.size()));
-        Bukkit.getLogger().log(Level.INFO, "The impostor for the session is " + impostor.getName());
+        Thread t = new Thread(new BukkitRunnable() {
+            @Override
+            public void run() {
+                try{
+                    TimeUnit.SECONDS.sleep(60 * 5);
+
+                    // Designation of the imposter
+                    List<Player> players = new ArrayList<>();
+                    for(Player player : controller.getServer().getOnlinePlayers())
+                        if(player.getLivesTokens().isSuperior(new NumericLifeToken(1)))
+                            players.add(player);
+                    if(players.isEmpty())
+                        players = controller.getServer().getOnlinePlayers();
+                    Random rand = new Random();
+                    impostor = players.get(rand.nextInt(players.size()));
+                    controller.tellWhoIsImposter(impostor);
+                    Bukkit.getLogger().log(Level.INFO, "The impostor for the session is " + impostor.getName());
+                } catch (Exception e) {
+                    Bukkit.getLogger().log(Level.WARNING, "Could not find any player. Aborting the session\n" + e);
+                    controller.endSession();
+                }
+            }
+        });
+        t.start();
     }
 
     public void onPlayerDeath(PlayerDeathEvent pde) {
@@ -42,7 +60,12 @@ public class Impostor extends MhlGameMode {
     }
 
     public void onSessionEnd() {
-        if (!hasImposterKilled)
+        if (!hasImposterKilled) {
             controller.setNbLivesOfPlayer(impostor, new NumericLifeToken(1));
+            Bukkit.getLogger().log(Level.INFO, "The impostor (" + impostor.getName() + ") has killed nobody during the session");
+
+            Bukkit.getPlayer(impostor.getUuid()).sendMessage(ChatColor.RED + "You have killed nobody during the session");
+            Bukkit.getPlayer(impostor.getUuid()).sendMessage(ChatColor.RED + "You now have one remaining life");
+        }
     }
 }

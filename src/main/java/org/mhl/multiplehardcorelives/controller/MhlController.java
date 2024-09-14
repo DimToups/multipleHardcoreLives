@@ -549,4 +549,8 @@ public class MhlController {
         else
             commandSender.sendMessage("The current gameMode has already been set to " + gameModeEnum);
     }
+
+    public void tellWhoIsImposter(Player impostor) {
+        this.playerCommunicator.tellWhoIsImposter(server.getOnlinePlayers(), impostor);
+    }
 }
