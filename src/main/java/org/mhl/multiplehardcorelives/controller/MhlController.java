@@ -83,9 +83,6 @@ public class MhlController {
         pm.registerEvents(playerListener, plugin);
 
         //
-        this.gameMode = new Classic();
-
-        //
         databaseHandler = new DatabaseHandler(this, plugin.getDataFolder().getAbsolutePath());
         if(!plugin.getDataFolder().exists())
             plugin.getDataFolder().mkdirs();
@@ -95,6 +92,9 @@ public class MhlController {
             server = new Server(Bukkit.getServer().getName(), this.gameMode.getDefaultNbLifeTokens());
         else
             server = foundServer;
+
+        //
+        this.gameMode = GameModes.toMhlGameMode(this, databaseHandler.lastPlayedGameMode());
 
         //
         try{

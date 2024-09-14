@@ -339,10 +339,14 @@ public class DatabaseHandler {
         try{
             openConnection();
             Statement st = connection.createStatement();
-            ResultSet rs = st.executeQuery("SELECT gameMode FROM session WHERE server=\"" + Bukkit.getServer().getName() +"\";");
+            ResultSet rs = st.executeQuery("SELECT COUNT(gameMode), gameMode FROM session WHERE server=\"" + Bukkit.getServer().getName() +"\";");
 
-            if(!rs.wasNull())
+            if(rs.getInt("COUNT(gameMode)") != 0) {
                 gameMode = GameModes.valueOf(rs.getString("gameMode"));
+                Bukkit.getLogger().log(Level.INFO, "The found GameMode is " + gameMode.getName());
+            }
+            else
+                Bukkit.getLogger().log(Level.WARNING, "Could not find the last played GameMode. Setting it to Classic");
         } catch (Exception e){
             Bukkit.getLogger().log(Level.WARNING, "Could not find the last played GameMode");
             Bukkit.getLogger().log(Level.INFO, "Setting the current GameMode to classic");
