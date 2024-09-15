@@ -11,7 +11,6 @@ import org.mhl.multiplehardcorelives.model.PlayerListener;
 import org.mhl.multiplehardcorelives.model.database.DatabaseHandler;
 import org.mhl.multiplehardcorelives.model.gameLogic.Player;
 import org.mhl.multiplehardcorelives.model.gameLogic.Server;
-import org.mhl.multiplehardcorelives.model.gameModes.classic.Classic;
 import org.mhl.multiplehardcorelives.model.gameModes.MhlGameMode;
 import org.mhl.multiplehardcorelives.model.gameModes.enums.GameModes;
 import org.mhl.multiplehardcorelives.model.lifeToken.LifeToken;
@@ -87,14 +86,16 @@ public class MhlController {
         if(!plugin.getDataFolder().exists())
             plugin.getDataFolder().mkdirs();
         databaseHandler.createDatabase();
-        Server foundServer = databaseHandler.findServer(Bukkit.getServer().getName());
-        if(foundServer == null)
-            server = new Server(Bukkit.getServer().getName(), this.gameMode.getDefaultNbLifeTokens());
-        else
-            server = foundServer;
-
         //
         this.gameMode = GameModes.toMhlGameMode(this, databaseHandler.lastPlayedGameMode());
+        //
+        Server foundServer = databaseHandler.findServer(Bukkit.getServer().getName());
+        if(foundServer == null) {
+            server = new Server(Bukkit.getServer().getName(), this.gameMode.getDefaultNbLifeTokens());
+        }
+        else {
+            server = foundServer;
+        }
 
         //
         try{
