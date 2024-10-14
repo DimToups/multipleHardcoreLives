@@ -1,9 +1,13 @@
 package org.mhl.multiplehardcorelives.model.gameModes.classic;
 
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.mhl.multiplehardcorelives.model.gameModes.MhlGameMode;
 import org.mhl.multiplehardcorelives.model.gameModes.enums.GameModes;
 import org.mhl.multiplehardcorelives.model.lifeToken.NumericLifeToken;
+
+import java.util.List;
 
 public class Classic extends MhlGameMode {
     public Classic(){
@@ -23,5 +27,10 @@ public class Classic extends MhlGameMode {
     @Override
     public void onPlayerDeath(PlayerDeathEvent pde) {
 
+    }
+
+    @Override
+    public List<String> getCommandTabCompleter(CommandSender commandSender, Command command, String s, String[] strings) {
+        return List.of();
     }
 }

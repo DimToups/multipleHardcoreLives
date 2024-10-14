@@ -1,9 +1,13 @@
 package org.mhl.multiplehardcorelives.model.gameModes;
 
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.mhl.multiplehardcorelives.controller.MhlController;
 import org.mhl.multiplehardcorelives.model.gameModes.enums.GameModes;
 import org.mhl.multiplehardcorelives.model.lifeToken.LifeToken;
+
+import java.util.List;
 
 public abstract class MhlGameMode {
 
@@ -54,4 +58,14 @@ public abstract class MhlGameMode {
     public abstract void onSessionEnd();
 
     public abstract void onPlayerDeath(PlayerDeathEvent pde);
+
+    /**
+     * Recommends options to the player when typing the command mhlGameMode to configure it
+     * @param commandSender The command sender
+     * @param command The command
+     * @param s The full sent command
+     * @param strings The parameters sent from the command
+     * @return The list of possible options at a precise index
+     */
+    public abstract List<String> getCommandTabCompleter(CommandSender commandSender, Command command, String s, String[] strings);
 }

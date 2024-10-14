@@ -53,7 +53,7 @@ public final class MultipleHardcoreLives extends JavaPlugin {
         this.getCommand("mhlWorldBorder").setTabCompleter(new MhlWorldBorderTabCompeter());
 
         this.getCommand("mhlGameMode").setExecutor(new CommandMhlGameMode(controller));
-        this.getCommand("mhlGameMode").setTabCompleter(new MhlGameModeTabCompleter());
+        this.getCommand("mhlGameMode").setTabCompleter(new MhlGameModeTabCompleter(controller));
     }
 
     /**

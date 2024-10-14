@@ -3,17 +3,26 @@ package org.mhl.multiplehardcorelives.view.commands;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
+import org.mhl.multiplehardcorelives.controller.MhlController;
 import org.mhl.multiplehardcorelives.model.gameModes.enums.GameModes;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * A TabCompleter class for the command mhlGameMode
  */
 public class MhlGameModeTabCompleter implements TabCompleter {
+
+    private final MhlController controller;
+
+    public MhlGameModeTabCompleter(MhlController controller){
+        this.controller = controller;
+    }
     /**
-     * Recommends options to the player when typing the command mhlWorldBorder
+     * Recommends options to the player when typing the command mhlGameMode
      * @param commandSender The command sender
      * @param command The command
      * @param s The full sent command
@@ -26,6 +35,8 @@ public class MhlGameModeTabCompleter implements TabCompleter {
         if(strings.length == 1)
             for(GameModes gameMode : GameModes.values())
                 args.add(gameMode.getName());
+        else if (strings.length > 1 && Arrays.stream(GameModes.values()).anyMatch(g -> g.getName().equals(strings[0])))
+            args.addAll(Objects.requireNonNull(GameModes.toMhlGameMode(controller, GameModes.valueOf(strings[0]))).getCommandTabCompleter(commandSender, command, s, strings));
         return args;
     }
 }

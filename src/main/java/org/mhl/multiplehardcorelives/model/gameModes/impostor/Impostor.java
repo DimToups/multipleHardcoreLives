@@ -2,6 +2,8 @@ package org.mhl.multiplehardcorelives.model.gameModes.impostor;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.mhl.multiplehardcorelives.controller.MhlController;
@@ -57,6 +59,20 @@ public class Impostor extends MhlGameMode {
             hasImposterKilled = true;
             Bukkit.getLogger().log(Level.INFO, "The imposter has killed someone");
         }
+    }
+
+    /**
+     * Recommends options to the player when typing the command mhlGameMode to configure it
+     *
+     * @param commandSender The command sender
+     * @param command       The command
+     * @param s             The full sent command
+     * @param strings       The parameters sent from the command
+     * @return The list of possible options at a precise index
+     */
+    @Override
+    public List<String> getCommandTabCompleter(CommandSender commandSender, Command command, String s, String[] strings) {
+        return List.of();
     }
 
     public void onSessionEnd() {
