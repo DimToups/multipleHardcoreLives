@@ -32,8 +32,11 @@ public class CommandMhlGameMode extends MhlCommand{
             }
         }
         else if (strings.length == 2 && Arrays.stream(GameModes.values()).anyMatch(g -> g.getName().equals(strings[0]))){
-            switch (strings[1]){
-                case "showImpostor" : controller.showImpostor(commandSender); return true;
+            if(strings[0].equalsIgnoreCase("impostor")) {
+                if (strings[1].equals("showImpostor")) {
+                    controller.showImpostor(commandSender);
+                    return true;
+                }
             }
         }
         return false;

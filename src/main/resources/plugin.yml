@@ -13,7 +13,7 @@ permissions:
 commands:
   session:
     description: Manages sessions across the server
-    usage: /session [start | end]
+    usage: /session [start | end | events]
     permission: admin.manage.playerpermission
   player:
     description: Manages and displays informations about players

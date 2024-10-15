@@ -16,6 +16,7 @@ import org.mhl.multiplehardcorelives.model.gameModes.enums.GameModes;
 import org.mhl.multiplehardcorelives.model.gameModes.impostor.Impostor;
 import org.mhl.multiplehardcorelives.model.lifeToken.LifeToken;
 import org.mhl.multiplehardcorelives.model.session.Session;
+import org.mhl.multiplehardcorelives.model.session.SessionEvent;
 import org.mhl.multiplehardcorelives.model.session.SessionManager;
 import org.mhl.multiplehardcorelives.view.PlayerCommunicator;
 import org.mhl.multiplehardcorelives.view.PlayerList;
@@ -109,7 +110,7 @@ public class MhlController {
         this.reloadWorldBorder();
 
         //
-        this.sessionManager = new SessionManager(databaseHandler.getNbOfPreviousSessions());
+        this.sessionManager = new SessionManager(databaseHandler.getNbOfPreviousSessions(), this);
         this.playerCommunicator = new PlayerCommunicator();
         this.playerList = new PlayerList(this);
     }
@@ -570,5 +571,38 @@ public class MhlController {
         }
         else
             commandSender.sendMessage("The session must be active for the command to show you who are the impostors");
+    }
+
+    public Session getCurrentSession() {
+        if(this.sessionManager.isSessionActive())
+            return this.sessionManager.getSessions().getLast();
+        else
+            return null;
+    }
+
+    public void claimEvent(CommandSender commandSender, int eventId) {
+        // Checking the parameters
+        if(!sessionManager.isSessionActive()) {
+            commandSender.sendMessage("The session has not started yet");
+            return;
+        }
+        List<SessionEvent> events = this.sessionManager.getSessions().getLast().getEvents();
+        if(events.size() <= eventId) {
+            commandSender.sendMessage("Invalid eventId");
+            return;
+        }
+        if(server.getPlayers().stream().noneMatch(p -> p.getName().equals(commandSender.getName()))) {
+            commandSender.sendMessage("No players with the name " + commandSender.getName() + " has been found on the server");
+            return;
+        }
+
+        // Claiming the event
+        SessionEvent event = events.get(eventId);
+        Player player = this.findPlayerSafelyByName(commandSender.getName());
+        try {
+            event.setClaimer(player);
+        } catch (IllegalAccessException e) {
+            commandSender.sendMessage(ChatColor.RED + e.getMessage());
+        }
     }
 }

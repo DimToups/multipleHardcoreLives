@@ -3,6 +3,7 @@ package org.mhl.multiplehardcorelives.model.session;
 import org.bukkit.Bukkit;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerAdvancementDoneEvent;
+import org.mhl.multiplehardcorelives.controller.MhlController;
 import org.mhl.multiplehardcorelives.model.session.enums.SessionEvents;
 import org.mhl.multiplehardcorelives.model.gameLogic.Player;
 
@@ -15,6 +16,11 @@ import java.util.logging.Level;
  * A class that contains the logic of the plugin for its sessions.
  */
 public class SessionManager {
+
+    /**
+     * The plugin's controller
+     */
+    private final MhlController controller;
 
     /**
      * A boolean indicating if the session is active or not.
@@ -43,10 +49,13 @@ public class SessionManager {
 
     /**
      * Initialises a SessionManager that will listen to players events.
+     *
      * @param nbOfPreviousSessions The number of previous sessions
+     * @param controller The plugin's controller
      */
-    public SessionManager(int nbOfPreviousSessions){
+    public SessionManager(int nbOfPreviousSessions, MhlController controller){
         this.nbOfPreviousSessions = nbOfPreviousSessions;
+        this.controller = controller;
         Bukkit.getLogger().log(Level.INFO, "Now listening to player informations");
     }
 
@@ -157,7 +166,7 @@ public class SessionManager {
      * @param pade The event of an advancement which has been done
      */
     public void playerAdvancementDone(PlayerAdvancementDoneEvent pade) {
-        this.currentSession.addEvent(SessionEvents.Advancement, Calendar.getInstance(), "Player " + pade.getPlayer().getName() + " just got the advancement " + Objects.requireNonNull(pade.getAdvancement().getDisplay()).getTitle());
+        this.currentSession.addEvent(SessionEvents.Advancement, Calendar.getInstance(), "Player " + pade.getPlayer().getName() + " just got the advancement " + Objects.requireNonNull(pade.getAdvancement().getDisplay()).getTitle(), controller.findPlayerSafelyByUUID(pade.getPlayer().getUniqueId()));
     }
 
     /**
@@ -165,7 +174,7 @@ public class SessionManager {
      * @param player The player who has quit
      */
     public void playerQuit(org.bukkit.entity.Player player) {
-        this.currentSession.addEvent(SessionEvents.Player_quit, Calendar.getInstance(), "Player " + player.getName() + " has quit the game");
+        this.currentSession.addEvent(SessionEvents.Player_quit, Calendar.getInstance(), "Player " + player.getName() + " has quit the game", controller.findPlayerSafelyByUUID(player.getUniqueId()));
     }
 
     /**
@@ -173,6 +182,6 @@ public class SessionManager {
      * @param player The player who has joined
      */
     public void playerJoined(org.bukkit.entity.Player player) {
-        this.currentSession.addEvent(SessionEvents.Player_join, Calendar.getInstance(), "Player " + player.getName() + " has joined the game");
+        this.currentSession.addEvent(SessionEvents.Player_join, Calendar.getInstance(), "Player " + player.getName() + " has joined the game", controller.findPlayerSafelyByUUID(player.getUniqueId()));
     }
 }

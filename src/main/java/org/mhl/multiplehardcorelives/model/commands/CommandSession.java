@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.mhl.multiplehardcorelives.controller.MhlController;
+import org.mhl.multiplehardcorelives.model.session.SessionEvent;
 
 import java.util.logging.Level;
 
@@ -29,22 +30,28 @@ public class CommandSession extends MhlCommand {
      */
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
-        if(strings.length != 1){
-            commandSender.sendMessage("\"" + s + "\" does not have the correct amount of parameters");
-            return false;
-        }
         Bukkit.getLogger().log(Level.INFO ,"Session " + strings[0] + " command has been detected. Sending request to handle it");
-        switch (strings[0]){
-            case "start" :
-                this.controller.startSession();
-                break;
-            case "end" :
-                this.controller.endSession();
-                break;
-            default:
-                commandSender.sendMessage("\"" + strings[0] + "\" is not a valid argument\nOnly \"start\" and \"end\" are allowed");
-                return false;
+        if(strings.length == 1){
+            switch (strings[0]){
+                case "start" : this.controller.startSession(); break;
+                case "end" : this.controller.endSession(); break;
+                case "events" : {
+                    if (controller.getCurrentSession() != null)
+                        for (SessionEvent event : controller.getCurrentSession().getEvents())
+                            commandSender.sendMessage(event.eventId + ": " + event.description);
+                    else
+                        commandSender.sendMessage("The session has not started yet");
+                    break;
+                }
+            }
         }
+        else if (strings.length == 3){
+            if(strings[0].equals("events"))
+                if (strings[1].equals("claimEvent"))
+                    this.controller.claimEvent(commandSender, Integer.parseInt(strings[2]));
+        }
+        else
+            return false;
         return true;
     }
 }

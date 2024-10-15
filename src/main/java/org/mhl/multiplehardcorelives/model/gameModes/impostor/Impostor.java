@@ -83,17 +83,11 @@ public class Impostor extends MhlGameMode {
     @Override
     public List<String> getCommandTabCompleter(CommandSender commandSender, Command command, String s, String[] strings) {
         List<String> args = new ArrayList<>();
-        if(strings.length == 2){
+        if(strings.length == 2)
             args.add("showImpostor");
-            /*args.add("claimDeathOf");
-            args.add("revokeDeathClaimOf");
-            args.add("assignDeathActTo");*/
-        }
-        if(strings.length ==3){
-            switch (strings[2]){
-                case "showImpostor" : args.add(impostor.getName());
-            }
-        }
+        if(strings.length ==3)
+            if (strings[2].equals("showImpostor"))
+                args.add(impostor.getName());
         return args;
     }
 

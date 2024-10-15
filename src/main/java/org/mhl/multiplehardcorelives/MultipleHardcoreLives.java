@@ -47,7 +47,7 @@ public final class MultipleHardcoreLives extends JavaPlugin {
         this.getCommand("server").setTabCompleter(new ServerTabCompleter());
 
         this.getCommand("session").setExecutor(new CommandSession(controller));
-        this.getCommand("session").setTabCompleter(new SessionTabCompleter());
+        this.getCommand("session").setTabCompleter(new SessionTabCompleter(controller));
 
         this.getCommand("mhlWorldBorder").setExecutor(new CommandMhlWorldBorder(controller));
         this.getCommand("mhlWorldBorder").setTabCompleter(new MhlWorldBorderTabCompeter());
