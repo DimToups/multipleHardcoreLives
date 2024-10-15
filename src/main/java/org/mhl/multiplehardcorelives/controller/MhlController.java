@@ -13,6 +13,7 @@ import org.mhl.multiplehardcorelives.model.gameLogic.Player;
 import org.mhl.multiplehardcorelives.model.gameLogic.Server;
 import org.mhl.multiplehardcorelives.model.gameModes.MhlGameMode;
 import org.mhl.multiplehardcorelives.model.gameModes.enums.GameModes;
+import org.mhl.multiplehardcorelives.model.gameModes.impostor.Impostor;
 import org.mhl.multiplehardcorelives.model.lifeToken.LifeToken;
 import org.mhl.multiplehardcorelives.model.session.Session;
 import org.mhl.multiplehardcorelives.model.session.SessionManager;
@@ -553,5 +554,21 @@ public class MhlController {
 
     public void tellWhoIsImposter(Player impostor) {
         this.playerCommunicator.tellWhoIsImposter(server.getOnlinePlayers(), impostor);
+    }
+
+    public Player getImpostor() {
+        return ((Impostor)(this.gameMode)).getImpostor();
+    }
+
+    public void showImpostor(CommandSender commandSender) {
+        if(sessionManager.isSessionActive()){
+            Player impostor = getImpostor();
+            if(impostor == null)
+                commandSender.sendMessage("There is no impostor currently");
+            else
+                commandSender.sendMessage(impostor.getName());
+        }
+        else
+            commandSender.sendMessage("The session must be active for the command to show you who are the impostors");
     }
 }

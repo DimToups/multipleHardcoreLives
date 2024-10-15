@@ -5,6 +5,8 @@ import org.bukkit.command.CommandSender;
 import org.mhl.multiplehardcorelives.controller.MhlController;
 import org.mhl.multiplehardcorelives.model.gameModes.enums.GameModes;
 
+import java.util.Arrays;
+
 public class CommandMhlGameMode extends MhlCommand{
     /**
      * Initialise a CommandMhlGameMode by using the plugin's controller.
@@ -27,6 +29,11 @@ public class CommandMhlGameMode extends MhlCommand{
                 return true;
             } catch (Exception e){
                 commandSender.sendMessage("The argument " + strings[0] + " is not a valid GameMode");
+            }
+        }
+        else if (strings.length == 2 && Arrays.stream(GameModes.values()).anyMatch(g -> g.getName().equals(strings[0]))){
+            switch (strings[1]){
+                case "showImpostor" : controller.showImpostor(commandSender); return true;
             }
         }
         return false;

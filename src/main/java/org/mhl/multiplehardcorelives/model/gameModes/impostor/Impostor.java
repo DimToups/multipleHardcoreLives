@@ -32,7 +32,7 @@ public class Impostor extends MhlGameMode {
             @Override
             public void run() {
                 try{
-                    TimeUnit.SECONDS.sleep(60 * 5);
+                    TimeUnit.SECONDS.sleep(10);
 
                     // Designation of the imposter
                     List<Player> players = new ArrayList<>();
@@ -61,6 +61,16 @@ public class Impostor extends MhlGameMode {
         }
     }
 
+    public void onSessionEnd() {
+        if (!hasImposterKilled) {
+            controller.setNbLivesOfPlayer(impostor, new NumericLifeToken(1));
+            Bukkit.getLogger().log(Level.INFO, "The impostor (" + impostor.getName() + ") has killed nobody during the session");
+
+            Bukkit.getPlayer(impostor.getUuid()).sendMessage(ChatColor.RED + "You have killed nobody during the session");
+            Bukkit.getPlayer(impostor.getUuid()).sendMessage(ChatColor.RED + "You now have one remaining life");
+        }
+    }
+
     /**
      * Recommends options to the player when typing the command mhlGameMode to configure it
      *
@@ -72,16 +82,22 @@ public class Impostor extends MhlGameMode {
      */
     @Override
     public List<String> getCommandTabCompleter(CommandSender commandSender, Command command, String s, String[] strings) {
-        return List.of();
+        List<String> args = new ArrayList<>();
+        if(strings.length == 2){
+            args.add("showImpostor");
+            /*args.add("claimDeathOf");
+            args.add("revokeDeathClaimOf");
+            args.add("assignDeathActTo");*/
+        }
+        if(strings.length ==3){
+            switch (strings[2]){
+                case "showImpostor" : args.add(impostor.getName());
+            }
+        }
+        return args;
     }
 
-    public void onSessionEnd() {
-        if (!hasImposterKilled) {
-            controller.setNbLivesOfPlayer(impostor, new NumericLifeToken(1));
-            Bukkit.getLogger().log(Level.INFO, "The impostor (" + impostor.getName() + ") has killed nobody during the session");
-
-            Bukkit.getPlayer(impostor.getUuid()).sendMessage(ChatColor.RED + "You have killed nobody during the session");
-            Bukkit.getPlayer(impostor.getUuid()).sendMessage(ChatColor.RED + "You now have one remaining life");
-        }
+    public Player getImpostor() {
+        return impostor;
     }
 }
