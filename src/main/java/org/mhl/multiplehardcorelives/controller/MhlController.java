@@ -599,10 +599,7 @@ public class MhlController {
         // Claiming the event
         SessionEvent event = events.get(eventId);
         Player player = this.findPlayerSafelyByName(commandSender.getName());
-        try {
-            event.setClaimer(player);
-        } catch (IllegalAccessException e) {
-            commandSender.sendMessage(ChatColor.RED + e.getMessage());
-        }
+        if(!event.setClaimer(player))
+            commandSender.sendMessage("A player has already claimed this event");
     }
 }

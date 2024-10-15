@@ -70,13 +70,12 @@ public class SessionEvent {
         return claimer;
     }
 
-    public void setClaimer(Player claimer) throws IllegalAccessException {
+    public boolean setClaimer(Player claimer) {
         if(this.claimer == null) {
             this.claimer = claimer;
             Bukkit.getLogger().log(Level.INFO, "The event " + this.eventId + " has been claimed by " + claimer.getName());
+            return true;
         }
-        else {
-            throw new IllegalAccessException("A player has already claimed this event");
-        }
+        return false;
     }
 }

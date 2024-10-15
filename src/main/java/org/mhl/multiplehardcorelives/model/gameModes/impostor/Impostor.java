@@ -11,6 +11,7 @@ import org.mhl.multiplehardcorelives.model.gameLogic.Player;
 import org.mhl.multiplehardcorelives.model.gameModes.MhlGameMode;
 import org.mhl.multiplehardcorelives.model.gameModes.enums.GameModes;
 import org.mhl.multiplehardcorelives.model.lifeToken.NumericLifeToken;
+import org.mhl.multiplehardcorelives.model.session.enums.SessionEvents;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +22,6 @@ import java.util.logging.Level;
 
 public class Impostor extends MhlGameMode {
     private Player impostor;
-    private boolean hasImposterKilled = false;
 
     public Impostor(MhlController controller) {
         super(controller, new NumericLifeToken(), new NumericLifeToken(5), new NumericLifeToken(1), GameModes.Impostor);
@@ -55,20 +55,24 @@ public class Impostor extends MhlGameMode {
     }
 
     public void onPlayerDeath(PlayerDeathEvent pde) {
-        if(Objects.requireNonNull(pde.getDeathMessage()).contains(impostor.getName()) && !pde.getEntity().getUniqueId().equals(impostor.getUuid())){
-            hasImposterKilled = true;
+        if(impostor != null && Objects.requireNonNull(pde.getDeathMessage()).contains(impostor.getName()) && !pde.getEntity().getUniqueId().equals(impostor.getUuid())){
+            controller.getCurrentSession().getEvents().getLast().setClaimer(controller.findPlayerSafelyByUUID(pde.getEntity().getUniqueId()));
             Bukkit.getLogger().log(Level.INFO, "The imposter has killed someone");
         }
     }
 
     public void onSessionEnd() {
-        if (!hasImposterKilled) {
+        if (hasTheImposterKilled()) {
             controller.setNbLivesOfPlayer(impostor, new NumericLifeToken(1));
             Bukkit.getLogger().log(Level.INFO, "The impostor (" + impostor.getName() + ") has killed nobody during the session");
 
             Bukkit.getPlayer(impostor.getUuid()).sendMessage(ChatColor.RED + "You have killed nobody during the session");
             Bukkit.getPlayer(impostor.getUuid()).sendMessage(ChatColor.RED + "You now have one remaining life");
         }
+    }
+
+    private boolean hasTheImposterKilled() {
+        return controller.getCurrentSession().getEventsOfType(SessionEvents.Player_death).stream().noneMatch(e -> e.getClaimer() == impostor);
     }
 
     /**
