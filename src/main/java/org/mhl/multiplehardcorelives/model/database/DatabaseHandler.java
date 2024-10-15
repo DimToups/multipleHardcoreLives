@@ -113,14 +113,17 @@ public class DatabaseHandler {
                         + ", \"" + dateToSQLDate(sessionEnd) + "\""
                         + ", \""+ controller.getGameMode().getGameMode().getName() + "\");";
                 statement.execute(request);
-                for(SessionEvent event : session.getEvents())
-                    statement.execute("INSERT OR REPLACE INTO sessionEvent (server, sessionNumber, eventId, eventDate, description, type) VALUES (\""
+                for(SessionEvent event : session.getEvents()) {
+                    statement.execute("INSERT OR REPLACE INTO sessionEvent (server, sessionNumber, eventId, eventDate, description, type" + (event.getClaimer() == null ? "" : ", claimer") + ") VALUES (\""
                             + Bukkit.getServer().getName() + "\", "
                             + session.getSessionNumber() + ", "
                             + event.eventId + ", \""
                             + dateToSQLDate(event.date.getTime()) + "\", \""
-                            + event.description+ "\", \""
-                            + event.event + "\");");
+                            + event.description + "\", \""
+                            + event.event+ "\""
+                            + (event.getClaimer() == null ? "" : ", \"" + event.getClaimer().getUuid().toString() + "\"")
+                            + ");");
+                }
             }
             closeConnection();
         } catch (Exception e){
