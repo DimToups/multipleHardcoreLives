@@ -602,4 +602,24 @@ public class MhlController {
         if(!event.setClaimer(player))
             commandSender.sendMessage("A player has already claimed this event");
     }
+
+    public void revokeEvent(CommandSender commandSender, int eventId) {
+        // Checking the parameters
+        if(!sessionManager.isSessionActive()) {
+            commandSender.sendMessage("The session has not started yet");
+            return;
+        }
+        List<SessionEvent> events = this.sessionManager.getSessions().getLast().getEvents();
+        if(events.size() <= eventId) {
+            commandSender.sendMessage("Invalid eventId");
+            return;
+        }
+
+        // Revoking the event claim
+        SessionEvent event = events.get(eventId);
+        if(event.getClaimer() == null)
+            commandSender.sendMessage("Nobody claimed the event");
+        else
+            event.revokeEventClaim();
+    }
 }

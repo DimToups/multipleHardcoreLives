@@ -46,9 +46,21 @@ public class CommandSession extends MhlCommand {
             }
         }
         else if (strings.length == 3){
-            if(strings[0].equals("events"))
-                if (strings[1].equals("claimEvent"))
-                    this.controller.claimEvent(commandSender, Integer.parseInt(strings[2]));
+            if(strings[0].equals("events")) {
+                if (strings[1].equals("claimEvent")) {
+                    try{
+                        this.controller.claimEvent(commandSender, Integer.parseInt(strings[2]));
+                    } catch (Exception e){
+                        return false;
+                    }
+                }
+                if (strings[1].equals("revokeEventClaim"))
+                    try {
+                        this.controller.revokeEvent(commandSender, Integer.parseInt(strings[2]));
+                    } catch (Exception e){
+                        return false;
+                    }
+            }
         }
         else
             return false;

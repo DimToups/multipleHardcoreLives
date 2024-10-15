@@ -78,4 +78,8 @@ public class SessionEvent {
         }
         return false;
     }
+
+    public void revokeEventClaim() {
+        this.claimer = null;
+    }
 }
