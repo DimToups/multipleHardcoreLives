@@ -7,6 +7,7 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.mhl.multiplehardcorelives.controller.MhlController;
 import org.mhl.multiplehardcorelives.model.session.SessionEvent;
 
+import java.util.List;
 import java.util.logging.Level;
 
 /**
@@ -45,9 +46,14 @@ public class CommandSession extends MhlCommand {
                     break;
                 }
                 case "events" : {
-                    if (controller.getCurrentSession() != null)
-                        for (SessionEvent event : controller.getCurrentSession().getEvents())
-                            commandSender.sendMessage(event.eventId + ": " + event.description);
+                    if (controller.getCurrentSession() != null) {
+                        List<SessionEvent> events = controller.getCurrentSession().getEvents();
+                        if(events.isEmpty())
+                            commandSender.sendMessage("No events occurred during this session");
+                        else
+                            for (SessionEvent event : events)
+                                commandSender.sendMessage(event.eventId + ": " + event.description);
+                    }
                     else
                         commandSender.sendMessage("The session has not started yet");
                     break;

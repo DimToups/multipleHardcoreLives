@@ -601,6 +601,8 @@ public class MhlController {
         Player player = this.findPlayerSafelyByName(commandSender.getName());
         if(!event.setClaimer(player))
             commandSender.sendMessage("A player has already claimed this event");
+        else
+            commandSender.sendMessage("The event has been claimed");
     }
 
     public void revokeEvent(CommandSender commandSender, int eventId) {
@@ -619,8 +621,10 @@ public class MhlController {
         SessionEvent event = events.get(eventId);
         if(event.getClaimer() == null)
             commandSender.sendMessage("Nobody claimed the event");
-        else
+        else {
+            commandSender.sendMessage("The event has been claimed");
             event.revokeEventClaim();
+        }
     }
 
     public void assignDeathClaim(CommandSender commandSender, int eventId, Player claimer) {
@@ -639,5 +643,7 @@ public class MhlController {
         SessionEvent event = events.get(eventId);
         if(!event.setClaimer(claimer))
             commandSender.sendMessage("A player has already claimed this event");
+        else
+            commandSender.sendMessage("The event has been claimed");
     }
 }
