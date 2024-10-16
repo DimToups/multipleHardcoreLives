@@ -622,4 +622,22 @@ public class MhlController {
         else
             event.revokeEventClaim();
     }
+
+    public void assignDeathClaim(CommandSender commandSender, int eventId, Player claimer) {
+        // Checking the parameters
+        if(!sessionManager.isSessionActive()) {
+            commandSender.sendMessage("The session has not started yet");
+            return;
+        }
+        List<SessionEvent> events = this.sessionManager.getSessions().getLast().getEvents();
+        if(events.size() <= eventId) {
+            commandSender.sendMessage("Invalid eventId");
+            return;
+        }
+
+        // Claiming the event
+        SessionEvent event = events.get(eventId);
+        if(!event.setClaimer(claimer))
+            commandSender.sendMessage("A player has already claimed this event");
+    }
 }

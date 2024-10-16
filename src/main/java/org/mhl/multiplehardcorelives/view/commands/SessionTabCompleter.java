@@ -4,6 +4,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.mhl.multiplehardcorelives.controller.MhlController;
+import org.mhl.multiplehardcorelives.model.gameLogic.Player;
 import org.mhl.multiplehardcorelives.model.session.SessionEvent;
 
 import java.util.ArrayList;
@@ -39,6 +40,7 @@ public class SessionTabCompleter implements TabCompleter {
             if(strings[0].equals("events")) {
                 args.add("claimEvent");
                 args.add("revokeEventClaim");
+                args.add("assignDeathClaim");
             }
         }
         if(strings.length == 3){
@@ -50,6 +52,14 @@ public class SessionTabCompleter implements TabCompleter {
                     if(event.getClaimer() != null && commandSender.getName().equals(event.getClaimer().getName()))
                         args.add(String.valueOf(event.eventId));
         }
+        if(strings.length == 3)
+            if (strings[1].equals("assignDeathClaim") && controller.getCurrentSession() != null && controller.getCurrentSession().getEvents() != null)
+                for(SessionEvent event : controller.getCurrentSession().getEvents())
+                    args.add(String.valueOf(event.eventId));
+        if(strings.length == 4)
+            if (strings[1].equals("assignDeathClaim") && controller.getCurrentSession() != null && controller.getCurrentSession().getEvents() != null)
+                for(Player player : controller.getServer().getPlayers())
+                    args.add(player.getName());
         return args;
     }
 }

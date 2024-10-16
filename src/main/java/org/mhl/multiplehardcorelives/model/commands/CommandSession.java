@@ -62,6 +62,14 @@ public class CommandSession extends MhlCommand {
                     }
             }
         }
+        else if (strings.length == 4)
+            if(strings[0].equals("events"))
+                if (strings[1].equals("assignDeathClaim"))
+                    try {
+                        this.controller.assignDeathClaim(commandSender, Integer.parseInt(strings[2]), controller.findPlayerSafelyByName(strings[3]));
+                    } catch (Exception e){
+                        return false;
+                    }
         else
             return false;
         return true;
