@@ -3,6 +3,7 @@ package org.mhl.multiplehardcorelives.model.commands;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.mhl.multiplehardcorelives.controller.MhlController;
 import org.mhl.multiplehardcorelives.model.session.SessionEvent;
 
@@ -34,12 +35,12 @@ public class CommandSession extends MhlCommand {
         if(strings.length == 1){
             switch (strings[0]){
                 case "start" : {
-                    if (commandSender instanceof org.bukkit.entity.Player && commandSender.hasPermission("admin"))
+                    if ((commandSender instanceof org.bukkit.entity.Player && commandSender.hasPermission("admin")) || commandSender instanceof ConsoleCommandSender)
                         this.controller.startSession();
                     break;
                 }
                 case "end" : {
-                    if (commandSender instanceof org.bukkit.entity.Player && commandSender.hasPermission("admin"))
+                    if ((commandSender instanceof org.bukkit.entity.Player && commandSender.hasPermission("admin")) || commandSender instanceof ConsoleCommandSender)
                         this.controller.endSession();
                     break;
                 }
@@ -62,7 +63,7 @@ public class CommandSession extends MhlCommand {
                         return false;
                     }
                 }
-                if (strings[1].equals("revokeEventClaim") && commandSender instanceof org.bukkit.entity.Player && commandSender.hasPermission("admin"))
+                if (strings[1].equals("revokeEventClaim") && ((commandSender instanceof org.bukkit.entity.Player && commandSender.hasPermission("admin")) || commandSender instanceof ConsoleCommandSender))
                     try {
                         this.controller.revokeEvent(commandSender, Integer.parseInt(strings[2]));
                     } catch (Exception e){

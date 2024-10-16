@@ -2,6 +2,7 @@ package org.mhl.multiplehardcorelives.view.commands;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.TabCompleter;
 import org.mhl.multiplehardcorelives.controller.MhlController;
 import org.mhl.multiplehardcorelives.model.gameLogic.Player;
@@ -32,7 +33,7 @@ public class SessionTabCompleter implements TabCompleter {
     public List<String> onTabComplete(CommandSender commandSender, Command command, String s, String[] strings) {
         List<String> args = new ArrayList<>();
         if(strings.length == 1){
-            if(commandSender instanceof org.bukkit.entity.Player && commandSender.hasPermission("admin")) {
+            if((commandSender instanceof org.bukkit.entity.Player && commandSender.hasPermission("admin")) || commandSender instanceof ConsoleCommandSender) {
                 args.add("end");
                 args.add("start");
             }
@@ -40,7 +41,7 @@ public class SessionTabCompleter implements TabCompleter {
         }
         if(strings.length == 2){
             if(strings[0].equals("events")) {
-                if(commandSender instanceof org.bukkit.entity.Player && commandSender.hasPermission("admin"))
+                if((commandSender instanceof org.bukkit.entity.Player && commandSender.hasPermission("admin")) || commandSender instanceof ConsoleCommandSender)
                     args.add("assignDeathClaim");
                 args.add("revokeEventClaim");
                 args.add("claimEvent");
@@ -57,7 +58,7 @@ public class SessionTabCompleter implements TabCompleter {
                     && controller.getCurrentSession().getEvents() != null)
                 for(SessionEvent event : controller.getCurrentSession().getEvents())
                     if(event.getClaimer() != null
-                            && (commandSender.hasPermission("admin")
+                            && ((commandSender.hasPermission("admin") || commandSender instanceof ConsoleCommandSender)
                                 ||  (commandSender.getName().equals(event.getClaimer().getName()) && commandSender.hasPermission("player"))))
                         args.add(String.valueOf(event.eventId));
         }
