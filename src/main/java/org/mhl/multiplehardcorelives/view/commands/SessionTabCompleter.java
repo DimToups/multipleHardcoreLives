@@ -32,32 +32,50 @@ public class SessionTabCompleter implements TabCompleter {
     public List<String> onTabComplete(CommandSender commandSender, Command command, String s, String[] strings) {
         List<String> args = new ArrayList<>();
         if(strings.length == 1){
-            args.add("end");
-            args.add("start");
+            if(commandSender instanceof org.bukkit.entity.Player && commandSender.hasPermission("admin")) {
+                args.add("end");
+                args.add("start");
+            }
             args.add("events");
         }
         if(strings.length == 2){
             if(strings[0].equals("events")) {
+                if(commandSender instanceof org.bukkit.entity.Player && commandSender.hasPermission("admin")){
+                    args.add("revokeEventClaim");
+                    args.add("assignDeathClaim");
+                }
                 args.add("claimEvent");
-                args.add("revokeEventClaim");
-                args.add("assignDeathClaim");
             }
         }
         if(strings.length == 3){
-            if(strings[1].equals("claimEvent") && controller.getCurrentSession() != null && controller.getCurrentSession().getEvents() != null)
+            if(strings[1].equals("claimEvent")
+                    && controller.getCurrentSession() != null
+                    && controller.getCurrentSession().getEvents() != null)
                 for(SessionEvent event : controller.getCurrentSession().getEvents())
                     args.add(String.valueOf(event.eventId));
-            if(strings[1].equals("revokeEventClaim") && controller.getCurrentSession() != null && controller.getCurrentSession().getEvents() != null)
+            if(commandSender instanceof org.bukkit.entity.Player
+                    && commandSender.hasPermission("admin")
+                    && strings[1].equals("revokeEventClaim")
+                    && controller.getCurrentSession() != null
+                    && controller.getCurrentSession().getEvents() != null)
                 for(SessionEvent event : controller.getCurrentSession().getEvents())
                     if(event.getClaimer() != null && commandSender.getName().equals(event.getClaimer().getName()))
                         args.add(String.valueOf(event.eventId));
         }
         if(strings.length == 3)
-            if (strings[1].equals("assignDeathClaim") && controller.getCurrentSession() != null && controller.getCurrentSession().getEvents() != null)
+            if (commandSender instanceof org.bukkit.entity.Player
+                    && commandSender.hasPermission("admin")
+                    && strings[1].equals("assignDeathClaim")
+                    && controller.getCurrentSession() != null
+                    && controller.getCurrentSession().getEvents() != null)
                 for(SessionEvent event : controller.getCurrentSession().getEvents())
                     args.add(String.valueOf(event.eventId));
         if(strings.length == 4)
-            if (strings[1].equals("assignDeathClaim") && controller.getCurrentSession() != null && controller.getCurrentSession().getEvents() != null)
+            if (commandSender instanceof org.bukkit.entity.Player
+                    && commandSender.hasPermission("admin")
+                    && strings[1].equals("assignDeathClaim")
+                    && controller.getCurrentSession() != null
+                    && controller.getCurrentSession().getEvents() != null)
                 for(Player player : controller.getServer().getPlayers())
                     args.add(player.getName());
         return args;

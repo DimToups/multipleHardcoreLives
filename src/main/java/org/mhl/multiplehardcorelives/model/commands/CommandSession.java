@@ -33,8 +33,16 @@ public class CommandSession extends MhlCommand {
         Bukkit.getLogger().log(Level.INFO ,"Session " + strings[0] + " command has been detected. Sending request to handle it");
         if(strings.length == 1){
             switch (strings[0]){
-                case "start" : this.controller.startSession(); break;
-                case "end" : this.controller.endSession(); break;
+                case "start" : {
+                    if (commandSender instanceof org.bukkit.entity.Player && commandSender.hasPermission("admin"))
+                        this.controller.startSession();
+                    break;
+                }
+                case "end" : {
+                    if (commandSender instanceof org.bukkit.entity.Player && commandSender.hasPermission("admin"))
+                        this.controller.endSession();
+                    break;
+                }
                 case "events" : {
                     if (controller.getCurrentSession() != null)
                         for (SessionEvent event : controller.getCurrentSession().getEvents())
@@ -54,7 +62,7 @@ public class CommandSession extends MhlCommand {
                         return false;
                     }
                 }
-                if (strings[1].equals("revokeEventClaim"))
+                if (strings[1].equals("revokeEventClaim") && commandSender instanceof org.bukkit.entity.Player && commandSender.hasPermission("admin"))
                     try {
                         this.controller.revokeEvent(commandSender, Integer.parseInt(strings[2]));
                     } catch (Exception e){
@@ -63,7 +71,7 @@ public class CommandSession extends MhlCommand {
             }
         }
         else if (strings.length == 4)
-            if(strings[0].equals("events"))
+            if(strings[0].equals("events") && commandSender instanceof org.bukkit.entity.Player && commandSender.hasPermission("admin"))
                 if (strings[1].equals("assignDeathClaim"))
                     try {
                         this.controller.assignDeathClaim(commandSender, Integer.parseInt(strings[2]), controller.findPlayerSafelyByName(strings[3]));
