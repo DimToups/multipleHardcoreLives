@@ -40,10 +40,9 @@ public class SessionTabCompleter implements TabCompleter {
         }
         if(strings.length == 2){
             if(strings[0].equals("events")) {
-                if(commandSender instanceof org.bukkit.entity.Player && commandSender.hasPermission("admin")){
-                    args.add("revokeEventClaim");
+                if(commandSender instanceof org.bukkit.entity.Player && commandSender.hasPermission("admin"))
                     args.add("assignDeathClaim");
-                }
+                args.add("revokeEventClaim");
                 args.add("claimEvent");
             }
         }
@@ -53,13 +52,13 @@ public class SessionTabCompleter implements TabCompleter {
                     && controller.getCurrentSession().getEvents() != null)
                 for(SessionEvent event : controller.getCurrentSession().getEvents())
                     args.add(String.valueOf(event.eventId));
-            if(commandSender instanceof org.bukkit.entity.Player
-                    && commandSender.hasPermission("admin")
-                    && strings[1].equals("revokeEventClaim")
+            if(strings[1].equals("revokeEventClaim")
                     && controller.getCurrentSession() != null
                     && controller.getCurrentSession().getEvents() != null)
                 for(SessionEvent event : controller.getCurrentSession().getEvents())
-                    if(event.getClaimer() != null && commandSender.getName().equals(event.getClaimer().getName()))
+                    if(event.getClaimer() != null
+                            && (commandSender.hasPermission("admin")
+                                ||  (commandSender.getName().equals(event.getClaimer().getName()) && commandSender.hasPermission("player"))))
                         args.add(String.valueOf(event.eventId));
         }
         if(strings.length == 3)
