@@ -12,7 +12,7 @@ commands:
   player:
     description: Manages and displays informations about players
     usage: /player [list | infos | setLives] [player name] [number of lives]
-    permission: admin
+    permission: player
   server:
     description: Manages and displays informations about the server
     usage: /server [reset | defaultNumberOfLives] [lives]

@@ -380,27 +380,6 @@ public class MhlController {
     }
 
     /**
-     * Displays the whole player list to the entity who called the method.
-     * @param commandSender The sender of the command.
-     */
-    public void displayPlayerList(CommandSender commandSender) {
-        List<Player> loadedPlayers, unloadedPlayers;
-        loadedPlayers = server.getPlayers();
-        unloadedPlayers = databaseHandler.getPlayers();
-
-        for(Player player : loadedPlayers)
-            unloadedPlayers.removeIf(dbPlayer -> dbPlayer.getUuid() == player.getUuid());
-
-        StringBuilder message = new StringBuilder("Every player of the server: ");
-        for(Player player : loadedPlayers)
-            message.append("\n\t").append(player.getName()).append("(").append(player.getUuid()).append("): ").append(player.getLivesTokens()).append(" lives (loaded and is ").append(player.isOnlineToString().toLowerCase()).append(")");
-        for(Player player : unloadedPlayers)
-            message.append("\n\t").append(player.getName()).append("(").append(player.getUuid()).append("): ").append(player.getLivesTokens()).append(" lives (unloaded)");
-
-        commandSender.sendMessage(message.toString());
-    }
-
-    /**
      * Handle the event of a player quitting the server. It will find the player in this Server instance and set its state to offline.
      * @param player The gone player.
      */
@@ -645,5 +624,9 @@ public class MhlController {
             commandSender.sendMessage("A player has already claimed this event");
         else
             commandSender.sendMessage("The event has been claimed");
+    }
+
+    public List<Player> getDatabasePlayers() {
+        return databaseHandler.getPlayers();
     }
 }

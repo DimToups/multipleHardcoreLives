@@ -26,10 +26,12 @@ public class PlayerTabCompleter implements TabCompleter {
         List<String> args = new ArrayList<>();
         if(strings.length == 1){
             args.add("list");
-            args.add("infos");
-            args.add("setLives");
+            if(commandSender.hasPermission("admin")) {
+                args.add("infos");
+                args.add("setLives");
+            }
             return args;
-        } else if (strings.length == 2 && (strings[0].equals("infos") || strings[0].equals("setLives"))) {
+        } else if (strings.length == 2 && (strings[0].equals("infos") || strings[0].equals("setLives")) && commandSender.hasPermission("admin")) {
             for(Player player : Bukkit.getOnlinePlayers())
                 args.add(player.getName());
             return args;
