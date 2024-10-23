@@ -50,13 +50,29 @@ public class CommandSession extends MhlCommand {
                         List<SessionEvent> events = controller.getCurrentSession().getEvents();
                         if(events.isEmpty())
                             commandSender.sendMessage("No events occurred during this session");
-                        else
+                        else {
                             for (SessionEvent event : events)
-                                commandSender.sendMessage(event.eventId + ": " + event.description);
+                                this.addStringResponse(event.eventId + ": " + event.description);
+                            this.sendPaginatedResponse(commandSender, "Events", 1);
+                        }
                     }
                     else
                         commandSender.sendMessage("The session has not started yet");
                     break;
+                }
+            }
+        }
+        else if (strings.length == 2){
+            if(strings[0].equals("events")){
+                try{
+                    Bukkit.getLogger().log(Level.INFO, "Trying to parse the argument " + strings[1] + " into an integer");
+                    int page = Integer.parseInt(strings[1]);
+                    for (SessionEvent event : controller.getCurrentSession().getEvents())
+                        this.addStringResponse(event.eventId + ": " + event.description);
+                    this.sendPaginatedResponse(commandSender, "Events", page);
+                } catch (Exception e) {
+                    Bukkit.getLogger().log(Level.WARNING, "No page has been found in the arguments\n" + e.getMessage());
+                    return false;
                 }
             }
         }
@@ -69,12 +85,13 @@ public class CommandSession extends MhlCommand {
                         return false;
                     }
                 }
-                if (strings[1].equals("revokeEventClaim") && ((commandSender instanceof org.bukkit.entity.Player && commandSender.hasPermission("admin")) || commandSender instanceof ConsoleCommandSender))
+                else if (strings[1].equals("revokeEventClaim") && ((commandSender instanceof org.bukkit.entity.Player && commandSender.hasPermission("admin")) || commandSender instanceof ConsoleCommandSender)) {
                     try {
                         this.controller.revokeEvent(commandSender, Integer.parseInt(strings[2]));
-                    } catch (Exception e){
+                    } catch (Exception e) {
                         return false;
                     }
+                }
             }
         }
         else if (strings.length == 4)
