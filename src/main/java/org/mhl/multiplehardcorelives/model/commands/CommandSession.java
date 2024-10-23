@@ -32,7 +32,7 @@ public class CommandSession extends MhlCommand {
      */
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
-        Bukkit.getLogger().log(Level.INFO ,"Session " + strings[0] + " command has been detected. Sending request to handle it");
+        Bukkit.getLogger().log(Level.INFO ,"Session command has been detected. Sending request to handle it");
         if(strings.length == 1){
             switch (strings[0]){
                 case "start" : {
