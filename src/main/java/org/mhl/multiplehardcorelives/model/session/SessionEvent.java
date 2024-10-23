@@ -66,10 +66,19 @@ public class SessionEvent {
         this.claimer = claimer;
     }
 
+    /**
+     * Sends the Player instance of the claimer
+     * @return The Player instance of the claimer
+     */
     public Player getClaimer() {
         return claimer;
     }
 
+    /**
+     * Sets the claimer to the event
+     * @param claimer The player claiming the event
+     * @return true if the claim has gone right, false otherwise
+     */
     public boolean setClaimer(Player claimer) {
         if(this.claimer == null) {
             this.claimer = claimer;
@@ -79,6 +88,9 @@ public class SessionEvent {
         return false;
     }
 
+    /**
+     * Revokes the claim
+     */
     public void revokeEventClaim() {
         this.claimer = null;
     }

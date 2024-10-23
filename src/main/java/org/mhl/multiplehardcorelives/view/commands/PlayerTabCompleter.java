@@ -14,6 +14,13 @@ import java.util.List;
  */
 public class PlayerTabCompleter implements TabCompleter {
     /**
+     * Creates an instance of PlayerTabCompleter
+     */
+    public PlayerTabCompleter(){
+
+    }
+
+    /**
      * Recommends options to the player when typing the command player
      * @param commandSender The command sender
      * @param command The command

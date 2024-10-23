@@ -20,19 +20,33 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
+/**
+ * The Impostor MhlGameMode class
+ * A player is designated to kill someone during a session. If they fail, they will end the session on their last life
+ */
 public class Impostor extends MhlGameMode {
+    /**
+     * The designated player for being the impostor
+     */
     private Player impostor;
 
+    /**
+     * Makes an instance of the Impostor class
+     * @param controller The plugin's controller
+     */
     public Impostor(MhlController controller) {
         super(controller, new NumericLifeToken(), new NumericLifeToken(5), new NumericLifeToken(1), GameModes.Impostor);
     }
 
+    /**
+     * Designates an imposter for the session after 5 minutes
+     */
     public void onSessionStart() {
         Thread t = new Thread(new BukkitRunnable() {
             @Override
             public void run() {
                 try{
-                    TimeUnit.SECONDS.sleep(10);
+                    TimeUnit.SECONDS.sleep(60 * 5);
 
                     // Designation of the imposter
                     List<Player> players = new ArrayList<>();
@@ -95,6 +109,10 @@ public class Impostor extends MhlGameMode {
         return args;
     }
 
+    /**
+     * Sends the Player instance of the imposter
+     * @return The Player instance of the imposter
+     */
     public Player getImpostor() {
         return impostor;
     }

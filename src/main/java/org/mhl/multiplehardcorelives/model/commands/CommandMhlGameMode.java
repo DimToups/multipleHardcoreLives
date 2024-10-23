@@ -7,6 +7,9 @@ import org.mhl.multiplehardcorelives.model.gameModes.enums.GameModes;
 
 import java.util.Arrays;
 
+/**
+ * A command class having the logic of the command mhlGameMode
+ */
 public class CommandMhlGameMode extends MhlCommand{
     /**
      * Initialise a CommandMhlGameMode by using the plugin's controller.

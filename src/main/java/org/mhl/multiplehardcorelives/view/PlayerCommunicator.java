@@ -8,32 +8,59 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
+/**
+ * A View made for communicate with players
+ */
 public class PlayerCommunicator {
+    /**
+     * Creates an instance of PlayerCommunicator
+     */
+    public PlayerCommunicator(){
 
+    }
+
+    /**
+     * Tells to the specified player that they have definitively died
+     * @param player The dead player
+     */
     public void informPlayerDefinitiveDeath(Player player){
         player.sendTitle("You are out of lives !", "", 0, 70, 40);
     }
 
+    /**
+     * Tells to every player that the session has just started
+     */
     public void tellSessionStart() {
         Bukkit.broadcastMessage(ChatColor.GREEN + "The session has just started");
     }
 
+    /**
+     * Tells to every player that the session will end in 30 seconds
+     */
     public void tellSessionNearlyEnded() {
         Bukkit.broadcastMessage(ChatColor.RED + "The session is ending in 30 seconds");
     }
 
+    /**
+     * Tells to every player that the session has ended
+     */
     public void tellSessionEnd() {
         Bukkit.broadcastMessage(ChatColor.RED + "The session has now ended");
     }
 
+    /**
+     * Tells to every player the session's remaining time
+     * @param seconds The remaining seconds
+     */
     public void tellTimeLeft(int seconds) {
         Bukkit.broadcastMessage(ChatColor.RED + "The session is ending in " + seconds + " seconds");
     }
 
-    public void tellToEveryPlayer(String msg) {
-        Bukkit.broadcastMessage(msg);
-    }
-
+    /**
+     * Tell to every player their role for the impostor GameMode
+     * @param players  The list of online players
+     * @param impostor The impostor
+     */
     public void tellWhoIsImposter(List<org.mhl.multiplehardcorelives.model.gameLogic.Player> players, org.mhl.multiplehardcorelives.model.gameLogic.Player impostor) {
         Bukkit.getLogger().log(Level.INFO, "Telling players their role");
 

@@ -102,6 +102,11 @@ public class Session {
         this.events.add(new SessionEvent(eventType, date, this.events.size(), description, claimer));
     }
 
+    /**
+     * Sends the events of the specified kind
+     * @param sessionEvents The kind of session events
+     * @return The list of every event of the specified kind
+     */
     public List<SessionEvent> getEventsOfType(SessionEvents sessionEvents) {
         return this.events.stream().filter(e -> e.event == sessionEvents).toList();
     }

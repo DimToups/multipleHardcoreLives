@@ -15,9 +15,15 @@ import java.util.Objects;
  * A TabCompleter class for the command mhlGameMode
  */
 public class MhlGameModeTabCompleter implements TabCompleter {
-
+    /**
+     * The plugin's controller
+     */
     private final MhlController controller;
 
+    /**
+     * Creates an instance of MhlGameModeTabCompleter
+     * @param controller The plugin's controller
+     */
     public MhlGameModeTabCompleter(MhlController controller){
         this.controller = controller;
     }

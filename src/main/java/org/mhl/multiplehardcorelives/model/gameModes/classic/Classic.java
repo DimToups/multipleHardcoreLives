@@ -9,7 +9,14 @@ import org.mhl.multiplehardcorelives.model.lifeToken.NumericLifeToken;
 
 import java.util.List;
 
+/**
+ * The classic GameMode for the plugin
+ * Every player have 5 lives and have to be the last survivor
+ */
 public class Classic extends MhlGameMode {
+    /**
+     * Makes an instance of Classic
+     */
     public Classic(){
         super(new NumericLifeToken(), new NumericLifeToken(5), new NumericLifeToken(1), GameModes.Classic);
     }

@@ -135,6 +135,10 @@ public class Server {
         return worldBorderLength;
     }
 
+    /**
+     * Sends the list of onlinePlayers
+     * @return The list of onlinePlayers
+     */
     public List<Player> getOnlinePlayers() {
         return new ArrayList<>(this.players.stream().filter(Player::isOnline).toList());
     }

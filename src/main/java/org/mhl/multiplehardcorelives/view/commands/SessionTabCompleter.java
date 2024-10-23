@@ -17,6 +17,10 @@ import java.util.List;
 public class SessionTabCompleter implements TabCompleter {
     private final MhlController controller;
 
+    /**
+     * Creates an instance of SessionTabCompleter
+     * @param controller The plugin's controller
+     */
     public SessionTabCompleter(MhlController controller) {
         this.controller = controller;
     }

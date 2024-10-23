@@ -508,14 +508,29 @@ public class MhlController {
             sessionManager.playerAdvancementDone(pade);
     }
 
+    /**
+     * Sends the current GameMode
+     * @return The current GameMode
+     */
     public MhlGameMode getGameMode() {
         return this.gameMode;
     }
 
+    /**
+     * Sends the controller's Server instance
+     * @return The controller's Server instance
+     */
     public Server getServer() {
         return this.server;
     }
 
+    /**
+     * Sets the GameMode to the specified one.
+     * It only works when a session is not active.
+     * It loads the data of every player on the new GameMode
+     * @param gameModeEnum  The kind of GameMode
+     * @param commandSender The command sender
+     */
     public void setGameMode(GameModes gameModeEnum, CommandSender commandSender) {
         if(this.sessionManager.isSessionActive())
             commandSender.sendMessage("You cannot change the GameMode during an active session");
@@ -535,14 +550,26 @@ public class MhlController {
             commandSender.sendMessage("The current gameMode has already been set to " + gameModeEnum);
     }
 
+    /**
+     * Tell to the playerCommunicator to tell to everyone their role for the impostor GameMode
+     * @param impostor The Player instance of the impostor
+     */
     public void tellWhoIsImposter(Player impostor) {
         this.playerCommunicator.tellWhoIsImposter(server.getOnlinePlayers(), impostor);
     }
 
+    /**
+     * Sends the Player instance of the imposter for the Imposter GameMode
+     * @return The Player instance of the imposter
+     */
     public Player getImpostor() {
         return ((Impostor)(this.gameMode)).getImpostor();
     }
 
+    /**
+     * Shows to the command sender who is the imposter
+     * @param commandSender The command sender
+     */
     public void showImpostor(CommandSender commandSender) {
         if(sessionManager.isSessionActive()){
             Player impostor = getImpostor();
@@ -555,6 +582,10 @@ public class MhlController {
             commandSender.sendMessage("The session must be active for the command to show you who are the impostors");
     }
 
+    /**
+     * Sends the current active session
+     * @return The current active session if it exists, null otherwise
+     */
     public Session getCurrentSession() {
         if(this.sessionManager.isSessionActive())
             return this.sessionManager.getSessions().getLast();
@@ -562,6 +593,11 @@ public class MhlController {
             return null;
     }
 
+    /**
+     * Set the claimer of an event to the command sender
+     * @param commandSender The claimer
+     * @param eventId       The id of the event
+     */
     public void claimEvent(CommandSender commandSender, int eventId) {
         // Checking the parameters
         if(!sessionManager.isSessionActive()) {
@@ -587,6 +623,11 @@ public class MhlController {
             commandSender.sendMessage("The event has been claimed");
     }
 
+    /**
+     * Revokes the claim of a player to an event
+     * @param commandSender The claimer revoking the event
+     * @param eventId       The event id
+     */
     public void revokeEvent(CommandSender commandSender, int eventId) {
         // Checking the parameters
         if(!sessionManager.isSessionActive()) {
@@ -609,6 +650,12 @@ public class MhlController {
         }
     }
 
+    /**
+     * Assign the death claim of an event to the specified player
+     * @param commandSender The command sender
+     * @param eventId       The event id
+     * @param claimer       The player claiming an event
+     */
     public void assignDeathClaim(CommandSender commandSender, int eventId, Player claimer) {
         // Checking the parameters
         if(!sessionManager.isSessionActive()) {
@@ -629,6 +676,10 @@ public class MhlController {
             commandSender.sendMessage("The event has been claimed");
     }
 
+    /**
+     * Sends the players registered in the database
+     * @return The players registered in the database
+     */
     public List<Player> getDatabasePlayers() {
         return databaseHandler.getPlayers();
     }

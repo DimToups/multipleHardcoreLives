@@ -14,6 +14,13 @@ import org.mhl.multiplehardcorelives.model.commands.CommandSession;
  */
 public final class MultipleHardcoreLives extends JavaPlugin {
     /**
+     * Creates an instance of MultipleHardcoreLives
+     */
+    public MultipleHardcoreLives(){
+
+    }
+
+    /**
      * The plugin's controller. It will manage almost every aspect of the plugin once it's initialised.
      */
     private MhlController controller;
