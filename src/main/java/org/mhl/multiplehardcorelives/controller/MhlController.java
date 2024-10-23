@@ -294,7 +294,10 @@ public class MhlController {
      */
     public void serverClosing() {
         Bukkit.getLogger().log(Level.INFO, "Closing the server...");
-        this.endSession();
+        if(!sessionManager.isSessionActive())
+            this.writeChanges();
+        else
+            this.endSession();
     }
 
     /**

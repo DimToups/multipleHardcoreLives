@@ -45,6 +45,7 @@ public class SessionTabCompleter implements TabCompleter {
                     args.add("assignDeathClaim");
                 args.add("revokeEventClaim");
                 args.add("claimEvent");
+                args.add("list");
             }
         }
         if(strings.length == 3){
